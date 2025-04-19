@@ -1,0 +1,57 @@
+    <ion-content>    
+        <ion-slide>
+            
+            <div class="contaier-login">
+              <form [formGroup]="registerForm" (ngSubmit)="submitData()">
+                <ion-grid>
+                    
+                    <ion-row>
+                      <ion-col class="img-container">                       
+                        <ion-img src="{{datapass.base64encodedimage}}" style="height: 100px;width:100px;z-index:1"></ion-img>
+                      </ion-col>
+                    </ion-row>
+                    <ion-row>
+                      <ion-col>
+                          <h6 class="textcolor" style="font-size: 12px;color:red">Version: {{cversion}} </h6>
+                          <h1 class="textcolor">Welcome back! </h1>
+                          <h6 class="textcolor">Login to Your account</h6>
+                      </ion-col>
+                     </ion-row>
+                    
+                    <ion-row>
+                        <ion-col>
+                            <ion-list lines="none">
+                                <ion-item>
+                                    <ion-icon name="person-outline" class="icon-login textcolor icon-round" style="color:#00709c"></ion-icon>
+                                    <ion-input name="user" type="text" placeholder="User Id" formControlName="userid"></ion-input>
+                                </ion-item>
+                                <ion-text *ngIf="submitted && f.userid.errors">
+                                  <ion-text color="danger" *ngIf="f.userid.errors.required" style="font-size: 12px;float:right;font-weight: bold;">*Required</ion-text>
+                                </ion-text>
+                                <br />
+                                <ion-item>
+                                    <ion-icon name="key-outline" class="icon-login textcolor icon-round" style="color:#00709c"></ion-icon>
+                                    <ion-input type="password" inputmode="decimal" formControlName="password" placeholder="Password"></ion-input>
+                                </ion-item>
+                                <ion-text *ngIf="submitted && f.password.errors">
+                                  <ion-text color="danger" *ngIf="f.password.errors.required" style="font-size: 12px;float:right;font-weight: bold;">*Required</ion-text>
+                                </ion-text>
+                            </ion-list>
+                        </ion-col>
+                    </ion-row>
+                    <br>
+                    <ion-row>
+                        <ion-col>
+                            <ion-button type="submit" shape="round" fill="solid" expand="full" [disabled]="!registerForm.valid || versionFlag"><ion-icon name="enter"></ion-icon>Login</ion-button>
+                        </ion-col>
+                    </ion-row>                   
+                </ion-grid>
+              </form>    
+            </div>
+            
+        </ion-slide>
+        <ion-img src="./assets/image/refresh.png" style="width: 50px;height: 50px;position: absolute;top:0;right: 15%;z-index: 3;" (click)="refresher()"></ion-img> 
+        <ion-img src="./assets/image/admin.png" style="width: 50px;height: 50px;position: absolute;top:0;right: 0;z-index: 3;" (click)="onClickMe('Setting')"></ion-img> 
+        <ion-img src="./assets/icon/logo1.png" style="width: 100%;position:absolute;top:0%;height:30%"></ion-img>
+    </ion-content>
+  

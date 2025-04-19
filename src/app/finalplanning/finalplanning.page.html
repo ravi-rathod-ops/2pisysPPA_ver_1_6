@@ -1,0 +1,124 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-img src="{{brandImage}}" style="height: 50px;width:50px" slot="start"></ion-img>               
+    <div style="display: flex;justify-content: center;">
+      <img src="./assets/image/route.png" height="25" width="25">
+      <b style="font-size: 20px;">&nbsp;&nbsp;Final Plan</b>
+    </div>
+    <ion-back-button defaultHref="Planhome" slot="end" (click)="displaymode()"></ion-back-button>   
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="inventory-content">
+
+  <ion-grid>
+    <ion-row nowrap class="ion-align-items-center">
+      <ion-col size="4">       
+        <ion-input (keyup)="applyFilter($event.target.value)" placeholder="Search" [(ngModel)]="searchData"><ion-icon name="search"></ion-icon></ion-input>
+      </ion-col> 
+      <ion-col size="5">
+        <!-- <ion-label style="font-size: small;color: grey;">Location</ion-label>                -->
+        <ionic-selectable
+              #selectComponent
+              [(ngModel)]="selected"
+              [items]="locationArray"
+              itemValueField="value"
+              itemTextField="name"
+              [canSearch]="true"
+              (onChange)="OperatorChanged($event)"
+              searchFailText= "Operator not found"
+              placeholder="Location">
+          </ionic-selectable>        
+    </ion-col>     
+      <ion-col size="2"><ion-button color="success" size="small" (click)="callPlan()">Create</ion-button></ion-col>      
+  </ion-row>
+  </ion-grid>
+  <br>
+  <div class="reports-table" style="position: relative;top:-4%">
+   
+    <ion-grid>
+      <ion-row nowrap class="headers">
+        <ion-col size="3" class="single-border" tappable (click)="sort('batid',true)">
+          BatchId ({{tableData.length}})
+        </ion-col>
+        <ion-col size="3" class="single-border" tappable (click)="sort('cpdname',true)">
+          Compound
+        </ion-col>        
+        <ion-col size="2" class="single-border" (click)="sort('masterbatchwgt',true)" style="text-align:center">
+          MBWt ({{totalmasterbatchwgt.toFixed(1)}})
+        </ion-col>
+        <ion-col size="2" class="single-border" (click)="sort('expbatchqty',true)" style="text-align:center">
+          ExpWt ({{totalexpectedbatchwgt.toFixed(1)}})
+        </ion-col>
+        <ion-col size="2" class="single-border" style="text-align:center">  ({{dataArray.length}})       
+        </ion-col>                                
+      </ion-row>
+      <div style="height: 75vh; overflow: scroll;">
+        <ion-row nowrap class="content" *ngFor="let x of tableData;let i=index">
+          <ion-col size="3"> {{ x.dispbatid }}</ion-col>
+          <ion-col size="3"> {{ x.cpdname }}</ion-col>          
+          <ion-col size="2" style="text-align: right;font-size: medium;"> {{x.masterbatchwgt}}</ion-col>
+          <ion-col size="2" style="text-align: right;font-size: medium;"> {{ x.expbatchqty }} </ion-col>  
+          <ion-col size="2" style="text-align: center;"> <ion-checkbox color="primary" (ionChange)="selectRecord(x,$event,i)" [checked]="x.check"> </ion-checkbox></ion-col>                       
+        </ion-row>
+        <ion-row *ngIf="tableData.length == 0">
+          <ion-col size="6" offset="4"> No Records Found</ion-col>
+        </ion-row>
+      </div>
+
+    </ion-grid>
+  </div>
+
+<div class="modal-content3" *ngIf="modalDeleteData3">
+  <div class="modal-header" style="padding: 2%;">
+    <!-- <span class="close" (click)="modalDeleteData3=!modalDeleteData3">&times;</span> -->
+    Final Plan
+  </div>
+  <div class="modal-body" style="text-align: center;">
+    <ion-row nowrap class="ion-align-items-center">
+      <ion-col size="3">  
+          <ion-label style="font-size: small;color: grey;">Shift</ion-label>            
+          <ionic-selectable
+                #selectComponent1
+                [(ngModel)]="selectedShift"
+                [items]="shiftArray"
+                itemValueField="value"
+                itemTextField="name"
+                [canSearch]="true"
+                (onChange)="ShiftChanged($event)"
+                searchFailText= "Shift not found"
+                placeholder="Select Shift">
+          </ionic-selectable>        
+      </ion-col>
+      <ion-col size="3">
+          <!-- <ion-label style="font-size: small;color: grey;">Location</ion-label>               
+          <ionic-selectable
+                #selectComponent
+                [(ngModel)]="selected"
+                [items]="locationArray"
+                itemValueField="value"
+                itemTextField="name"
+                [canSearch]="true"
+                (onChange)="OperatorChanged($event)"
+                searchFailText= "Operator not found"
+                placeholder="Select Location">
+            </ionic-selectable>         -->
+      </ion-col>
+      <ion-col size="4">              
+        <ion-col>
+          <ion-label style="font-size: small;color: grey;">Date</ion-label> 
+          <input type="date" class="selectdddate" [(ngModel)]="postData.plandate" id="datefield"/>
+        </ion-col>      
+      </ion-col>
+    </ion-row>
+    <ion-row>
+        <ion-col size="12">Are You Sure to Create the Plan?</ion-col>
+    </ion-row>
+  </div> 
+  <div class="modal-footer" style="float: right;">
+    <ion-button color="success" size="small" (click)="submitData()">Create</ion-button>
+    <ion-button color="danger" size="small" (click)="modalDeleteData3=!modalDeleteData3">Cancel</ion-button>   
+  </div>
+</div>
+
+</ion-content>

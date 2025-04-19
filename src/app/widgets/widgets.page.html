@@ -1,0 +1,75 @@
+<ion-header>
+  <ion-toolbar>       
+        <ion-img src="{{brandImage}}" style="height: 50px;width:50px" slot="start"></ion-img>       
+        <ion-back-button defaultHref="home" slot="end"></ion-back-button>   
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+
+    <ion-row >
+      <ion-col size="12" (click)="routePage('Planhome')">
+        <ion-card>
+          <ion-row class="ion-align-items-center">
+            <ion-col size="6"> 
+              <img src="./assets/image/planning.png" class="image"/>               
+            </ion-col>
+            <ion-col size="6" class="text-center-column" >  
+                <h2>PROCESS</h2>
+            </ion-col>
+          </ion-row>
+        </ion-card>        
+      </ion-col>
+    </ion-row>
+
+
+    <ion-row>
+      <ion-col size="12" (click)="routePage('Moulding')">
+        <ion-card>
+          <ion-row class="ion-align-items-center">
+            <ion-col size="6"> 
+              <img src="./assets/image/status.png" class="image"/>               
+            </ion-col>
+            <ion-col size="6" class="text-center-column">  
+                <h2> VIEW</h2>
+            </ion-col>
+          </ion-row>
+        </ion-card>        
+      </ion-col>
+    </ion-row>
+
+
+    <ion-row>
+      <ion-col size="12" (click)="routePage('Reports')">
+        <ion-card>
+          <ion-row class="ion-align-items-center">
+            <ion-col size="6"> 
+              <img src="./assets/image/report.png" class="image"/>               
+            </ion-col>
+            <ion-col size="6" class="text-center-column">  
+                <h2>REPORTS</h2>
+            </ion-col>
+          </ion-row>
+        </ion-card>        
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col size="12" (click)="routePage('approvals')">
+        <ion-card>
+          <ion-row class="ion-align-items-center">
+            <ion-col size="6"> 
+              <img src="./assets/image/approve.png" class="image"/>               
+            </ion-col>
+            <ion-col size="6" class="text-center-column">  
+                <h2>APPROVAL</h2>
+            </ion-col>
+          </ion-row>
+        </ion-card>        
+      </ion-col>
+    </ion-row>
+      
+  </ion-grid>
+  
+</ion-content>

@@ -1,0 +1,144 @@
+<ion-header id="header">
+  <ion-toolbar>
+        <ion-img src="{{brandImage}}" style="height: 50px;width:50px;" slot="start"></ion-img>
+        <div style="display: flex;justify-content: center;" *ngIf="showMenu">
+          <img src="./assets/image/status.png" height="25" width="25">
+          <b style="font-size: 20px;">&nbsp;&nbsp;Status</b>
+        </div>
+        <ion-buttons *ngIf="datapassTemp.length > 0">
+          <ionic-selectable
+                #selectComponent
+                [(ngModel)]="selected"
+                [items]="datapassTemp"
+                itemValueField="link"
+                itemTextField="name"
+                [canSearch]="true"
+                (onChange)="ReportChanged($event)"
+                searchFailText= "Report not found"
+                placeholder="Select Report">
+            </ionic-selectable>
+        </ion-buttons>
+        <ion-buttons slot="end">
+
+          <ion-fab style="margin-left: -100%;">
+            <ion-fab-button size="small">
+              <ion-icon name="add"></ion-icon>
+            </ion-fab-button>
+            <ion-fab-list side="start">
+              <ion-fab-button *ngIf="showprinter">
+                <ion-img src="./assets/image/printer.png" style="width: 35px;height: 35px;vertical-align: middle;float: right;" (click)="print()"></ion-img> 
+              </ion-fab-button>
+              <ion-fab-button *ngIf="selected.length != 0 && scanData == null">
+                <ion-img src="./assets/image/cast.png" style="width: 35px;height: 35px;vertical-align: middle;float: right;" (click)="castData('open')" ></ion-img> 
+              </ion-fab-button>
+              <ion-fab-button *ngIf="scanData != null">
+                <ion-img src="./assets/image/delete.png" style="width: 35px;height: 35px;vertical-align: middle;float: right;" (click)="castData('close')" ></ion-img> 
+              </ion-fab-button>
+              <ion-fab-button *ngIf="selected.length != 0 && scanData == null">
+                <ion-img src="./assets/image/excel.png" style="width: 30px;height: 30px;vertical-align: middle;float: right;" (click)="exportToExcel()"></ion-img> 
+              </ion-fab-button>
+              <!-- <ion-fab-button>
+                <ion-img src="./assets/image/admin.png" style="width: 35px;height: 35px;vertical-align: middle;float: right;" (click)="onClickMe('Setting')"></ion-img> 
+              </ion-fab-button> -->
+             
+            </ion-fab-list>
+          </ion-fab>
+          <ion-back-button defaultHref="Widgets" slot="end"></ion-back-button>  
+        </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <iframe style="width:100%;height:100%;" [src]="datalist | renderUrl" frameborder="0" *ngIf="dropdownObject != ''" id="ReportPanel"></iframe>
+  <ion-img src="./assets/image/nodata.png" style="width:100%;height:100%;" *ngIf="!showMenu && dropdownObject == ''"></ion-img> 
+
+
+  <ion-grid *ngIf="showMenu">
+    <br><br>
+    <ion-row>
+      <ion-col size="4" (click)="getReport('purchase')" style="display: flex;justify-content: center;" *ngIf="purchase">
+        <img src="./assets/image/receipt.png" class="image"/>    
+      </ion-col>
+
+      <ion-col size="4" (click)="getReport('mixing')" style="display: flex;justify-content: center;" *ngIf="mixing">
+        <img src="./assets/image/rgb.png" class="image"/>    
+      </ion-col>
+
+      <ion-col size="4" (click)="getReport('final')" style="display: flex;justify-content: center;" *ngIf="final">
+        <img src="./assets/image/route.png" class="image"/>    
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col size="4" style="text-align: center;" *ngIf="purchase">
+        <h4>Purchase</h4>   
+      </ion-col>
+
+      <ion-col size="4" style="text-align: center;" *ngIf="mixing">
+        <h4>Mixing</h4>    
+      </ion-col>
+
+      <ion-col size="4" style="text-align: center;" *ngIf="final">
+        <h4>Final</h4>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col size="4" (click)="getReport('calendering')" style="display: flex;justify-content: center;" *ngIf="calendering">
+        <img src="./assets/image/paper-roll.png" class="image"/>    
+      </ion-col>
+
+      <ion-col size="4" (click)="getReport('production')" style="display: flex;justify-content: center;" *ngIf="production">
+        <img src="./assets/image/machine-press.png" class="image"/>    
+      </ion-col>
+
+      <ion-col size="4" (click)="getReport('deflashing')" style="display: flex;justify-content: center;" *ngIf="deflashing">
+        <img src="./assets/image/layer.png" class="image"/>    
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col size="4" style="text-align: center;" *ngIf="calendering">
+        <h4>Calendering</h4>   
+      </ion-col>
+
+      <ion-col size="4" style="text-align: center;" *ngIf="production">
+        <h4>Production</h4>    
+      </ion-col>
+
+      <ion-col size="4" style="text-align: center;" *ngIf="deflashing">
+        <h4>Deflashing</h4>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col size="4" (click)="getReport('inspection')" style="display: flex;justify-content: center;" *ngIf="inspection">
+        <img src="./assets/image/statistics.png" class="image"/>    
+      </ion-col>
+
+      <ion-col size="4" (click)="getReport('despatch')" style="display: flex;justify-content: center;" *ngIf="despatch">
+        <img src="./assets/image/delivery.png" class="image"/>    
+      </ion-col>
+
+      <ion-col size="4">
+           
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col size="4" style="text-align: center;" *ngIf="inspection">
+        <h4>Inspection</h4>   
+      </ion-col>
+
+      <ion-col size="4" style="text-align: center;" *ngIf="despatch">
+        <h4>Despatch</h4>    
+      </ion-col>
+
+      <ion-col size="4" style="text-align: center;">
+        
+      </ion-col>
+    </ion-row>
+   
+  </ion-grid>
+
+</ion-content>

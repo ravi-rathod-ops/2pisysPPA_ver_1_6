@@ -1,0 +1,351 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-img src="{{brandImage}}" style="height: 50px;width:50px" slot="start"></ion-img>               
+    <div style="display: flex;justify-content: center;">
+      <img src="./assets/image/machine-press.png" height="25" width="25">
+      <b style="font-size: 20px;">&nbsp;&nbsp;Production Plan</b>
+    </div>
+    <ion-back-button defaultHref="Planhome" slot="end"></ion-back-button>  
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-grid>   
+
+    <ion-row nowrap class="ion-align-items-center">
+      <ion-col size="6">          
+        <ionic-selectable
+              #selectComponent  
+              [(ngModel)]="selected"           
+              [items]="locationArray"
+              itemValueField="value"
+              itemTextField="name"
+              [canSearch]="true"
+              (onChange)="OperatorChanged($event,'location')"
+              searchFailText= "Operator not found"
+              placeholder="Select Location">
+          </ionic-selectable>  
+    </ion-col> 
+    <ion-col size="4">                    
+      <ion-label style="font-size: small;color: grey;">Date </ion-label> 
+      <input type="date" class="selectdddate" [(ngModel)]="postData.didate" id="datefield" (change)="changeData($event)"/>           
+    </ion-col>      
+    
+    </ion-row>
+
+    <ion-row >
+      <ion-col size="6">
+        <!-- <ion-button color="warning" expand="block" (click)="modalDeleteData5 = true;">Clear All</ion-button> -->
+        <ion-button color="light" expand="block" (click)="addRow()">Add Item</ion-button>
+      </ion-col>             
+      <ion-col size="3"><ion-button color="success" expand="block" (click)="validateError()" [disabled]="tableData.length == 0">Create</ion-button></ion-col>             
+      <ion-col size="3"><ion-button color="danger" expand="block" (click)="deleteList()">Delete</ion-button></ion-col>             
+    </ion-row>
+
+    <div class="reports-table" style="position: relative;top:-4%;overflow: auto;">   
+      <ion-grid class="orientation">
+        <ion-row nowrap class="headers">
+          <ion-col size="3" class="single-border" tappable (click)="sort('bind',true)">
+            Comp Ref ({{tableData.length}})
+          </ion-col>       
+          <ion-col size="2" class="single-border" (click)="sort('tool_ref',true)">
+            Tool Ref
+          </ion-col>
+          <ion-col size="1" class="single-border" (click)="sort('no_of_active_cavities',true)">
+            Act. Cavities 
+          </ion-col>
+          <ion-col size="1" class="single-border" (click)="sort('std_lifts_per_plan',true)">
+            Plan. Lifts ({{totalPlanlift}})
+          </ion-col>
+          <ion-col size="1" class="single-border" (click)="sort('expOutput',true)">
+            Exp.Qty ({{totalExpqty}})
+          </ion-col>
+          <ion-col size="1" class="single-border" (click)="sort('numshifts',true)">
+            Shifts ({{totalShift}})
+          </ion-col>
+          <ion-col size="2" class="single-border" (click)="sort('mcid',true)">
+            Machine ({{totalMachine}})
+          </ion-col>
+          <ion-col size="1" class="single-border" style="text-align: center;">             
+            <!-- <ion-icon name="add-circle" style="color:red;font-size: 180%;" (click)="addRow()"></ion-icon>        -->
+          </ion-col>                                
+        </ion-row>
+  
+        <ion-row nowrap class="headers" *ngFor="let x of tableData;index as i">
+          <ion-col size="3" class="single-border" tappable>
+            <ionic-selectable
+                #selectComponent1  
+                [(ngModel)]="x.bind"                        
+                [items]="componentArray"
+                itemValueField="value"
+                [hasVirtualScroll]="true"
+                itemTextField="name"
+                [canSearch]="true"
+                (onChange)="onChangeValue($event,i)"
+                searchFailText= "Component not found"
+                placeholder="Component">
+          </ionic-selectable>        
+          </ion-col>       
+          <ion-col size="2" class="single-border" style="margin-top: 1%;">
+            <!-- <ion-input class="textbox" type="text" (ionChange)="onChangeValue($event,i,x,'di')" [(ngModel)]="x.tool_ref"></ion-input> -->
+            {{x.tool_ref}}
+          </ion-col>
+          <ion-col size="1" class="single-border" style="margin-top: 1%;">            
+            {{x.no_of_active_cavities}}
+          </ion-col>
+          <ion-col size="1" class="single-border">
+            <ion-input class="number" type="number" [(ngModel)]="x.std_lifts_per_plan" (change)="changePlanlifts(x.std_lifts_per_plan,i)" style="border: 1px solid #80808080;border-radius: 8%;"></ion-input>
+          </ion-col>
+          <ion-col size="1" class="single-border" style="margin-top: 1%;">            
+            {{x.expOutput}}
+          </ion-col>
+          <ion-col size="1" class="single-border">
+            <!-- <ionic-selectable
+                #selectComponent2                
+                [items]="shiftArray"
+                itemValueField="value"
+                itemTextField="name"
+                [canSearch]="true"
+                (onChange)="changeshift($event,i)"
+                searchFailText= "Shift not found"
+                placeholder="Select Shift">
+            </ionic-selectable>    -->
+            <select [(ngModel)]="x.numshifts" (change)="changeshift(x.numshifts,i)" style="background: white;border-radius: 3px;border-color: #8080807a;">             
+              <option *ngFor="let s of x.shiftArray" [ngValue]="s">{{s}}</option>
+            </select>
+          </ion-col>
+          <ion-col size="2" class="single-border">
+            <!-- <ionic-selectable
+              #selectComponent3              
+              [items]="machineArray"
+              itemValueField="value"
+              itemTextField="name"
+              [canSearch]="true"
+              (onChange)="changeMachine($event,i)"
+              searchFailText= "Machine not found"
+              placeholder="Select Machine">
+           </ionic-selectable>  -->
+           
+           <span *ngIf="x.machineArray.length == 1">{{x.machineArray[0].name}}</span>
+           <select *ngIf="x.machineArray.length > 1" [(ngModel)]="x.mcid" (change)="changeMachine(x.mcid,i)" style="background: white;border-radius: 3px;border-color: #8080807a;">
+            <option *ngFor="let y of x.machineArray;" value="{{y.value}}">{{y.name}}</option>          
+          </select>
+
+          </ion-col>
+          <ion-col size="1" class="single-border" style="text-align: center;">
+            <ion-icon name="trash-outline" style="color:red" (click)="deleteItem(i)"></ion-icon>          
+          </ion-col>                                
+        </ion-row>
+  
+      </ion-grid>
+    </div>
+
+
+    <div class="modal-content" *ngIf="modalDeleteData">
+      <div class="modal-header">        
+        Stock Level List
+      </div>
+      <div class="modal-body">
+        
+        <ion-grid style="width:100%;">
+          <ion-row nowrap class="headers">
+            <ion-col size="12" style="text-align: center;font-size: larger;">
+              {{stockName}} 
+            </ion-col>                                   
+          </ion-row>
+
+          <ion-row nowrap class="headers">
+            <ion-col size="9" class="single-border">
+              Item Qty.
+            </ion-col>       
+            <ion-col size="3" class="single-border" style="text-align: center;">
+              Quantity
+            </ion-col>           
+          </ion-row>
+          
+
+          <ion-row nowrap class="headers">
+            <ion-col size="9" class="single-border" tappable>Cus. Schedule </ion-col>       
+            <ion-col size="3" class="single-border" style="text-align: end;">{{modalObj.cussch}}</ion-col>           
+          </ion-row>
+
+          <ion-row nowrap class="headers">
+            <ion-col size="9" class="single-border" tappable>Prod. Schedule</ion-col>       
+            <ion-col size="3" class="single-border" style="text-align: end;">{{modalObj.prodsch}}</ion-col>           
+          </ion-row>
+
+          <ion-row nowrap class="headers">
+            <ion-col size="9" class="single-border" tappable>Despatched</ion-col>       
+            <ion-col size="3" class="single-border" style="text-align: end;">{{modalObj.despatched}}</ion-col>           
+          </ion-row>
+
+          <ion-row nowrap class="headers">
+            <ion-col size="9" class="single-border" tappable>Balance Plan</ion-col>       
+            <ion-col size="3" class="single-border" style="text-align: end;">{{modalObj.awtplan}}</ion-col>           
+          </ion-row>
+
+          <ion-row nowrap class="headers">
+            <ion-col size="9" class="single-border" tappable>Pend. Cpd. Issue </ion-col>       
+            <ion-col size="3" class="single-border" style="text-align: end;">{{modalObj.awtcpdiss}}</ion-col>           
+          </ion-row>
+
+          <ion-row nowrap class="headers">
+            <ion-col size="9" class="single-border" tappable>Pend. Mould. Reciept</ion-col>       
+            <ion-col size="3" class="single-border" style="text-align: end;">{{modalObj.awtmldrec}}</ion-col>           
+          </ion-row>
+
+          <ion-row nowrap class="headers">
+            <ion-col size="9" class="single-border" tappable>Pend. Trim. Issue </ion-col>       
+            <ion-col size="3" class="single-border" style="text-align: end;">{{modalObj.awtdefiss}}</ion-col>           
+          </ion-row>
+
+          <ion-row nowrap class="headers">
+            <ion-col size="9" class="single-border" tappable>Pend. Trim. Receipt </ion-col>       
+            <ion-col size="3" class="single-border" style="text-align: end;">{{modalObj.awtdefrec}}</ion-col>           
+          </ion-row>
+
+          <ion-row nowrap class="headers">
+            <ion-col size="9" class="single-border" tappable>Pend. Quality </ion-col>       
+            <ion-col size="3" class="single-border" style="text-align: end;">{{modalObj.awtqualrec}}</ion-col>           
+          </ion-row>
+
+          <ion-row nowrap class="headers">
+            <ion-col size="9" class="single-border" tappable>Stores Stock</ion-col>       
+            <ion-col size="3" class="single-border" style="text-align: end;">{{modalObj.stock}}</ion-col>           
+          </ion-row>
+         
+          <ion-row nowrap class="headers">
+            <ion-col size="9" class="single-border" tappable>Total WIP</ion-col>       
+            <ion-col size="3" class="single-border" style="text-align: end;">{{modalObj.totavail}}</ion-col>           
+          </ion-row>
+        
+    
+        </ion-grid>
+
+      </div>
+      <div class="modal-footer">        
+        <ion-button color="danger" expand="block" (click)="modalDeleteData=!modalDeleteData;">Close</ion-button>   
+      </div>
+    </div>
+
+
+    <div class="modal-content2" *ngIf="modalDeleteData2">
+      <div class="modal-header">
+        <!-- <span class="close" (click)="modalDeleteData2=!modalDeleteData2;this.tableData=[];">&times;</span> -->
+        Delete
+      </div>
+      <div class="modal-body" style="text-align: center;">
+        <br>
+        Are You Sure Want to Delete : <span>{{currentItem.planid}} ?</span>
+        <br>
+        <br>
+      </div>
+      <div class="modal-footer" style="float: right;">
+        <ion-button color="danger" size="small" (click)="deleteDeflashing()">Yes</ion-button>
+        <ion-button color="secondary" size="small" (click)="modalDeleteData2=!modalDeleteData2;">No</ion-button>   
+      </div>
+    </div>
+
+    <div class="modal-content2" *ngIf="modalDeleteData4">
+      <div class="modal-header">
+        <!-- <span class="close" (click)="modalDeleteData2=!modalDeleteData2;this.tableData=[];">&times;</span> -->
+        Production Plan
+      </div>
+      <div class="modal-body" style="text-align: center;">
+        <br>
+        Are You Sure Want to Create ?
+        <br>
+        <br>
+      </div>
+      <div class="modal-footer" style="float: right;">
+        <ion-button color="danger" size="small" (click)="submitData()">Yes</ion-button>
+        <ion-button color="secondary" size="small" (click)="modalDeleteData4=!modalDeleteData4;">No</ion-button>   
+      </div>
+    </div>
+
+    <div class="modal-content2" *ngIf="modalDeleteData5">
+      <div class="modal-header">
+        <!-- <span class="close" (click)="modalDeleteData2=!modalDeleteData2;this.tableData=[];">&times;</span> -->
+        Clear All
+      </div>
+      <div class="modal-body" style="text-align: center;">
+        <br>
+        Are You Sure Want to clear all Items ?
+        <br>
+        <br>
+      </div>
+      <div class="modal-footer" style="float: right;">
+        <ion-button color="danger" size="small" (click)="clearAll()">Yes</ion-button>
+        <ion-button color="secondary" size="small" (click)="modalDeleteData5=!modalDeleteData5;">No</ion-button>   
+      </div>
+    </div>
+
+      <!-- Modal content -->
+    <div class="modal-content" *ngIf="modalDeleteData3">
+      <div class="modal-header">
+        <span class="close" (click)="modalDeleteData3=!modalDeleteData3">&times;</span>
+        <p style="margin: 8px 5px;">Production Plan List</p>
+        <!-- <ion-grid>
+          <ion-row>        
+            <ion-col size="7"> <p style="margin: 8px 5px;">Production Plan List</p> </ion-col>
+            <ion-col size="4">          
+              <ionic-selectable
+                    #selectComponent  
+                    [(ngModel)]="selected"           
+                    [items]="locationArray"
+                    itemValueField="value"
+                    itemTextField="name"
+                    [canSearch]="true"
+                    (onChange)="OperatorChanged2($event)"
+                    searchFailText= "Operator not found"
+                    placeholder="Select Location">
+                </ionic-selectable>  
+          </ion-col>       
+            <ion-col size="1"><span class="close" (click)="modalDeleteData3=!modalDeleteData3">&times;</span> </ion-col>
+          </ion-row>
+        </ion-grid>           -->
+      </div>
+      <div class="modal-body">
+        <ion-grid>
+          <ion-row nowrap class="headers">
+            <ion-col size="2" class="single-border" (click)="sort2('dispplanid',false)">
+              Plan ID ({{deleteData.length}})
+            </ion-col>
+            <ion-col size="2" class="single-border" (click)="sort2('plandate',false)">
+              Plan Date
+            </ion-col>
+            <ion-col size="3" class="single-border" (click)="sort2('cmpdname',false)">
+              Name
+            </ion-col>                               
+            <ion-col size="2" class="single-border" (click)="sort2('liftplanned',false)">
+              Plan. Lifts
+            </ion-col>   
+            <ion-col size="2" class="single-border" (click)="sort2('cpdretqty',false)">
+              Ret. Cpd. Qty(kg)
+            </ion-col>         
+            <ion-col size="1" class="single-border">
+              <!-- Action -->
+            </ion-col>
+          </ion-row>
+          <div style="height: 60vh; overflow: scroll;">
+            <ion-row nowrap class="content" *ngFor="let x of deleteData">
+              <ion-col size="2"> {{ x.dispplanid }}</ion-col>
+              <ion-col size="2"> {{ x.plandate }} </ion-col>
+              <ion-col size="3"> {{ x.cmpdname }} </ion-col>
+              <ion-col size="2"> {{ x.liftplanned }} </ion-col>                           
+              <ion-col size="2"> {{ x.cpdretqty }} </ion-col>        
+              <ion-col size="1"> <ion-icon name="trash-outline" (click)="callDeflashing(x)" style="color:red"></ion-icon></ion-col>
+            </ion-row>
+
+            <ion-row *ngIf="deleteData.length == 0">
+              <ion-col size="6" offset="4"> No Records Found</ion-col>
+            </ion-row>
+          </div>
+        </ion-grid>
+      </div>
+    </div>
+
+  </ion-grid>
+
+</ion-content>

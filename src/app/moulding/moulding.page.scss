@@ -1,0 +1,45 @@
+#grid {
+  margin: 4%;
+}
+
+.avatar {
+  height: 50px;
+  width: 50px;
+}
+
+.appfont {
+  font-size: 17px;
+}
+
+.inputStyle {
+  text-align: right;
+  color: grey;
+}
+
+.labelStyle {
+  float: right;
+  margin-right: 10%;
+}
+
+.label {
+  color: grey;
+}
+
+.password {
+  -webkit-text-security: disc;
+}
+
+.inputStyle {
+  font-size: 21px;
+}
+
+@media print {
+  #header {
+    display: none;
+  }
+}
+
+.image{
+  // height: 200px;
+  width: 80px;
+}

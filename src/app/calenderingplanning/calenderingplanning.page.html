@@ -1,0 +1,191 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-img src="{{brandImage}}" style="height: 50px;width:50px" slot="start"></ion-img>               
+    <div style="display: flex;justify-content: center;">
+      <img src="./assets/image/paper-roll.png" height="25" width="25">
+      <b style="font-size: 20px;">&nbsp;&nbsp;Calendering Plan</b>
+    </div>
+    <ion-back-button defaultHref="Planhome" slot="end"></ion-back-button>  
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="inventory-content">
+
+  <ion-grid>
+    <ion-row nowrap class="ion-align-items-center">
+      <ion-col size="6">       
+        <ion-input (keyup)="applyFilter($event.target.value)" placeholder="Search" [(ngModel)]="searchData"><ion-icon name="search"></ion-icon></ion-input>
+      </ion-col>      
+      <ion-col size="3"><ion-button color="success" size="small" (click)="callPlan()">Create</ion-button></ion-col>
+      <ion-col size="3"><ion-button color="danger" size="small" (click)="deleteList()" style="margin-left: 20%;">Delete</ion-button></ion-col>
+  </ion-row>
+  </ion-grid>
+  <br>
+  <div class="reports-table" style="position: relative;top:-4%">
+   
+    <ion-grid>
+      <ion-row nowrap class="headers">
+        <ion-col size="3" class="single-border" tappable (click)="sort('rollname',true)">
+          Name ({{tableData.length}})
+        </ion-col>
+        <ion-col size="2" class="single-border" (click)="sort('rollminstock',true)">
+          MStk.m
+         </ion-col>    
+        <ion-col size="3" class="single-border" (click)="sort('rolltotstock',true)" style="text-align:center">
+          IStk.m
+        </ion-col>
+        <ion-col size="2" class="single-border" (click)="sort('planqty',true)" style="text-align:center">
+          PlanQty.m ({{totalPlanQtyM}})
+        </ion-col>
+        <ion-col size="2" class="single-border" style="text-align:center" (click)="sort('planqtyKg',true)">
+          PlanQty.kg ({{totalPlanQtyKG.toFixed(1)}})
+        </ion-col>               
+                 
+      </ion-row>
+      <div style="height: 75vh; overflow: scroll;">
+        <ion-row nowrap class="content" *ngFor="let x of tableData;index as i">
+          <ion-col size="3"> {{ x.rollname }}</ion-col>
+          <ion-col size="2" style="text-align: center;font-size: medium;"> {{x.rollminstock}} </ion-col>    
+          <ion-col size="3" style="text-align: center;font-size: medium;"> {{x.rolltotstock}}</ion-col>
+          <ion-col size="2"> <ion-input class="textbox" type="number" style="height: 25px;font-size: medium;" (click)="prefill(i,x,$event,'rolllength')" (focusout)="blured(i,x,$event,'rolllength')" (ionChange)="onChangeValue($event,i,x,'rolllength')" value={{x.planqty}}></ion-input></ion-col>  
+          <ion-col size="2" style="text-align: end;font-size: medium;"> {{x.planqtyKg}}</ion-col>                       
+        </ion-row>
+        <ion-row *ngIf="tableData.length == 0">
+          <ion-col size="6" offset="4"> No Records Found</ion-col>
+        </ion-row>
+      </div>
+
+    </ion-grid>
+  </div>
+
+  <!-- Modal content -->
+<div class="modal-content" *ngIf="modalDeleteData">
+  <div class="modal-header">
+    <ion-grid>
+      <ion-row>        
+        <ion-col size="6"> <p style="margin: 8px 5px;">Calendaring Plan</p> </ion-col>
+        <ion-col size="5"> </ion-col>        
+        <ion-col size="1"><span class="close" (click)="modalDeleteData=!modalDeleteData">&times;</span> </ion-col>
+      </ion-row>
+    </ion-grid>          
+  </div>
+  <div class="modal-body">
+    <ion-grid>
+      <ion-row nowrap class="headers">
+        <ion-col size="2" class="single-border" (click)="sort2('dispplanid',true)">
+          Plan ID ({{deleteData.length}})
+        </ion-col>
+        <ion-col size="2" class="single-border" (click)="sort2('plandate',true)">
+          Plan Date
+        </ion-col>
+        <ion-col size="2" class="single-border" (click)="sort2('rollname',true)">
+          Roll Name
+        </ion-col>            
+        <ion-col size="1" class="single-border" (click)="sort2('planqty',true)">
+          Plan Qty(m)
+         </ion-col>     
+         <!-- <ion-col size="1" class="single-border">
+          Exp. Wgt(kg)
+         </ion-col>       -->
+         <ion-col size="2" class="single-border" (click)="sort2('rollcpdname',true)">
+          Compound
+         </ion-col>   
+         <ion-col size="2" class="single-border" (click)="sort2('cpdretqty',true)">
+          Adv. Ret.Qty(kg)
+         </ion-col>         
+        <ion-col size="1" class="single-border">
+          <!-- Action -->
+        </ion-col>
+      </ion-row>
+      <div style="height: 55vh; overflow: scroll;">
+        <ion-row nowrap class="content" *ngFor="let x of deleteData">
+          <ion-col size="2"> {{ x.dispplanid }}</ion-col>
+          <ion-col size="2"> {{ x.plandate }} </ion-col>
+          <ion-col size="2"> {{ x.rollname }} </ion-col>
+          <ion-col size="1"> {{ x.planqty }} </ion-col>        
+          <!-- <ion-col size="1"> {{ x.planqty }} </ion-col>         -->
+          <ion-col size="2"> {{ x.rollcpdname }} </ion-col>  
+          <ion-col size="2"> {{ x.cpdretqty }} </ion-col>        
+          <ion-col size="1"> <ion-icon name="trash-outline" (click)="callDeflashing(x)" style="color:red"></ion-icon></ion-col>
+        </ion-row>
+
+        <ion-row *ngIf="deleteData.length == 0">
+          <ion-col size="6" offset="4"> No Records Found</ion-col>
+        </ion-row>
+      </div>
+    </ion-grid>
+  </div>
+</div>
+
+
+<div class="modal-content2" *ngIf="modalDeleteData2">
+  <div class="modal-header" style="padding: 2%;">
+    <!-- <span class="close" (click)="modalDeleteData2=!modalDeleteData2">&times;</span> -->
+    Delete List
+  </div>
+  <div class="modal-body" style="text-align: center;">
+    <br>
+    Are You Sure Want to Delete?
+    <br>
+    <br>
+  </div>
+  <div class="modal-footer" style="float: right;">
+    <ion-button color="success" size="small" (click)="deleteDeflashing()">Ok</ion-button>
+    <ion-button color="danger" size="small" (click)="modalDeleteData2=!modalDeleteData2">Cancel</ion-button>   
+  </div>
+</div>
+
+
+<div class="modal-content3" *ngIf="modalDeleteData3">
+  <div class="modal-header" style="padding: 2%;">
+    <!-- <span class="close" (click)="modalDeleteData3=!modalDeleteData3">&times;</span> -->
+    Calendaring Plan
+  </div>
+  <div class="modal-body" style="text-align: center;">
+    <ion-row nowrap class="ion-align-items-center">
+      <ion-col size="5">  
+          <ion-label style="font-size: small;color: grey;">Shift</ion-label>            
+          <ionic-selectable
+                #selectComponent1
+                [(ngModel)]="selectedShift"
+                [items]="shiftArray"
+                itemValueField="value"
+                itemTextField="name"
+                [canSearch]="true"
+                (onChange)="ShiftChanged($event)"
+                searchFailText= "Shift not found"
+                placeholder="Select Shift">
+          </ionic-selectable>        
+      </ion-col>
+      <!-- <ion-col size="4">
+          <ion-label style="font-size: small;color: grey;">Location</ion-label>               
+          <ionic-selectable
+                #selectComponent
+                [(ngModel)]="selected"
+                [items]="locationArray"
+                itemValueField="value"
+                itemTextField="name"
+                [canSearch]="true"
+                (onChange)="OperatorChanged($event)"
+                searchFailText= "Operator not found"
+                placeholder="Select Location">
+            </ionic-selectable>        
+      </ion-col> -->
+      <ion-col size="7">              
+        <ion-col>
+          <ion-label style="font-size: small;color: grey;">Date : </ion-label> 
+          <input type="date" class="selectdddate" [(ngModel)]="postData.plandate" id="datefield"/>
+        </ion-col>      
+      </ion-col>
+    </ion-row>
+    <ion-row>
+        <ion-col size="12">Are You Sure to Create the Plan?</ion-col>
+    </ion-row>
+  </div> 
+  <div class="modal-footer" style="float: right;">
+    <ion-button color="success" size="small" (click)="submitData()">Ok</ion-button>
+    <ion-button color="danger" size="small" (click)="modalDeleteData3=!modalDeleteData3">Cancel</ion-button>   
+  </div>
+</div>
+
+</ion-content>

@@ -1,0 +1,77 @@
+<ion-header>
+  <ion-toolbar>       
+        <ion-img src="{{brandImage}}" style="height: 50px;width:50px" slot="start"></ion-img>       
+        <div style="display: flex;justify-content: center;">
+        <img src="./assets/image/statistics.png" height="25" width="25">
+        <b style="font-size: 20px;">&nbsp;&nbsp;Inspection Plan</b>
+        </div>
+        <ion-back-button defaultHref="Planhome" slot="end"></ion-back-button>   
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="inventory-content">
+  <div class="reports-table">    
+    <ion-grid>
+      <ion-row nowrap class="ion-align-items-center">      
+      <ion-col size="10">
+        <!-- <label>Select Date:</label><input type="date" [(ngModel)]="currentDate" (click)="selectDate($event)" (focusout)="selectDate($event)" id="datePicker"> -->
+        <ion-input (keyup)="applyFilter($event.target.value)" placeholder="Search" [(ngModel)]="searchData"></ion-input>
+      </ion-col>
+      <ion-col size="2"><ion-button color="secondary" size="small" (click)="modalDeleteData3=true">Issue</ion-button></ion-col>
+    </ion-row>
+    </ion-grid>
+
+    
+
+    <ion-grid>
+      <ion-row nowrap class="headers">
+        <ion-col size="3" class="single-border" (click)="sort('issref',true)">
+          Key Ref. ({{tableData.length}})
+        </ion-col>
+        <ion-col size="3" class="single-border" (click)="sort('cmpdrefno',true)">
+          Part No
+        </ion-col>
+        <ion-col size="3" class="single-border" (click)="sort('cmpdname',true)">
+          Part Desc.
+        </ion-col>
+        <ion-col size="2" class="single-border" (click)="sort('avlqty',true)">
+          Rec. Qty ({{totalreceivedqty.toFixed(1)}})
+        </ion-col>
+        <ion-col size="1" class="single-border">
+          ({{dataArray.length}})
+        </ion-col>
+      </ion-row>
+
+      <ion-row nowrap class="content" *ngFor="let x of tableData;;let i=index">
+        <ion-col size="3"> {{ x.issref }} </ion-col>
+        <ion-col size="3"> {{ x.cmpdname}} </ion-col>
+        <ion-col size="3"> {{ x.cmpdrefno }} </ion-col>
+        <ion-col size="2" style="font-size: medium;"> {{ x.avlqty }} </ion-col>
+        <ion-col size="1"> <ion-checkbox color="primary" (ionChange)="selectRecord(x,$event,i)" [checked]="x.check"> </ion-checkbox> </ion-col>
+      </ion-row>
+
+      <ion-row *ngIf="tableData.length == 0">
+        <ion-col size="6" offset="4"> No Records Found</ion-col>
+      </ion-row>
+
+    </ion-grid>
+  </div>
+
+  <div class="modal-content2" *ngIf="modalDeleteData3">
+    <div class="modal-header">
+      <span class="close" (click)="modalDeleteData3=!modalDeleteData3">&times;</span>
+      <p style="margin: 8px 5px;">Inspection Plan</p>
+    </div>
+    <div class="modal-body" style="text-align: center;">
+      <br>
+      Are You Sure Want to Issue?
+      <br>
+      <br>
+    </div>
+    <div class="modal-footer" style="float: right;">
+      <ion-button color="success" size="small" (click)="submitData()">Yes</ion-button>
+      <ion-button color="danger" size="small" (click)="modalDeleteData3=!modalDeleteData3">No</ion-button>   
+    </div>
+  </div>
+  
+</ion-content>

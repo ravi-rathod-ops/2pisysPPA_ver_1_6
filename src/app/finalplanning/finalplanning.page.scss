@@ -1,0 +1,137 @@
+.reports-table {
+    overflow-x: auto;
+  }
+  
+  .inventory-content {
+    background-color: #f0f1f2;
+  }
+  
+  .headers {
+    color: #454f63;
+    font-family: "Open Sans";
+    font-weight: bold;
+    font-size: 15px;
+    margin-top: 0px;
+    word-wrap: break-word;
+  }
+  
+  .border,
+  .single-border {
+    border-bottom: 2px solid #989898;
+  
+  }
+  
+  .single-border {
+    padding-top: 12px;
+  
+  }
+  
+  .content {
+    color: #454f63;
+    font-family: "Open Sans";
+    font-size: 12px;
+  }
+  
+  
+  #datePicker{
+    background: white;
+    border: 1px solid #0000001f;
+  }
+  
+  /* Modal Header */
+  .modal-header {
+  // padding: 1px 15px;
+  background-color: #00709c;
+  color: white;
+  }
+  
+  
+  /* Modal Footer */
+  .modal-footer {
+  padding: 2px 16px;
+  // background-color: #5cb85c;
+  color: white;
+  }
+  
+  /* Modal Content */
+  .modal-content {
+  z-index: 2;
+    position: absolute;
+    background-color: #fefefe;
+    margin: auto;
+    padding: 0;
+    width: 98%;
+    box-shadow: 0 4px 8px 0 rgb(0 0 0 / 20%), 0 6px 20px 0 rgb(0 0 0 / 19%);
+    animation-name: animatetop;
+    animation-duration: 0.4s;
+    top: 3%;
+    margin-left: 1%;
+  }
+  
+  .modal-content2 {
+    z-index: 6;
+    position: absolute;
+    background-color: #fefefe;
+    margin: auto;
+    padding: 0;
+    width: 84%;
+    box-shadow: 0 4px 8px 0 rgb(0 0 0 / 20%), 0 6px 20px 0 rgb(0 0 0 / 19%);
+    animation-name: animatetop;
+    animation-duration: 0.4s;
+    top: 30%;
+    margin-left: 7%;
+  }
+  
+  /* The Close Button */
+  .close {
+  color: white;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  }
+  
+  /* Add Animation */
+  @keyframes animatetop {
+  from {top: -300px; opacity: 0}
+  to {top: 0; opacity: 1}
+  }
+  
+  
+  .selectdddate {
+    background: #c5c1c1;
+    border: 0;  
+    color: #4a4646;
+    box-shadow: 0px 0px 1px grey;
+    padding: 4px;
+    border-radius: 3px;
+  }
+  
+  .selectdd{
+    background: white;
+    border: 0;
+    color: black;
+    border-bottom: 1px solid grey;
+    position: absolute;
+    top: 24%;
+    left: -2%;
+  }
+  
+  .modal-content3 {
+    z-index: 10;
+    position: absolute;
+    background-color: #fefefe;
+    margin: auto;
+    padding: 0;
+    width: 96%;
+    box-shadow: 0 4px 8px 0 rgb(0 0 0 / 20%), 0 6px 20px 0 rgb(0 0 0 / 19%);
+    animation-name: animatetop;
+    animation-duration: 0.4s;
+    top: 30%;
+    margin-left: 2%;
+  }
+  
+  .textbox{
+    box-shadow: 0px 0px 2px grey;
+    border-radius: 3px;
+    text-align: end;
+  }

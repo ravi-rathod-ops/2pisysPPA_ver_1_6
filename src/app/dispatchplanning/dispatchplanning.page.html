@@ -1,0 +1,137 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-img src="{{brandImage}}" style="height: 50px;width:50px" slot="start"></ion-img>               
+    <div style="display: flex;justify-content: center;">
+      <img src="./assets/image/delivery.png" height="25" width="25">
+      <b style="font-size: 20px;">&nbsp;&nbsp;Despatch Plan</b>
+    </div>
+    <ion-back-button defaultHref="Planhome" slot="end"></ion-back-button>  
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="inventory-content">
+
+  
+<div  *ngIf="type">
+  <br>
+  <ion-row>    
+    <ion-col size="4" style="text-align: center;">                     
+      <ion-label style="font-size: larger;color: grey;">Schedule</ion-label>          
+    </ion-col>
+    <ion-col size="2">                            
+      <input type="radio"  (change)="onChangeValue($event,'','','Schedule')" name="check" style="transform: scale(1.4);">       
+    </ion-col>
+    <ion-col size="4" style="text-align: center;">                    
+      <ion-label style="font-size: larger;color: grey;">Sales Order</ion-label>            
+    </ion-col>
+    <ion-col size="2">                           
+      <input type="radio" (change)="onChangeValue($event,'','','Sales')" name="check" style="transform: scale(1.4);">     
+    </ion-col>
+  </ion-row>
+</div>
+
+  <ion-grid *ngIf="!type">   
+
+    <ion-row nowrap class="ion-align-items-center">
+      <ion-col size="6">  
+        <!-- <ion-label style="font-size: small;color: grey;">Customer</ion-label>             -->
+        <ionic-selectable
+              #selectComponent
+              [(ngModel)]="selectedCustomer"
+              [items]="customerArray"
+              itemValueField="value"
+              itemTextField="name"
+              [canSearch]="true"
+              (onChange)="CustomerChanged($event)"
+              searchFailText= "Customer not found"
+              placeholder="Customer">
+        </ionic-selectable>        
+    </ion-col> 
+    <ion-col size="6">              
+      <ion-col>
+        <ion-label style="font-size: small;color: grey;">Cutoff Date</ion-label> 
+        <input type="date" class="selectdddate" [(ngModel)]="postData.didate" id="datefield"/>
+      </ion-col>      
+    </ion-col>              
+    </ion-row>
+
+    <ion-row>
+      <ion-col size="6">
+        <!-- <ion-label position="stacked" class="label">File Upload</ion-label> -->
+        <!-- <ion-input type="file" name="file" (change)="filesel($event)" style="font-size: 70%;" #myInput></ion-input>   -->
+        <ion-button color="danger" size="small" (click)="pickfile()">Choose CSV File</ion-button>
+    </ion-col>    
+      <ion-col size="3"><ion-button color="primary" size="small" >Upload</ion-button></ion-col>
+      <ion-col size="3"><ion-button color="success" size="small" (click)="submitData()">Create</ion-button></ion-col>
+    </ion-row>
+
+    <div class="reports-table" style="position: relative;top:-4%">   
+      <ion-grid>
+        <ion-row nowrap class="headers">
+          <ion-col size="5" class="single-border" tappable>
+            Part Number ({{tableData.length}})
+          </ion-col>       
+          <ion-col size="3" class="single-border" (click)="sort('didesc',true)">
+            DI No.
+          </ion-col>
+          <ion-col size="2" class="single-border" (click)="sort('diqty',true)">
+            Qty
+          </ion-col>
+          <ion-col size="2" class="single-border" style="text-align: center;">  
+            <!-- <ion-button color="danger" size="small" (click)="addRow()">Add Row</ion-button>   -->
+            <ion-icon name="add-circle" style="color:red;font-size: 180%;" (click)="addRow()"></ion-icon>       
+          </ion-col>                                
+        </ion-row>
+  
+        <ion-row nowrap class="headers" *ngFor="let x of tableData;index as i">
+          <ion-col size="5" class="single-border" tappable>
+            <ionic-selectable
+                #selectComponent1                
+                [items]="componentArray"
+                itemValueField="value"
+                itemTextField="name"
+                [canSearch]="true"
+                (onChange)="onChangeValue($event,i,x,'component')"
+                searchFailText= "Component not found"
+                placeholder="Component"                
+                >
+          </ionic-selectable>        
+          </ion-col>       
+          <ion-col size="3" class="single-border">
+            <ion-input class="textbox" type="text" (ionChange)="onChangeValue($event,i,x,'di')" [(ngModel)]="x.didesc" [disabled]="setDisabled" style="height:25px;font-size: medium;"></ion-input>
+          </ion-col>
+          <ion-col size="2" class="single-border">
+            <ion-input class="textbox" type="number" (ionChange)="onChangeValue($event,i,x,'qty')" [(ngModel)]="x.diqty" (keyup)="onKeyup($event,x.diqty,i)" style="height:25px;font-size: medium;"></ion-input>
+          </ion-col>
+          <ion-col size="2" class="single-border" style="text-align: center;">
+            <ion-icon name="trash-outline" style="color:red" (click)="deleteItem(i)"></ion-icon>          
+          </ion-col>                                
+        </ion-row>
+  
+      </ion-grid>
+    </div>
+
+
+    <div class="modal-content2" *ngIf="modalDeleteData2">
+      <div class="modal-header">
+        <!-- <span class="close" (click)="modalDeleteData2=!modalDeleteData2;this.tableData=[];">&times;</span> -->
+        Upload
+      </div>
+      <div class="modal-body" style="text-align: center;">
+        <br>
+        Are You Sure Want to Upload?
+        <br>
+        <br>
+      </div>
+      <div class="modal-footer" style="float: right;">
+        <ion-button color="success" size="small" (click)="submitData()">Upload</ion-button>
+        <ion-button color="secondary" size="small" (click)="modalDeleteData2=!modalDeleteData2; this.tableData=[];">Cancel</ion-button>   
+      </div>
+    </div>
+
+  </ion-grid>
+
+ 
+
+
+</ion-content>

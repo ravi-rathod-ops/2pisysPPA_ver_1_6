@@ -1,0 +1,261 @@
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { LoadingController } from '@ionic/angular';
+import { ToastController } from '@ionic/angular';
+import { Router } from '@angular/router';
+import {  IonInput } from '@ionic/angular';
+
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
+
+
+import { InAppBrowser, InAppBrowserOptions } from '@ionic-native/in-app-browser/ngx';
+import { Printer,PrintOptions } from '@ionic-native/printer/ngx/index';
+
+
+import {  IonicSelectableComponent } from 'ionic-selectable';
+import { Socket,SocketIoConfig  } from 'ngx-socket-io';
+
+import { BarcodeScanner } from '@ionic-native/barcode-scanner';
+
+// import * as FileSaver from 'file-saver';
+// import * as XLSX from 'xlsx';
+
+// const EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
+// const EXCEL_EXTENSION = '.xlsx';
+
+
+import { File } from '@ionic-native/file/ngx';
+import { FileTransfer, FileTransferObject } from '@ionic-native/file-transfer/ngx';
+
+// import { Browser } from '@capacitor/browser';
+
+@Component({
+  selector: 'app-moulding',
+  templateUrl: './moulding.page.html',
+  styleUrls: ['./moulding.page.scss'],
+})
+export class MouldingPage implements OnInit {
+
+  datapass: any={};
+  datapassTemp=[];
+  dataUrl=localStorage.getItem('url');
+  registerForm: FormGroup;
+  brandImage="";
+  datalist;
+  showprinter=false;
+  dropdownObject="";
+  selected = [];
+  socketIp='';
+  showMenu=true;
+  category=[];
+
+  purchase=false;
+  production=false;
+  despatch=false;
+  mixing=false;
+  deflashing=false;
+  inspection=false;
+  calendering=false;
+  final=false;
+  currentReport="";
+  pageUrl="";
+
+  @ViewChild('selectComponent') selectComponent: IonicSelectableComponent;
+  
+
+  constructor(public inappbrowser:InAppBrowser,private printer: Printer,private http: HttpClient,public loadingController: LoadingController,private screenOrientation: ScreenOrientation,public toastController: ToastController,private router: Router,
+    private formBuilder: FormBuilder,private socket: Socket,private file: File, private transfer: FileTransfer) { 
+
+    if(localStorage.getItem('userid') == null && localStorage.getItem('password') == null)
+    {
+      this.router.navigate(["home"]);   
+    }
+    this.checkStorage();
+    this.socketIp=localStorage.getItem("IPAddr");
+  }
+
+  @ViewChild('inputId', {  static: false })  inputElement: IonInput;
+
+  ngOnInit() {
+    this.brandImage=localStorage.getItem('brandImage');
+    this.scan();
+    this.socket.connect();
+    this.registerForm = this.formBuilder.group({
+      actlift: ['', Validators.required],
+      pin: ['', Validators.required]
+  });
+  }
+   // convenience getter for easy access to form fields
+   get f() { return this.registerForm.controls; }
+
+  async scan() {
+    const loading = await this.loadingController.create({
+      cssClass: 'my-custom-class',
+      message: 'Please wait...',
+      spinner:'dots'
+    });
+    
+    const headers = { 
+      'auth-id': localStorage.getItem('authid'),
+      'client-id': localStorage.getItem('clientid'),
+      'user': localStorage.getItem('userid'),
+      'password':localStorage.getItem('password') }
+
+  // this.dataUrl+"/api/reportlinks/"+localStorage.getItem('userid')
+
+    this.http.get<any>(this.dataUrl+"/api/reportlinks",{headers}).subscribe({
+      next: async data => {
+        this.datapass=data;
+        this.datapassTemp=data;
+        loading.dismiss();
+        
+        this.datapass.message.filter((x,index)=>{
+          x.group === "purchase" ? this.purchase = true : null;
+          x.group === "production" ? this.production = true : null;
+          x.group === "despatch" ? this.despatch = true : null;
+          x.group === "mixing" ? this.mixing = true : null;
+          x.group === "deflashing" ? this.deflashing = true : null;
+          x.group === "inspection" ? this.inspection = true : null;
+          x.group === "calendering" ? this.calendering = true : null;
+          x.group === "final" ? this.final = true : null;
+        })
+        // this.category=this.category.filter((item,index)=> {
+
+        //   item == "purchase" ? this.purchase = true : this.purchase =false;
+        //   item === "production" ? this.production = true : this.production =false;
+        //   item === "despatch" ? this.despatch = true : this.despatch =false;
+        //   item === "mixing" ? this.mixing = true : this.mixing =false;
+        //   item === "deflashing" ? this.deflashing = true : this.deflashing =false;
+        //   item === "inspection" ? this.inspection = true : this.inspection =false;
+        //   item === "calendering" ? this.calendering = true : this.calendering =false;
+        //   item === "final" ? this.final = true : this.final =false;
+        // })
+        
+      },
+      error: errordata => {
+        if(errordata.error.message){
+          loading.dismiss();         
+          this.toastfunction(errordata.error.message,"danger");  
+          }
+          else{
+            this.toastfunction("Invalid Company Url, Please Check in Home page","danger");
+          }
+      }
+    });
+  }
+
+  print() { this.printer.print(); }
+
+  onClickMe(obj) {
+    this.router.navigate([obj]);
+  }
+
+  getReport(page){
+      let arr=this.datapass;
+      arr=this.datapass.message.filter((x)=>{
+        return x.group == page;
+      })
+     this.datapassTemp=arr;
+     arr.length > 0 ?  this.showMenu=false : this.toastfunction("No Reports Found","danger");
+  }
+
+  checkStorage() {
+    const storage = parseInt(localStorage.getItem("your-data-key"));
+    let date = new Date();
+    const currentDate = date.setDate(date.getDate()); // Current date in milliseconds
+    if (currentDate >= storage) {      
+      localStorage.removeItem("your-data-key");
+      localStorage.removeItem("userid");
+      localStorage.removeItem("password"); 
+      this.router.navigate(["home"]);      
+    }
+  }
+
+  ReportChanged(event: {component: IonicSelectableComponent,value: any})
+  {
+    this.dropdownObject=event.value == "Select" ? "": event.value;  
+    let url=event.value.link;
+    url=url.replace("&amp;", "&");  
+    this.datalist=event.value.link;
+    event.value.print == "1" ? this.showprinter = true : this.showprinter =false; 
+    event.value.credentials == "1" ? 
+    this.datalist=url+"?user="+localStorage.getItem('userid')+"&pass="+localStorage.getItem('password') : this.datalist=url; 
+    this.pageUrl=event.value.link;
+    console.log(this.datalist);
+    this.currentReport=event.value.name;
+  }
+
+  scanData=null;
+  async castData(type)
+  {    
+    if(type == "open"){
+      this.scanData = await BarcodeScanner.scan();
+      // this.scanData = {text:"In-01"}
+      if(this.scanData.text.length > 0){
+        this.socket.emit('subscribe', JSON.stringify({"userName":this.socketIp,"roomName":this.scanData.text}));
+        this.socket.emit('newMessage', JSON.stringify({ "userName":this.socketIp,"messageContent": this.datalist, "roomName": this.scanData.text}));
+      }
+    }
+   
+    if(type == "close"){
+      this.socket.emit('subscribe', JSON.stringify({"userName":this.socketIp,"roomName":this.scanData.text}));
+      this.socket.emit('newMessage', JSON.stringify({ "userName":this.socketIp,"messageContent": "", "roomName": this.scanData.text}));
+      this.scanData=null;
+    }
+    
+  }
+
+  navBack()
+  {
+    this.router.navigate(['home']);
+  }
+
+  async toastfunction(msg,colour)
+  {
+    const toast = await this.toastController.create({
+      message: msg,
+      duration: 2000,
+      position: 'bottom',
+      animated:true,
+      color:colour
+    });
+
+    toast.present();
+  }
+
+  async exportToExcel() {
+
+      const loading = await this.loadingController.create({
+        cssClass: 'my-custom-class',
+        message: 'Please wait...',
+        spinner:'dots'
+      });
+      loading.present();
+      let url=this.pageUrl.split("?");
+      let tempurl=url[0]+"csv=true?user="+localStorage.getItem('userid')+"&pass="+localStorage.getItem('password');
+      // this.pageUrl=tempurl;
+
+      // await Browser.open({ url: tempurl });
+      window.open(tempurl)
+      loading.dismiss();  
+      
+    
+      // const fileTransfer: FileTransferObject = this.transfer.create();
+      // this.file.createDir(this.file.externalRootDirectory, 'Download', true)
+      // .then((resp) => {
+      //   let path = resp.toURL();
+      //   fileTransfer.download(tempurl, path + (this.currentReport+new Date().getMilliseconds()).split(/\s/).join('')+'.csv').then((entry) => {
+      //     console.log('download complete: ' + entry.toURL());
+      //     loading.dismiss();  
+      //     this.toastfunction("File Saved Successfully!!!","success");
+      //   }, (error) => {
+      //     console.log(error)
+      //     loading.dismiss();  
+      //   });
+      // }
+
+      // );
+    }
+
+}
