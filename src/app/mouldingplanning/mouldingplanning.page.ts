@@ -5,7 +5,7 @@ import { LoadingController } from '@ionic/angular';
 import { HttpClient } from '@angular/common/http';
 
 import { DatePipe } from '@angular/common';
-import {  IonicSelectableComponent } from 'ionic-selectable';
+import {  IonicSelectableComponent } from '@ionic-selectable/angular';
 
 
 @Component({
@@ -21,7 +21,7 @@ export class MouldingplanningPage implements OnInit {
   deleteData=[];
   currentData:any;
   dataArray=[];
-  postData={   
+  postData={
     "plandate": "",
     "location":"",
     "iteminfo": this.dataArray
@@ -73,10 +73,10 @@ export class MouldingplanningPage implements OnInit {
 
     if(localStorage.getItem('userid') == null && localStorage.getItem('password') == null)
     {
-      this.router.navigate(["home"]);   
+      this.router.navigate(["home"]);
     }
 
-    this.checkStorage();   
+    this.checkStorage();
     setTimeout(()=>{
       let dd=new Date();
       let ddc=dd.setDate(dd.getDate())
@@ -86,11 +86,11 @@ export class MouldingplanningPage implements OnInit {
       this.currentDate=d;
       this.postData.plandate=d;
       console.log(d)
-    },1000) 
+    },1000)
 
    }
 
-   changeData(event){   
+   changeData(event){
     this.postData.plandate=event.target.value;
     this.currentDate=event.target.value;
     this.OperatorChanged(event,"date")
@@ -103,14 +103,14 @@ export class MouldingplanningPage implements OnInit {
   }
 
   addRow(){
-    
+
     if(this.selectedLocation === "" || this.selectedLocation == undefined){
       this.toastfunction("Please Select Location","danger");
     }
     else
     {
       this.selectedComponent="";
-      this.tableData.push({       
+      this.tableData.push({
         "tool_ref": "",
         "no_of_active_cavities":0,
         "std_lifts_per_plan":0,
@@ -120,9 +120,9 @@ export class MouldingplanningPage implements OnInit {
         "expOutput":0,
         "machineArray":[]
     })
-     
+
     }
-    
+
   }
 
   deleteItem(index){
@@ -137,34 +137,34 @@ export class MouldingplanningPage implements OnInit {
       spinner:'dots'
     });
     await loading.present();
-  const headers = { 
-    'auth-id': localStorage.getItem('authid'), 
+  const headers = {
+    'auth-id': localStorage.getItem('authid'),
     'client-id': localStorage.getItem('clientid'),
     'user': localStorage.getItem('userid'),
     'password':localStorage.getItem('password') }
 
       this.http.get<any>(this.dataUrl+"/api/mouldplan",{headers}).subscribe({
-        next: async data => {   
-          
+        next: async data => {
+
               data.message["locations"].map((x)=>{
                 this.locationArray.push({name:x,value:x});
-              })  
-              
+              })
+
               for (var [key,value] of Object.entries(data.message["components"])){
-                this.componentArray.push({name:`${value}`,value:`${key}`});                
+                this.componentArray.push({name:`${value}`,value:`${key}`});
               }
-         
+
               // console.log(this.componentArray)
           if(this.locationArray.length == 1){
             this.selected=this.locationArray[0];
             this.selectedLocation=this.locationArray[0].value;
-          }           
-          loading.dismiss();          
+          }
+          loading.dismiss();
         },
         error: errordata => {
           if(errordata.error.message){
-            loading.dismiss();         
-            this.toastfunction(errordata.error.message,"danger");  
+            loading.dismiss();
+            this.toastfunction(errordata.error.message,"danger");
             }
             else{
               this.toastfunction("Invalid Company Url, Please Check in Home page","danger");
@@ -172,7 +172,7 @@ export class MouldingplanningPage implements OnInit {
         }
       });
 
-   
+
   }
 
   async validateError()
@@ -199,7 +199,7 @@ export class MouldingplanningPage implements OnInit {
         }
       }
 
-      
+
     })
 
     if(this.flag > 0){
@@ -210,43 +210,43 @@ export class MouldingplanningPage implements OnInit {
 
   async submitData() {
 
-       
-          this.modalDeleteData4=false; 
+
+          this.modalDeleteData4=false;
           this.postData.location=this.selectedLocation;
           this.postData.iteminfo=this.tableData;
-  
-          console.log(this.postData)
-  
-          // this.selectedLocation="";      
 
-          const headers = { 
-            'auth-id': localStorage.getItem('authid'), 
+          console.log(this.postData)
+
+          // this.selectedLocation="";
+
+          const headers = {
+            'auth-id': localStorage.getItem('authid'),
             'client-id': localStorage.getItem('clientid'),
             'user': localStorage.getItem('userid'),
             'password':localStorage.getItem('password') }
-          
+
           const loading = await this.loadingController.create({
             cssClass: 'my-custom-class',
             message: 'Please wait...',
             spinner:'dots'
-          });  
+          });
           await loading.present();
-          
+
           this.http.post<any>(this.dataUrl+'/api/mouldplan',this.postData,{headers}).subscribe({
             next: async data => {
-              
+
               if(data.status == "success")
-              { 
-                loading.dismiss(); 
-                this.toastfunction(data.message,"success");         
+              {
+                loading.dismiss();
+                this.toastfunction(data.message,"success");
                 this.scan();
-                this.tableData=[];  
+                this.tableData=[];
                 this.dataArray=[];
                 this.machineArray=[];
                 this.locationArray=[];
                 this.componentArray=[];
-                this.selected=""; 
-                this.selectedLocation="";               
+                this.selected="";
+                this.selectedLocation="";
                 this.expOutput="";
                 this.totalPlanlift=0;
                 this.totalExpqty=0;
@@ -254,29 +254,29 @@ export class MouldingplanningPage implements OnInit {
                 this.totalMachine=0;
               }
               else
-              { 
-                loading.dismiss(); 
-                this.toastfunction(data.message,"danger");                      
-              }              
+              {
+                loading.dismiss();
+                this.toastfunction(data.message,"danger");
+              }
             },
             error: errordata => {
               if(errordata.error.message){
-                loading.dismiss();                     
-                this.toastfunction(errordata.error.message,"danger");  
+                loading.dismiss();
+                this.toastfunction(errordata.error.message,"danger");
                 }
                 else{
                   this.toastfunction("Invalid Company Url, Please Check in Home page","danger");
                 }
             }
           });
-       
+
   }
 
 
   async OperatorChanged(event: {component: IonicSelectableComponent,value: any},type)
   {
     if(type=="location"){this.selectedLocation=event.value.value;}
-    
+
     const loading = await this.loadingController.create({
       cssClass: 'my-custom-class',
       message: 'Please wait...',
@@ -284,16 +284,16 @@ export class MouldingplanningPage implements OnInit {
     });
     await loading.present();
 
-    const headers = { 
-      'auth-id': localStorage.getItem('authid'), 
+    const headers = {
+      'auth-id': localStorage.getItem('authid'),
       'client-id': localStorage.getItem('clientid'),
       'user': localStorage.getItem('userid'),
       'password':localStorage.getItem('password') }
 
-      
+
       this.http.get<any>(this.dataUrl+"/api/mouldplan/planlist/"+this.selectedLocation+"/"+this.currentDate,{headers}).subscribe({
         next: async data => {
-          this.tableData=[];           
+          this.tableData=[];
           if(Array.isArray(data.message)){
             this.tableData=data.message;
             this.tableData.map((x,index)=>{
@@ -304,7 +304,7 @@ export class MouldingplanningPage implements OnInit {
               x["numlifts"]=parseInt(x.std_lifts_per_plan);
               x["maxshift"]=parseInt(x.numshifts);
               this.machineArray.push({name:x.mcref,value:x.mcid})
-              x["machineArray"]=this.machineArray;             
+              x["machineArray"]=this.machineArray;
               x["mcid"]=x["machineArray"][0].value;
               this.machineArray=[];
               let samp=this.componentArray.filter((d)=>{ return d.name === x.cmpdname})
@@ -313,20 +313,20 @@ export class MouldingplanningPage implements OnInit {
             })
           }
           else{
-            loading.dismiss();         
-            this.toastfunction(data.message,"danger"); 
+            loading.dismiss();
+            this.toastfunction(data.message,"danger");
           }
-          // this.tableData=data.message; 
+          // this.tableData=data.message;
           // this.sampleArray=data.message;
           // data.message.map((x)=>{
           //   this.componentArray.push({name:x.cmpdname,value:x.cmpdid});
-          // })   
-          loading.dismiss();     
+          // })
+          loading.dismiss();
         },
         error: errordata => {
           if(errordata.error.message){
-            loading.dismiss();         
-            this.toastfunction(errordata.error.message,"danger");  
+            loading.dismiss();
+            this.toastfunction(errordata.error.message,"danger");
             }
             else{
               this.toastfunction("Invalid Company Url, Please Check in Home page","danger");
@@ -346,22 +346,22 @@ export class MouldingplanningPage implements OnInit {
     });
     await loading.present();
 
-    const headers = { 
-      'auth-id': localStorage.getItem('authid'), 
+    const headers = {
+      'auth-id': localStorage.getItem('authid'),
       'client-id': localStorage.getItem('clientid'),
       'user': localStorage.getItem('userid'),
       'password':localStorage.getItem('password') }
 
-      
+
       this.http.get<any>(this.dataUrl+"/api/mouldplan/toollist/"+this.selectedLocation+"/"+this.selectedComponent,{headers}).subscribe({
-        next: async data => {  
-       
+        next: async data => {
+
           this.selectedComponent=event.value;
           this.stockName=event.value.name;
-          this.machineArray=[];  
-          this.shiftArray=[];  
+          this.machineArray=[];
+          this.shiftArray=[];
           for(let i=1;i<Object.keys(data.message).length-1;i++){
-              this.tableData.push({       
+              this.tableData.push({
                 "tool_ref": "",
                 "no_of_active_cavities":0,
                 "std_lifts_per_plan":0,
@@ -371,24 +371,24 @@ export class MouldingplanningPage implements OnInit {
                 "expOutput":0,
                 "machineArray":[]
               })
-          }  
+          }
 
           for (var index of Object.keys(data.message)) {
             if(index != "stocklevel"){
-              this.tableData[indexs+parseInt(index)]=data.message[index]; 
-              this.tableData[indexs+parseInt(index)]["bind"]=event.value;  
+              this.tableData[indexs+parseInt(index)]=data.message[index];
+              this.tableData[indexs+parseInt(index)]["bind"]=event.value;
               this.tableData[indexs+parseInt(index)].no_of_active_cavities=parseFloat(this.tableData[indexs+parseInt(index)].no_of_active_cavities)
-              this.tableData[indexs+parseInt(index)].std_lifts_per_plan=parseFloat(this.tableData[indexs+parseInt(index)].std_lifts_per_plan)                   
+              this.tableData[indexs+parseInt(index)].std_lifts_per_plan=parseFloat(this.tableData[indexs+parseInt(index)].std_lifts_per_plan)
               this.tableData[indexs+parseInt(index)].expOutput=this.tableData[indexs+parseInt(index)].no_of_active_cavities * this.tableData[indexs+parseInt(index)].std_lifts_per_plan;
               this.tableData[indexs+parseInt(index)].numshifts=parseInt(this.tableData[indexs+parseInt(index)].maxshift);
               this.tableData[indexs+parseInt(index)]["numlifts"]=parseInt(this.tableData[indexs+parseInt(index)].std_lifts_per_plan);
               // this.tableData[indexs]["numshifts"]=parseInt(this.tableData[indexs]["numshifts"]);
-            
+
               for(let i=1;i<=this.tableData[indexs+parseInt(index)]["numshifts"];i++){
-                  this.shiftArray.push(i);             
+                  this.shiftArray.push(i);
               }
               this.tableData[indexs+parseInt(index)]["shiftArray"]=this.shiftArray;
-              this.shiftArray=[];  
+              this.shiftArray=[];
               let machinetemp = data.message[index].machines;
               let machinetemp2 = machinetemp.split(",")
               machinetemp2.map((x)=>{
@@ -407,7 +407,7 @@ export class MouldingplanningPage implements OnInit {
               this.tableData[indexs+parseInt(index)]["machineArray"]=unique;
               this.tableData[indexs+parseInt(index)]["mcid"]=unique[0].value;////
             }}
-          
+
           this.modalObj=data.message["stocklevel"];
           if(this.modalObj != null ){
             this.modalDeleteData=true;
@@ -427,13 +427,13 @@ export class MouldingplanningPage implements OnInit {
           })
           dump=dump.filter((value, index, array) => array.indexOf(value) === index);
           this.totalMachine=dump.length;
-          loading.dismiss();  
+          loading.dismiss();
         },
         error: errordata => {
           if(errordata.error.message){
-            loading.dismiss();  
-            
-          this.tableData[indexs]={       
+            loading.dismiss();
+
+          this.tableData[indexs]={
             "tool_ref": "",
             "no_of_active_cavities":0,
             "std_lifts_per_plan":0,
@@ -444,9 +444,9 @@ export class MouldingplanningPage implements OnInit {
             "machineArray":[]
         }
           this.shiftArray=[];
-          this.machineArray=[]; 
-                 
-            this.toastfunction(errordata.error.message,"danger");  
+          this.machineArray=[];
+
+            this.toastfunction(errordata.error.message,"danger");
             }
             else{
               this.toastfunction("Invalid Company Url, Please Check in Home page","danger");
@@ -456,45 +456,45 @@ export class MouldingplanningPage implements OnInit {
   }
 
   async deleteList() {
-   
+
     // if(this.postData.location !=""){
-      const headers = { 
-        'auth-id': localStorage.getItem('authid'), 
+      const headers = {
+        'auth-id': localStorage.getItem('authid'),
         'client-id': localStorage.getItem('clientid'),
         'user': localStorage.getItem('userid'),
         'password':localStorage.getItem('password') }
-      
+
       const loading = await this.loadingController.create({
         cssClass: 'my-custom-class',
         message: 'Please wait...',
         spinner:'dots'
-      });  
+      });
       await loading.present();
-      
+
       this.http.get<any>(this.dataUrl+'/api/cancelmouldplan/'+this.selectedLocation,{headers}).subscribe({
         next: async data => {
-          
+
           if(data.status == "success")
-          { 
-            
+          {
+
             this.deleteData=data.message;
             this.deleteData.map((x)=>{
               return x.liftplanned=parseFloat(x.liftplanned),x.cpdretqty=parseFloat(x.cpdretqty)
             })
 
-            this.modalDeleteData3=true;            
-            loading.dismiss(); 
+            this.modalDeleteData3=true;
+            loading.dismiss();
           }
           else
           {
-            loading.dismiss(); 
+            loading.dismiss();
             this.modalDeleteData3=false;
           }
         },
         error: errordata => {
           if(errordata.error.message){
-            loading.dismiss();                     
-            this.toastfunction(errordata.error.message,"danger");  
+            loading.dismiss();
+            this.toastfunction(errordata.error.message,"danger");
             }
             else{
               this.toastfunction("Invalid Company Url, Please Check in Home page","danger");
@@ -505,10 +505,10 @@ export class MouldingplanningPage implements OnInit {
     // else{
     //   this.toastfunction("Please Select Operator","danger");
     // }
-      
+
   }
 
-  clearAll(){    
+  clearAll(){
     this.tableData=[];
     this.expOutput="";
     this.selectedComponent="";
@@ -521,44 +521,44 @@ export class MouldingplanningPage implements OnInit {
   }
 
   async deleteDeflashing() {
-    
-   
 
-    const headers = { 
-      'auth-id': localStorage.getItem('authid'), 
+
+
+    const headers = {
+      'auth-id': localStorage.getItem('authid'),
       'client-id': localStorage.getItem('clientid'),
       'user': localStorage.getItem('userid'),
       'password':localStorage.getItem('password') }
-    
+
     const loading = await this.loadingController.create({
       cssClass: 'my-custom-class',
       message: 'Please wait...',
       spinner:'dots'
-    });  
+    });
 
     await loading.present();
-    
+
     this.http.post<any>(this.dataUrl+'/api/cancelmouldplan/'+this.currentItem.planid,"",{headers}).subscribe({
       next: async data => {
-        
+
         if(data.status == "success")
-        { 
-          loading.dismiss(); 
-          this.toastfunction(data.message,"success");         
-          this.deleteList();  
-          this.modalDeleteData2=false;         
+        {
+          loading.dismiss();
+          this.toastfunction(data.message,"success");
+          this.deleteList();
+          this.modalDeleteData2=false;
         }
         else
-        { 
-          loading.dismiss(); 
-          this.toastfunction(data.message,"danger");   
-          this.modalDeleteData2=false;                     
-        }              
+        {
+          loading.dismiss();
+          this.toastfunction(data.message,"danger");
+          this.modalDeleteData2=false;
+        }
       },
       error: errordata => {
         if(errordata.error.message){
-          loading.dismiss();                     
-          this.toastfunction(errordata.error.message,"danger");  
+          loading.dismiss();
+          this.toastfunction(errordata.error.message,"danger");
           }
           else{
             this.toastfunction("Invalid Company Url, Please Check in Home page","danger");
@@ -566,19 +566,19 @@ export class MouldingplanningPage implements OnInit {
       }
     });
 
-  
+
 
 }
 
 async OperatorChanged2(event: {component: IonicSelectableComponent,value: any})
 {
   this.selectedLocation=event.value.value;
- 
+
   this.deleteList();
 }
 
 changePlanlifts(lift,index){
- 
+
   if((parseInt(lift)+(parseInt(this.tableData[index].lifts_run))) <  parseInt(this.tableData[index].next_validation)){
     this.tableData[index].expOutput=parseInt(lift) * parseInt(this.tableData[index].no_of_active_cavities);
     this.tableData[index].numlifts=parseInt(lift);
@@ -592,30 +592,30 @@ changePlanlifts(lift,index){
           this.totalActivities=0;
           this.totalPlanlift=0;
           this.totalExpqty=0;
-         
+
           this.tableData.map((x)=>{
             this.totalActivities+=x.no_of_active_cavities;
             this.totalPlanlift+=x.numlifts;
             this.totalExpqty+=x.expOutput;
-            // this.totalShift+=x.numshifts;           
+            // this.totalShift+=x.numshifts;
           })
 }
 
-changeshift(event,index){  
+changeshift(event,index){
   // this.tableData[index].numshifts=parseInt(event.value.value);
   this.tableData[index].numshifts=parseInt(event);
   this.totalShift=0;
-  this.tableData.map((x)=>{   
-    this.totalShift+=x.numshifts;   
+  this.tableData.map((x)=>{
+    this.totalShift+=x.numshifts;
   })
 }
 
-changeMachine(event,index){  
+changeMachine(event,index){
   // this.tableData[index].mcid=event.value.value;
   this.tableData[index].mcid=event;
   this.totalMachine=0;
   let dump=[];
-  this.tableData.map((x)=>{   
+  this.tableData.map((x)=>{
     dump.push(x.mcid)
   })
   dump=dump.filter((value, index, array) => array.indexOf(value) === index);
@@ -627,14 +627,14 @@ changeMachine(event,index){
     const storage = parseInt(localStorage.getItem("your-data-key"));
     let date = new Date();
     const currentDate = date.setDate(date.getDate()); // Current date in milliseconds
-  
-    if (currentDate >= storage) {      
+
+    if (currentDate >= storage) {
       localStorage.removeItem("your-data-key");
       localStorage.removeItem("userid");
-      localStorage.removeItem("password"); 
-      this.router.navigate(["home"]);      
+      localStorage.removeItem("password");
+      this.router.navigate(["home"]);
     }
-  
+
   }
 
 
@@ -660,32 +660,32 @@ changeMachine(event,index){
 
   flag1=true
   sort(colName,flag){
-    
+
     if(this.flag1){
-      this.tableData.sort((a, b) => a[colName] > b[colName] ? 1 : a[colName] < b[colName] ? -1 : 0)  
+      this.tableData.sort((a, b) => a[colName] > b[colName] ? 1 : a[colName] < b[colName] ? -1 : 0)
       this.flag1=false;
-      return false;   
+      return false;
     }
     if(!this.flag1)
     {
-      this.tableData=this.tableData.reverse() 
+      this.tableData=this.tableData.reverse()
       this.flag1=true
-      return false;      
+      return false;
     }
    }
 
    sort2(colName,flag){
-    
+
     if(this.flag2){
-      this.deleteData.sort((a, b) => a[colName] > b[colName] ? 1 : a[colName] < b[colName] ? -1 : 0)  
+      this.deleteData.sort((a, b) => a[colName] > b[colName] ? 1 : a[colName] < b[colName] ? -1 : 0)
       this.flag2=false;
-      return false;   
+      return false;
     }
     if(!this.flag2)
     {
-      this.deleteData=this.deleteData.reverse() 
+      this.deleteData=this.deleteData.reverse()
       this.flag2=true
-      return false;      
+      return false;
     }
    }
 

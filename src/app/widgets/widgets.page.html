@@ -1,7 +1,11 @@
 <ion-header>
-  <ion-toolbar>       
-        <ion-img src="{{brandImage}}" style="height: 50px;width:50px" slot="start"></ion-img>       
-        <ion-back-button defaultHref="home" slot="end"></ion-back-button>   
+  <ion-toolbar>
+    <ion-img src="{{brandImage}}" style="height: 50px; width: 50px" slot="start"></ion-img>
+    
+    <!-- Custom logout icon button -->
+    <ion-buttons slot="end">
+      <ion-button expand="full" shape="round" (click)="logout()"><ion-icon name="exit"></ion-icon> Logout</ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 

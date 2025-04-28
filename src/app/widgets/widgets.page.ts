@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-widgets',
@@ -17,7 +18,7 @@ export class WidgetsPage implements OnInit {
   ];
   
   
-  constructor(private router: Router) {
+  constructor(private router: Router, private navCtrl:NavController) {
     if(localStorage.getItem('userid') == null && localStorage.getItem('password') == null)
     {
       this.router.navigate(["home"]);   
@@ -48,6 +49,17 @@ export class WidgetsPage implements OnInit {
       this.router.navigate(["home"]);      
     }
   
+  }
+
+  logout() {
+
+    console.log('Logout clicked!');
+    // Clear user data (example)
+    localStorage.clear(); // or clear your auth tokens/session storage
+
+    // Optionally show a toast or alert
+    // Then navigate to Home
+    this.navCtrl.navigateRoot('/home'); 
   }
 
 }

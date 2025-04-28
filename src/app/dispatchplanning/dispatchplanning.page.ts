@@ -5,7 +5,7 @@ import { LoadingController } from '@ionic/angular';
 import { HttpClient } from '@angular/common/http';
 
 import { DatePipe } from '@angular/common';
-import {  IonicSelectableComponent } from 'ionic-selectable';
+import {  IonicSelectableComponent } from '@ionic-selectable/angular';
 
 import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
 
@@ -51,7 +51,7 @@ export class DispatchplanningPage implements OnInit {
   type=true;
   setDisabled=true;
 
-  
+
   @ViewChild('selectComponent') selectComponent: IonicSelectableComponent;
   base64: any;
 
@@ -61,10 +61,10 @@ export class DispatchplanningPage implements OnInit {
 
     if(localStorage.getItem('userid') == null && localStorage.getItem('password') == null)
     {
-      this.router.navigate(["home"]);   
+      this.router.navigate(["home"]);
     }
 
-    this.checkStorage();    
+    this.checkStorage();
 
    }
 
@@ -77,7 +77,7 @@ export class DispatchplanningPage implements OnInit {
           this.toastfunction("Qty is not exceed greater then actual Qty","danger");
             return false;
         }
-      }      
+      }
    }
    onChangeValue(data,index,item,type){
     if(type == "component"){
@@ -86,7 +86,7 @@ export class DispatchplanningPage implements OnInit {
         let datass=this.sampleArray.filter((x)=>{
           return x.cmpdid == data.value.value;
         })
-        
+
         this.tableData[index].cmpdid = datass[0].cmpdid;
         this.tableData[index].didesc =datass[0].soref;
         this.tableData[index].diqty = parseInt(datass[0].penqty);
@@ -95,9 +95,9 @@ export class DispatchplanningPage implements OnInit {
         console.log(this.tableData);
       }
       else{
-        this.tableData[index].cmpdid = data.value.value;  
+        this.tableData[index].cmpdid = data.value.value;
       }
-     
+
     }
     if(type == "di")
     {
@@ -106,7 +106,7 @@ export class DispatchplanningPage implements OnInit {
     if(type == "qty")
     {
       this.tableData[index].diqty = parseInt(data.target.value);
-    }  
+    }
     if(type == "Sales")
     {
       this.type=false;
@@ -122,7 +122,7 @@ export class DispatchplanningPage implements OnInit {
         this.postData.didate=d;
         console.log(d)
       },1000)
-    }  
+    }
     if(type == "Schedule")
     {
       this.type=false;
@@ -138,8 +138,8 @@ export class DispatchplanningPage implements OnInit {
         this.postData.didate=d;
         console.log(d)
       },1000)
-    }  
-    // console.log(this.tableData)   
+    }
+    // console.log(this.tableData)
   }
 
 
@@ -150,7 +150,7 @@ export class DispatchplanningPage implements OnInit {
   }
 
   addRow(){
-    
+
     if(this.selectedCustomer === "" || this.selectedCustomer == undefined){
       this.toastfunction("Please Select Customer","danger");
     }
@@ -161,9 +161,9 @@ export class DispatchplanningPage implements OnInit {
         "didesc":"",
         "diqty": 0
       })
-     
+
     }
-    
+
   }
 
   deleteItem(index){
@@ -172,23 +172,23 @@ export class DispatchplanningPage implements OnInit {
 
   filesel(event)
   {
-    
+
     this.zone.run(()=>{
       var files = event.target.files;
-      var file = files[0];    
-      var reader = new FileReader();    
+      var file = files[0];
+      var reader = new FileReader();
       reader.readAsText(file);
       reader.onloadend = (event: any) => {
-        var csv = event.target.result;       
+        var csv = event.target.result;
         var array = csv.split("\n");
         var headers=["cmpdid","didesc","diqty"]
-  
+
         for(var i=0;i<array.length-1;i++){
           var obj = {};
-          var currentline=array[i].split(","); 
-  
+          var currentline=array[i].split(",");
+
           for(var j=0;j<headers.length;j++){
-  
+
             if(headers[j] == "didesc"){
               obj[headers[j]] = "";
             }
@@ -196,25 +196,25 @@ export class DispatchplanningPage implements OnInit {
             {
               obj[headers[j]] = currentline[j];
             }
-            
-          }     
+
+          }
           obj["diqty"]=parseInt(obj["diqty"])
           if(this.selectedCustomer === "" || this.selectedCustomer == undefined){
             this.toastfunction("Please Select Customer","danger");
           }else{
-            this.tableData.push(obj);        
+            this.tableData.push(obj);
             setTimeout(()=>{
-              this.modalDeleteData2=true;          
+              this.modalDeleteData2=true;
             },1000)
           }
-          
-          
+
+
         }
-       
-      };  
+
+      };
     })
-     
-   
+
+
   }
 
   excelData=[];
@@ -224,7 +224,7 @@ export class DispatchplanningPage implements OnInit {
       let val=value.dataURI.split(",");
       this.fileObj = value;
       let a=atob(val[1])
-      
+
       var array = a.split("\n");
       var headers=["cmpdid","didesc","diqty"]
 
@@ -232,7 +232,7 @@ export class DispatchplanningPage implements OnInit {
         let obj;
         if(array[i] != ""){
           obj = {};
-          var currentline=array[i].split(","); 
+          var currentline=array[i].split(",");
           let  chkval=this.componentArray.some(el => el.name === currentline[0])
           let  comName=this.componentArray.filter(el => el.name === currentline[0])
           if(chkval){
@@ -253,15 +253,15 @@ export class DispatchplanningPage implements OnInit {
                   let a=currentline[2];
                   a=a.replace("\r","")
                   obj["diqty"]=parseInt(a)
-                } 
-              } 
+                }
+              }
 
             }
             else{
 
               for(var j=0;j<headers.length;j++){
-              
-               
+
+
                   obj["cmpdid"]=comName[0].value;
                   obj["didesc"]=currentline[1]
                   let a=currentline[2];
@@ -271,55 +271,55 @@ export class DispatchplanningPage implements OnInit {
                   let arr=this.sampleArray.filter((x)=>{
                     return x.cmpdname === currentline[0]
                   })
-                
+
                   console.log(arr)
 
                   if(arr[0].soref != currentline[1]){
                     this.toastfunction("DI not match with "+currentline[0],"danger");
-                    this.modalDeleteData2=false;   
+                    this.modalDeleteData2=false;
                     return false;
                   }
 
                   if(parseInt(currentline[2]) > parseInt(arr[0].penqty)){
                     this.toastfunction("DI Qty : "+currentline[2]+" is greater then : "+arr[0].penqty+" for "+currentline[0],"danger");
-                    this.modalDeleteData2=false;   
+                    this.modalDeleteData2=false;
                     return false;
                   }
-              } 
+              }
 
             }
 
-             
+
 
 
           }
           else{
             this.toastfunction("No Such Part Number for "+currentline[0],"danger");
-            this.modalDeleteData2=false;   
+            this.modalDeleteData2=false;
             return false;
           }
-         
+
         }
-                  
+
         if(this.selectedCustomer === "" || this.selectedCustomer == undefined){
           this.toastfunction("Please Select Customer","danger");
         }else{
-          // this.tableData.push(obj); 
+          // this.tableData.push(obj);
           if(obj != undefined){
             this.excelData.push(obj)
           }
-         
-          console.log(this.tableData)                
-          this.modalDeleteData2=true;                    
+
+          console.log(this.tableData)
+          this.modalDeleteData2=true;
         }
-        
-        
+
+
       }
 
     },(err)=>{
       alert(JSON.stringify(err))
     })
-  } 
+  }
 
   getComponentValue(data){
     let a=this.componentArray.filter((x)=>{ return x.name === data})
@@ -333,23 +333,23 @@ export class DispatchplanningPage implements OnInit {
       spinner:'dots'
     });
     await loading.present();
-  const headers = { 
-    'auth-id': localStorage.getItem('authid'), 
+  const headers = {
+    'auth-id': localStorage.getItem('authid'),
     'client-id': localStorage.getItem('clientid'),
     'user': localStorage.getItem('userid'),
     'password':localStorage.getItem('password') }
 
       this.http.get<any>(this.dataUrl+"/api/despatchplan",{headers}).subscribe({
-        next: async data => {   
+        next: async data => {
               data.message.map((x)=>{
                 this.customerArray.push({name:x.cusname,value:x.cusid});
-              })                
-              loading.dismiss();          
+              })
+              loading.dismiss();
         },
         error: errordata => {
           if(errordata.error.message){
-            loading.dismiss();         
-            this.toastfunction(errordata.error.message,"danger");  
+            loading.dismiss();
+            this.toastfunction(errordata.error.message,"danger");
             }
             else{
               this.toastfunction("Invalid Company Url, Please Check in Home page","danger");
@@ -357,7 +357,7 @@ export class DispatchplanningPage implements OnInit {
         }
       });
 
-   
+
   }
 
   async submitData() {
@@ -366,15 +366,15 @@ export class DispatchplanningPage implements OnInit {
       this.modalDeleteData2=false;
       let flag =0;
       if(this.tableData.length == 0){
-        this.toastfunction("Please add DI details","danger");  
+        this.toastfunction("Please add DI details","danger");
         return false;
       }
       this.postData.isso = !this.mode ? 0: 1;
       this.tableData.map((x)=>{
         if(x.cmpdid == "" || x.diqty <= 0){
-          this.toastfunction("Please provide datas in DI","danger");  
-          flag++;         
-        }       
+          this.toastfunction("Please provide datas in DI","danger");
+          flag++;
+        }
       })
 
       if(flag == 0){
@@ -382,55 +382,55 @@ export class DispatchplanningPage implements OnInit {
 
         console.log(this.postData)
         this.selectedCustomer="";
-        this.tableData=[]; 
+        this.tableData=[];
         this.excelData=[];
-        const headers = { 
-          'auth-id': localStorage.getItem('authid'), 
+        const headers = {
+          'auth-id': localStorage.getItem('authid'),
           'client-id': localStorage.getItem('clientid'),
           'user': localStorage.getItem('userid'),
           'password':localStorage.getItem('password') }
-        
+
         const loading = await this.loadingController.create({
           cssClass: 'my-custom-class',
           message: 'Please wait...',
           spinner:'dots'
-        });  
+        });
         await loading.present();
-        
+
         this.http.post<any>(this.dataUrl+'/api/despatchplan',this.postData,{headers}).subscribe({
           next: async data => {
-            
+
             if(data.status == "success")
-            { 
-              loading.dismiss(); 
-              this.toastfunction(data.message,"success");         
+            {
+              loading.dismiss();
+              this.toastfunction(data.message,"success");
               this.scan();
-              this.tableData=[];  
+              this.tableData=[];
               this.excelData=[];
               this.dataArray=[];
               this.selected=null;
-              this.modalDeleteData3=false; 
+              this.modalDeleteData3=false;
             }
             else
-            { 
-              loading.dismiss(); 
-              this.toastfunction(data.message,"danger");  
-              this.modalDeleteData3=false;          
-            }              
+            {
+              loading.dismiss();
+              this.toastfunction(data.message,"danger");
+              this.modalDeleteData3=false;
+            }
           },
           error: errordata => {
             if(errordata.error.message){
-              loading.dismiss();                     
-              this.toastfunction(errordata.error.message,"danger");  
+              loading.dismiss();
+              this.toastfunction(errordata.error.message,"danger");
               }
               else{
                 this.toastfunction("Invalid Company Url, Please Check in Home page","danger");
               }
           }
         });
-    
+
       }
-     
+
   }
 
 
@@ -444,8 +444,8 @@ export class DispatchplanningPage implements OnInit {
     });
     await loading.present();
 
-    const headers = { 
-      'auth-id': localStorage.getItem('authid'), 
+    const headers = {
+      'auth-id': localStorage.getItem('authid'),
       'client-id': localStorage.getItem('clientid'),
       'user': localStorage.getItem('userid'),
       'password':localStorage.getItem('password') }
@@ -453,18 +453,18 @@ export class DispatchplanningPage implements OnInit {
       let data=!this.mode ? event.value.value: event.value.value+"/so"
       this.componentArray=[];
       this.http.get<any>(this.dataUrl+"/api/despatchplan/"+data,{headers}).subscribe({
-        next: async data => {  
-          this.tableData=[]; 
+        next: async data => {
+          this.tableData=[];
           this.sampleArray=data.message;
           data.message.map((x)=>{
             this.componentArray.push({name:x.cmpdname,value:x.cmpdid});
-          })   
-          loading.dismiss();     
+          })
+          loading.dismiss();
         },
         error: errordata => {
           if(errordata.error.message){
-            loading.dismiss();         
-            this.toastfunction(errordata.error.message,"danger");  
+            loading.dismiss();
+            this.toastfunction(errordata.error.message,"danger");
             }
             else{
               this.toastfunction("Invalid Company Url, Please Check in Home page","danger");
@@ -480,14 +480,14 @@ export class DispatchplanningPage implements OnInit {
     const storage = parseInt(localStorage.getItem("your-data-key"));
     let date = new Date();
     const currentDate = date.setDate(date.getDate()); // Current date in milliseconds
-  
-    if (currentDate >= storage) {      
+
+    if (currentDate >= storage) {
       localStorage.removeItem("your-data-key");
       localStorage.removeItem("userid");
-      localStorage.removeItem("password"); 
-      this.router.navigate(["home"]);      
+      localStorage.removeItem("password");
+      this.router.navigate(["home"]);
     }
-  
+
   }
 
 
@@ -513,21 +513,21 @@ export class DispatchplanningPage implements OnInit {
 
   flag1=true
   sort(colName,flag){
-    
+
     if(this.flag1){
-      this.tableData.sort((a, b) => a[colName] > b[colName] ? 1 : a[colName] < b[colName] ? -1 : 0)  
+      this.tableData.sort((a, b) => a[colName] > b[colName] ? 1 : a[colName] < b[colName] ? -1 : 0)
       this.flag1=false;
-      return false;   
+      return false;
     }
     if(!this.flag1)
     {
-      this.tableData=this.tableData.reverse() 
+      this.tableData=this.tableData.reverse()
       this.flag1=true
-      return false;      
+      return false;
     }
    }
 
- 
+
 
 
 

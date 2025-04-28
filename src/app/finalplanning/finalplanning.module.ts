@@ -9,7 +9,7 @@ import { FinalplanningPageRoutingModule } from './finalplanning-routing.module';
 import { FinalplanningPage } from './finalplanning.page';
 import { FinalplanningPipe } from '../finalplanning.pipe';
 
-import { IonicSelectableModule } from 'ionic-selectable';
+import { IonicSelectableModule } from '@ionic-selectable/angular';
 
 import { ReactiveFormsModule } from '@angular/forms';
 

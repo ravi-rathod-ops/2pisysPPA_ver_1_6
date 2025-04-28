@@ -137,6 +137,10 @@ console.log(this.dataUrl);
   async submitData()
   {   
     this.submitted=true;
+    
+    if (this.registerForm.invalid) {
+      return;
+    }
     const loading = await this.loadingController.create({
       cssClass: 'my-custom-class',
       message: 'Please wait...',
@@ -144,11 +148,8 @@ console.log(this.dataUrl);
     });  
     await loading.present();
 
-    if (this.registerForm.invalid) {
-      return;
-    }
-    else
-    {
+    // else
+    // {
 
       const headers = { 
         'auth-id': localStorage.getItem('authid'), 
@@ -177,7 +178,7 @@ console.log(this.dataUrl);
         }
       });
 
-    } 
+    // } 
 
   }
 

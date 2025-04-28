@@ -1,4 +1,5 @@
-import { NgModule } from '@angular/core';
+import { IonicSelectableModule } from '@ionic-selectable/angular';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 
@@ -19,7 +20,6 @@ import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 // import { Printer} from '@awesome-cordova-plugins/printer/ngx';
 import { Printer } from '@ionic-native/printer/ngx/index';
 
-import { IonicSelectableModule } from 'ionic-selectable';
 
 
 import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
@@ -31,7 +31,7 @@ import {Chooser} from '@ionic-native/chooser/ngx';
 if(localStorage.getItem('IPAddr') != null)
 {
   var ip=localStorage.getItem("IPAddr");
-  localStorage.setItem("IPAddr",ip);      
+  localStorage.setItem("IPAddr",ip);
 }
 else
 {
@@ -44,13 +44,13 @@ const config: SocketIoConfig = { url: localStorage.getItem("IPAddr"), options: {
 
 @NgModule({
   declarations: [AppComponent, CalenderplanningPipe],
-  entryComponents: [],
   imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, FormsModule,ReactiveFormsModule,HttpClientModule,CommonModule,IonicSelectableModule,
     SocketIoModule.forRoot(config)],
   providers: [
     ScreenOrientation,Camera,FileTransfer,File,InAppBrowser,NetworkInterface,Printer,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },Chooser
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  schemas:[CUSTOM_ELEMENTS_SCHEMA],
 })
 export class AppModule { }

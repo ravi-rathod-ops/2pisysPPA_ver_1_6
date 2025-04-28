@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -17,4 +17,13 @@ import { PlanhomePage } from './planhome.page';
   ],
   declarations: [PlanhomePage]
 })
-export class PlanhomePageModule {}
+
+
+export class PlanhomePageModule implements OnInit {
+
+  items :any = []; 
+  ngOnInit() {
+    this.items=['route:test'];
+  }
+}
+

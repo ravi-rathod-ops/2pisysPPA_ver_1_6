@@ -1,4 +1,4 @@
-    <ion-content>    
+    <!-- <ion-content>    
         <ion-slide>
             
             <div class="contaier-login">
@@ -54,4 +54,48 @@
         <ion-img src="./assets/image/admin.png" style="width: 50px;height: 50px;position: absolute;top:0;right: 0;z-index: 3;" (click)="onClickMe('Setting')"></ion-img> 
         <ion-img src="./assets/icon/logo1.png" style="width: 100%;position:absolute;top:0%;height:30%"></ion-img>
     </ion-content>
+   -->
+
+
+   <ion-content [fullscreen]="true" class="login-content">
+    <div class="login-wrapper">
+      <form [formGroup]="registerForm" (ngSubmit)="submitData()" class="login-form">
+        <div class="logo-container">
+          <ion-img [src]="datapass.base64encodedimage" class="logo-img"></ion-img>
+        </div>
+        <div class="welcome-text">
+          <h6 class="version">Version: {{cversion}}</h6>
+          <h1>Welcome back!</h1>
+          <p>Login to your account</p>
+        </div>
+        
+        <ion-list lines="none">
+          <ion-item class="input-item">
+            <ion-icon name="person-outline" slot="start"></ion-icon>
+            <ion-input formControlName="userid" placeholder="User ID"></ion-input>
+          </ion-item>
+          <ion-text *ngIf="submitted && f.userid.errors?.required" color="danger" class="error-text">
+            *Required
+          </ion-text>
+  
+          <ion-item class="input-item">
+            <ion-icon name="key-outline" slot="start"></ion-icon>
+            <ion-input type="password" formControlName="password" placeholder="Password"></ion-input>
+          </ion-item>
+          <ion-text *ngIf="submitted && f.password.errors?.required" color="danger" class="error-text">
+            *Required
+          </ion-text>
+        </ion-list>
+  
+        <ion-button type="submit" expand="block" shape="round" [disabled]="!registerForm.valid || versionFlag">
+          <ion-icon name="enter" slot="start"></ion-icon>
+          Login
+        </ion-button>
+      </form>
+  
+      <ion-img src="./assets/image/refresh.png" class="icon-btn top-right refresh-icon" (click)="refresher()"></ion-img>
+      <ion-img src="./assets/image/admin.png" class="icon-btn top-right admin-icon" (click)="onClickMe('Setting')"></ion-img>
+      <ion-img src="./assets/icon/logo1.png" class="icon-btn top-left logo-icon"></ion-img>
+    </div>
+  </ion-content>
   

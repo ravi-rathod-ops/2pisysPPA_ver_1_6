@@ -1,4 +1,4 @@
-<ion-header>
+<!-- <ion-header>
   <ion-toolbar>       
         <ion-img src="{{brandImage}}" style="height: 50px;width:50px" slot="start"></ion-img>               
         <div style="display: flex;justify-content: center;">
@@ -95,124 +95,74 @@
         
       </ion-col>
     </ion-row>
-
-
-
-
-
-
-
-
-
-
-
-
-    <!-- <ion-row>
-      <ion-col size="12" (click)="routePage('Mixingplanning')">
-        <ion-card>
-          <ion-row>
-            <ion-col size="6"> 
-              <img src="./assets/image/rgb.png" class="image"/>               
-            </ion-col>
-            <ion-col size="6">  
-                <h2>Mixing</h2>
-            </ion-col>
-          </ion-row>
-        </ion-card>        
-      </ion-col>
-    </ion-row>
-
-    <ion-row>
-      <ion-col size="12" (click)="routePage('Finalplanning')">
-        <ion-card>
-          <ion-row>
-            <ion-col size="6"> 
-              <img src="./assets/image/route.png" class="image"/>               
-            </ion-col>
-            <ion-col size="6">  
-                <h2>Final</h2>
-            </ion-col>
-          </ion-row>
-        </ion-card>        
-      </ion-col>
-    </ion-row>
-
-    <ion-row>
-      <ion-col size="12" (click)="routePage('Calenderingplanning')">
-        <ion-card>
-          <ion-row>
-            <ion-col size="6"> 
-              <img src="./assets/image/paper-roll.png" class="image"/>               
-            </ion-col>
-            <ion-col size="6">  
-                <h2>Calendering</h2>
-            </ion-col>
-          </ion-row>
-        </ion-card>        
-      </ion-col>
-    </ion-row>
-
-    <ion-row>
-      <ion-col size="12" (click)="routePage('Mouldingplanning')">
-        <ion-card>
-          <ion-row>
-            <ion-col size="6"> 
-              <img src="./assets/image/machine-press.png" class="image"/>               
-            </ion-col>
-            <ion-col size="6">  
-                <h2>Moulding</h2>
-            </ion-col>
-          </ion-row>
-        </ion-card>        
-      </ion-col>
-    </ion-row>
-
-    <ion-row>
-      <ion-col size="12" (click)="routePage('Deflashplanning')">
-        <ion-card>
-          <ion-row>
-            <ion-col size="6"> 
-              <img src="./assets/image/layer.png" class="image"/>               
-            </ion-col>
-            <ion-col size="6">  
-                <h2>Deflashing</h2>
-            </ion-col>
-          </ion-row>
-        </ion-card>        
-      </ion-col>
-    </ion-row>
-
-
-    <ion-row>
-      <ion-col size="12" (click)="routePage('Inspectionplanning')">
-        <ion-card>
-          <ion-row>
-            <ion-col size="6"> 
-              <img src="./assets/image/statistics.png" class="image"/>               
-            </ion-col>
-            <ion-col size="6">  
-                <h2>Inspection</h2>
-            </ion-col>
-          </ion-row>
-        </ion-card>        
-      </ion-col>
-    </ion-row> 
-    
-    <ion-row>
-      <ion-col size="12" (click)="routePage('Dispatchplanning')">
-        <ion-card>
-          <ion-row>
-            <ion-col size="6"> 
-              <img src="./assets/image/delivery.png" class="image"/>               
-            </ion-col>
-            <ion-col size="6">  
-                <h2>Dispatch</h2>
-            </ion-col>
-          </ion-row>
-        </ion-card>        
-      </ion-col>
-    </ion-row> -->
    
   </ion-grid>
   
+</ion-content> -->
+
+<ion-header>
+  <ion-toolbar>
+    <ion-img src="{{brandImage}}" style="height: 50px;width:50px" slot="start"></ion-img>
+    
+    <div style="display: flex;justify-content: center;align-items: center; flex: 1;">
+      <img src="./assets/image/planning.png" height="25" width="25" />
+      <b style="font-size: 20px;">&nbsp;&nbsp;Process</b>
+    </div>
+
+    <ion-buttons slot="end">
+      <ion-back-button defaultHref="Widgets"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-grid>
+    
+    <ion-row class="auto-wrap">
+      <ion-col size="6" size-sm="4" size-md="3" class="grid-item"   (click)="routePage('Purchaseorderplanning')">
+        <img src="./assets/image/receipt.png" class="icon-img" />
+        <h4 class="ion-text-center">Purchase</h4>
+      </ion-col>
+
+      <ion-col size="6" size-sm="4" size-md="3" class="grid-item"  (click)="routePage('Mixingplanning')">
+        <img src="./assets/image/rgb.png" class="icon-img" />
+        <h4 class="ion-text-center">Mixing</h4>
+      </ion-col>
+
+      <ion-col size="6" size-sm="4" size-md="3" class="grid-item"  (click)="routePage('Finalplanning')">
+        <img src="./assets/image/route.png" class="icon-img" />
+        <h4 class="ion-text-center">Final</h4>
+      </ion-col>
+    <!-- </ion-row>
+
+    <ion-row> -->
+      <ion-col size="6" size-sm="4" size-md="3" class="grid-item"  (click)="routePage('Calenderingplanning')">
+        <img src="./assets/image/paper-roll.png" class="icon-img" />
+        <h4 class="ion-text-center">Calendering</h4>
+      </ion-col>
+
+      <ion-col size="6" size-sm="4" size-md="3" class="grid-item"  (click)="routePage('Mouldingplanning')">
+        <img src="./assets/image/machine-press.png" class="icon-img" />
+        <h4 class="ion-text-center">Production</h4>
+      </ion-col>
+
+      <ion-col size="6" size-sm="4" size-md="3" class="grid-item"  (click)="routePage('Deflashplanning')">
+        <img src="./assets/image/layer.png" class="icon-img" />
+        <h4 class="ion-text-center">Deflashing</h4>
+      </ion-col>
+    <!-- </ion-row>
+
+    <ion-row> -->
+      <ion-col size="6" size-sm="4" size-md="3" class="grid-item"  (click)="routePage('Inspectionplanning')">
+        <img src="./assets/image/statistics.png" class="icon-img" />
+        <h4 class="ion-text-center">Inspection</h4>
+      </ion-col>
+
+      <ion-col size="6" size-sm="4" size-md="3" class="grid-item"  (click)="routePage('Dispatchplanning')">
+        <img src="./assets/image/delivery.png" class="icon-img" />
+        <h4 class="ion-text-center">Despatch</h4>
+      </ion-col>
+    </ion-row>
+
+  </ion-grid>
 </ion-content>

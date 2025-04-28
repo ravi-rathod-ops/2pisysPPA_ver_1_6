@@ -8,7 +8,7 @@ import { MixingplanningPageRoutingModule } from './mixingplanning-routing.module
 
 import { MixingplanningPage } from './mixingplanning.page';
 
-import { IonicSelectableModule } from 'ionic-selectable';
+import { IonicSelectableModule } from '@ionic-selectable/angular';
 
 import { ReactiveFormsModule } from '@angular/forms';
 

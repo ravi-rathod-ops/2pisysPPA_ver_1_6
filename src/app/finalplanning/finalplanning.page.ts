@@ -4,7 +4,7 @@ import { ToastController } from '@ionic/angular';
 import { LoadingController } from '@ionic/angular';
 import { HttpClient } from '@angular/common/http';
 import { DatePipe } from '@angular/common';
-import {  IonicSelectableComponent } from 'ionic-selectable';
+import {  IonicSelectableComponent } from '@ionic-selectable/angular';
 import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
 
 @Component({
@@ -19,7 +19,7 @@ export class FinalplanningPage implements OnInit {
   tableData=[];
   deleteData=[];
   tableDataTemp=[];
-  currentData:any;  
+  currentData:any;
   dataArray=[];
   locationArray=[];
   postData={
@@ -31,7 +31,7 @@ export class FinalplanningPage implements OnInit {
   flag=true;
   selected:any;
   selectedShift:any;
-  modalDeleteData=false; 
+  modalDeleteData=false;
   modalDeleteData3=false;
   currentItem:any;
   shiftArray=[]
@@ -41,7 +41,7 @@ export class FinalplanningPage implements OnInit {
   totalmasterbatchwgt=0;
   totalexpectedbatchwgt=0;
   searchData="";
-  
+
   @ViewChild('selectComponent') selectComponent: IonicSelectableComponent;
   @ViewChild('selectComponent1') selectComponent1: IonicSelectableComponent;
 
@@ -49,24 +49,24 @@ export class FinalplanningPage implements OnInit {
 
     if(localStorage.getItem('userid') == null && localStorage.getItem('password') == null)
     {
-      this.router.navigate(["home"]);   
+      this.router.navigate(["home"]);
     }
 
-    this.checkStorage();    
+    this.checkStorage();
    }
 
    sort(colName,flag){
-    
+
     if(this.flag){
-      this.tableData.sort((a, b) => a[colName] > b[colName] ? 1 : a[colName] < b[colName] ? -1 : 0)  
+      this.tableData.sort((a, b) => a[colName] > b[colName] ? 1 : a[colName] < b[colName] ? -1 : 0)
       this.flag=false;
-      return false;   
+      return false;
     }
     if(!this.flag)
     {
-      this.tableData=this.tableData.reverse() 
+      this.tableData=this.tableData.reverse()
       this.flag=true
-      return false;      
+      return false;
     }
    }
 
@@ -83,9 +83,9 @@ export class FinalplanningPage implements OnInit {
       spinner:'dots'
     });
     loading.present();
-    
-    const headers = { 
-      'auth-id': localStorage.getItem('authid'), 
+
+    const headers = {
+      'auth-id': localStorage.getItem('authid'),
       'client-id': localStorage.getItem('clientid'),
       'user': localStorage.getItem('userid'),
       'password':localStorage.getItem('password') }
@@ -95,7 +95,7 @@ export class FinalplanningPage implements OnInit {
 
           for (var key of Object.keys(data.message)) {
             if(key != "locations" && key != "numshifts"){
-              data.message[key]["check"]=false;  
+              data.message[key]["check"]=false;
               data.message[key].basepolyratio=parseFloat(data.message[key].basepolyratio)
               data.message[key].batchtotwgt=parseFloat(data.message[key].batchtotwgt)
               data.message[key].batchwgt=parseFloat(data.message[key].batchwgt)
@@ -103,12 +103,12 @@ export class FinalplanningPage implements OnInit {
               data.message[key].stdbasepolywgt=parseFloat(data.message[key].stdbasepolywgt)
               data.message[key].directfinal=1;
               data.message[key].noofbatch=0;
-             
+
 
               // this.tableData.push(data.message[key])
-              this.tableDataTemp.push(data.message[key])              
+              this.tableDataTemp.push(data.message[key])
             }
-            if(key == "locations"){              
+            if(key == "locations"){
               // if(data.message["locations"].length == 1){
               //   this.totalmasterbatchwgt=0;
               //   this.totalexpectedbatchwgt=0;
@@ -116,12 +116,12 @@ export class FinalplanningPage implements OnInit {
               //   this.postData["location"]=data.message["locations"][0];
               //   this.tableData=this.tableDataTemp.filter((x)=>{
               //     return x.location === data.message["locations"][0];
-              //   })  
+              //   })
               // }
               // else{
                 data.message["locations"].map((x)=>{
                   this.locationArray.push({name:x,value:x});
-                })    
+                })
               // }
             }
 
@@ -130,12 +130,12 @@ export class FinalplanningPage implements OnInit {
               for(let i=1;i<=parseInt(data.message[key]);i++){
                 this.shiftArray.push({name:i,value:i})
               }
-              
+
               this.selectedShift=this.shiftArray[0];
               this.postData.shift=parseInt(this.selectedShift.value);
-            }                      
-          }         
-          if(this.locationArray.length == 1){           
+            }
+          }
+          if(this.locationArray.length == 1){
             this.totalmasterbatchwgt=0;
             this.totalexpectedbatchwgt=0;
             this.dataArray=[];
@@ -143,16 +143,16 @@ export class FinalplanningPage implements OnInit {
             this.postData["location"]=this.locationArray[0].name;
             this.tableData=this.tableDataTemp.filter((x)=>{
               return x.location === data.message["locations"][0];
-            })  
+            })
 
           }
 
-          loading.dismiss();          
+          loading.dismiss();
         },
         error: errordata => {
           if(errordata.error.message){
-            loading.dismiss();         
-            this.toastfunction(errordata.error.message,"danger");  
+            loading.dismiss();
+            this.toastfunction(errordata.error.message,"danger");
             }
             else{
               this.toastfunction("Invalid Company Url, Please Check in Home page","danger");
@@ -180,7 +180,7 @@ export class FinalplanningPage implements OnInit {
   async submitData() {
 
     if(this.postData.location == ""){
-      this.toastfunction("Please Select Location","danger");  
+      this.toastfunction("Please Select Location","danger");
       return false;
     }
 
@@ -190,28 +190,28 @@ export class FinalplanningPage implements OnInit {
     }
     console.log(this.postData)
 
-      const headers = { 
-        'auth-id': localStorage.getItem('authid'), 
+      const headers = {
+        'auth-id': localStorage.getItem('authid'),
         'client-id': localStorage.getItem('clientid'),
         'user': localStorage.getItem('userid'),
         'password':localStorage.getItem('password') }
-      
+
       const loading = await this.loadingController.create({
         cssClass: 'my-custom-class',
         message: 'Please wait...',
         spinner:'dots'
-      });  
+      });
       await loading.present();
-      
+
       this.http.post<any>(this.dataUrl+'/api/finalplan',this.postData,{headers}).subscribe({
         next: async data => {
-          
+
           if(data.status == "success")
-          { 
-            loading.dismiss(); 
-            this.toastfunction(data.message,"success");         
+          {
+            loading.dismiss();
+            this.toastfunction(data.message,"success");
             this.scan();
-            this.tableData=[];  
+            this.tableData=[];
             this.tableDataTemp=[];
             this.dataArray=[];
             this.locationArray=[];
@@ -222,30 +222,30 @@ export class FinalplanningPage implements OnInit {
               "iteminfo": this.dataArray
             }
             this.selected=null;
-            this.modalDeleteData3=false; 
+            this.modalDeleteData3=false;
             this.totalmasterbatchwgt=0;
             this.totalexpectedbatchwgt=0;
             this.searchData="";
           }
           else
-          { 
-            loading.dismiss(); 
-            this.toastfunction(data.message,"danger");  
-            this.modalDeleteData3=false;          
-            
-          }              
+          {
+            loading.dismiss();
+            this.toastfunction(data.message,"danger");
+            this.modalDeleteData3=false;
+
+          }
         },
         error: errordata => {
           if(errordata.error.message){
-            loading.dismiss();                     
-            this.toastfunction(errordata.error.message,"danger");  
+            loading.dismiss();
+            this.toastfunction(errordata.error.message,"danger");
             }
             else{
               this.toastfunction("Invalid Company Url, Please Check in Home page","danger");
             }
         }
       });
-  
+
   }
 
 
@@ -256,16 +256,16 @@ export class FinalplanningPage implements OnInit {
     this.totalexpectedbatchwgt=0;
     this.dataArray=[];
     this.postData["iteminfo"]=[];
-    this.postData["location"]=event.value.name;    
+    this.postData["location"]=event.value.name;
     this.tableData=this.tableDataTemp.filter((x)=>{
       return x.location === event.value.name;
-    })  
+    })
     // this.tableData.map((x)=> {
     //   //  if(x.check){
     //   //   this.totalmouldqty+=parseFloat(x.mouldqty)
     //   //  }
     //   return x.check=false;
-    //   })  
+    //   })
   }
 
   ShiftChanged(event: {component: IonicSelectableComponent,value: any})
@@ -278,14 +278,14 @@ export class FinalplanningPage implements OnInit {
     const storage = parseInt(localStorage.getItem("your-data-key"));
     let date = new Date();
     const currentDate = date.setDate(date.getDate()); // Current date in milliseconds
-  
-    if (currentDate >= storage) {      
+
+    if (currentDate >= storage) {
       localStorage.removeItem("your-data-key");
       localStorage.removeItem("userid");
-      localStorage.removeItem("password"); 
-      this.router.navigate(["home"]);      
+      localStorage.removeItem("password");
+      this.router.navigate(["home"]);
     }
-  
+
   }
 
 
@@ -294,8 +294,8 @@ export class FinalplanningPage implements OnInit {
     this.router.navigate(['home']);
   }
 
-  selectRecord(data,event,index){ 
-    
+  selectRecord(data,event,index){
+
     if(event.detail.checked){
       this.tableData[index].check=true;
       // this.tableDataTemp[index].check=true;
@@ -315,7 +315,7 @@ export class FinalplanningPage implements OnInit {
         this.postData.iteminfo=this.dataArray;
        }
      })
-    }  
+    }
    }
 
 
@@ -335,13 +335,13 @@ export class FinalplanningPage implements OnInit {
 
   applyFilter(filterValue: string) {
       let filterValueLower = filterValue.toLowerCase();
-     
+
       if(filterValue === '') {
         // this.tableData=this.tableDataTemp;
         this.tableData=this.tableDataTemp.filter((x)=>{
           return x.location === this.postData["location"];
-        })    
-          
+        })
+
           // this.dataArray=[];
           // this.totalmasterbatchwgt=0;
           // this.totalexpectedbatchwgt=0;
@@ -355,7 +355,7 @@ export class FinalplanningPage implements OnInit {
 
         if(filterValue.length >= 3)
         {
-          this.tableData = this.tableData.filter((employee) => 
+          this.tableData = this.tableData.filter((employee) =>
           employee.cpdname.toLowerCase().includes(filterValueLower) ||
           employee.batid.toLowerCase().includes(filterValueLower) ||
           employee.masterbatchwgt.toLowerCase().includes(filterValueLower) ||
@@ -384,28 +384,28 @@ export class FinalplanningPage implements OnInit {
   prefill(index,item,e,type)
   {
     this.store=e.target.value;
-    this.tableData[index][type]="";      
+    this.tableData[index][type]="";
   }
 
   blured(index,item,e,type)
   {
     if(e.target.value == "")
     {
-      this.tableData[index][type]=this.store;       
+      this.tableData[index][type]=this.store;
     }
-    else 
-    {            
+    else
+    {
       if(e.target.type == "number")
       {
-        this.tableData[index][type]=parseInt(e.target.value);         
+        this.tableData[index][type]=parseInt(e.target.value);
       }
 
       if(e.target.type == "text")
       {
-        this.tableData[index][type]=e.target.value;        
-      }    
+        this.tableData[index][type]=e.target.value;
+      }
     }
-    
+
   }
 
 }

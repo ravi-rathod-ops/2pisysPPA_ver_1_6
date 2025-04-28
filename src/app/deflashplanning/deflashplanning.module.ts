@@ -7,7 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { DeflashplanningPageRoutingModule } from './deflashplanning-routing.module';
 
 import { DeflashplanningPage } from './deflashplanning.page';
-import { IonicSelectableModule } from 'ionic-selectable';
+import { IonicSelectableModule } from '@ionic-selectable/angular';
 
 import { ReactiveFormsModule } from '@angular/forms';
 

@@ -5,7 +5,7 @@ import { LoadingController } from '@ionic/angular';
 import { HttpClient } from '@angular/common/http';
 
 import { DatePipe } from '@angular/common';
-import {  IonicSelectableComponent } from 'ionic-selectable';
+import {  IonicSelectableComponent } from '@ionic-selectable/angular';
 
 import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
 
@@ -47,7 +47,7 @@ export class MixingplanningPage implements OnInit {
   totalbatchwgt=0;
   totalbatch:number=0;
   searchData="";
-  
+
   @ViewChild('selectComponent') selectComponent: IonicSelectableComponent;
   @ViewChild('selectComponent1') selectComponent1: IonicSelectableComponent;
 
@@ -55,41 +55,41 @@ export class MixingplanningPage implements OnInit {
 
     if(localStorage.getItem('userid') == null && localStorage.getItem('password') == null)
     {
-      this.router.navigate(["home"]);   
+      this.router.navigate(["home"]);
     }
 
-    this.checkStorage();    
+    this.checkStorage();
 
    }
 
    sort(colName,flag){
-    
+
     if(this.flag){
-      this.tableData.sort((a, b) => a[colName] > b[colName] ? 1 : a[colName] < b[colName] ? -1 : 0)  
+      this.tableData.sort((a, b) => a[colName] > b[colName] ? 1 : a[colName] < b[colName] ? -1 : 0)
       this.flag=false;
-      return false;   
+      return false;
     }
     if(!this.flag)
     {
-      this.tableData=this.tableData.reverse() 
+      this.tableData=this.tableData.reverse()
       this.flag=true
-      return false;      
+      return false;
     }
    }
 
 
    sort2(colName,flag){
-    
+
     if(this.flag2){
-      this.deleteData.sort((a, b) => a[colName] > b[colName] ? 1 : a[colName] < b[colName] ? -1 : 0)  
+      this.deleteData.sort((a, b) => a[colName] > b[colName] ? 1 : a[colName] < b[colName] ? -1 : 0)
       this.flag2=false;
-      return false;   
+      return false;
     }
     if(!this.flag2)
     {
-      this.deleteData=this.deleteData.reverse() 
+      this.deleteData=this.deleteData.reverse()
       this.flag2=true
-      return false;      
+      return false;
     }
    }
 
@@ -105,20 +105,20 @@ export class MixingplanningPage implements OnInit {
     if(event.detail.checked){
       for (let i = 0; i < items.length; i++) {
         let element = items[i];
-        element.checked = 'true';  
-        this.tableData[i].directfinal=1;    
+        element.checked = 'true';
+        this.tableData[i].directfinal=1;
       }
     }
     else
     {
       for (let i = 0; i < items.length; i++) {
         let element = items[i];
-        element.checked = 'false';  
-        this.tableData[i].directfinal=0;    
+        element.checked = 'false';
+        this.tableData[i].directfinal=0;
       }
     }
-    
-   
+
+
   }
 
   onChangeValue(data,index,item,type){
@@ -127,29 +127,29 @@ export class MixingplanningPage implements OnInit {
 
       this.tableData.map((x)=>{
         if(x.cpdname === item.cpdname){
-          x.batchwgt = parseFloat(batchwgt.toFixed(3));  
+          x.batchwgt = parseFloat(batchwgt.toFixed(3));
           x.stdbasepolywgt = parseFloat(data.target.value);
         }
       })
 
       this.tableDataTemp.map((x)=>{
         if(x.cpdname === item.cpdname){
-          x.batchwgt = parseFloat(batchwgt.toFixed(3));  
+          x.batchwgt = parseFloat(batchwgt.toFixed(3));
           x.stdbasepolywgt = parseFloat(data.target.value);
         }
       })
 
-      // this.tableData[index].batchwgt = parseFloat(batchwgt.toFixed(3));   
+      // this.tableData[index].batchwgt = parseFloat(batchwgt.toFixed(3));
       // this.tableData[index].stdbasepolywgt = parseFloat(data.target.value);
 
-      // this.tableDataTemp[index].batchwgt = parseFloat(batchwgt.toFixed(3));   
-      // this.tableDataTemp[index].stdbasepolywgt = parseFloat(data.target.value);   
+      // this.tableDataTemp[index].batchwgt = parseFloat(batchwgt.toFixed(3));
+      // this.tableDataTemp[index].stdbasepolywgt = parseFloat(data.target.value);
     }
     if(type == "batch")
     {
       // this.tableData[index].noofbatch = parseInt(data.target.value);
       // this.tableDataTemp[index].noofbatch = parseInt(data.target.value);
-      if(data.target.value!="NaN" && data.target.value!=""){       
+      if(data.target.value!="NaN" && data.target.value!=""){
         this.totalbatch=0;
         this.tableData.map((x)=>{
           if(x.cpdname === item.cpdname){
@@ -159,7 +159,7 @@ export class MixingplanningPage implements OnInit {
         })
       }
 
-      if(data.target.value!="NaN" && data.target.value!=""){       
+      if(data.target.value!="NaN" && data.target.value!=""){
         this.totalbatch=0;
         this.tableDataTemp.map((x)=>{
           if(x.cpdname === item.cpdname){
@@ -168,7 +168,7 @@ export class MixingplanningPage implements OnInit {
           this.totalbatch+=x.noofbatch
         })
       }
-      
+
     }
     if(type == "directfinal")
     {
@@ -176,7 +176,7 @@ export class MixingplanningPage implements OnInit {
 
       this.tableDataTemp[index].directfinal = data.detail.checked ? 1 : 0;
     }
-     
+
   }
 
   async scan() {
@@ -186,8 +186,8 @@ export class MixingplanningPage implements OnInit {
       spinner:'dots'
     });
     await loading.present();
-  const headers = { 
-    'auth-id': localStorage.getItem('authid'), 
+  const headers = {
+    'auth-id': localStorage.getItem('authid'),
     'client-id': localStorage.getItem('clientid'),
     'user': localStorage.getItem('userid'),
     'password':localStorage.getItem('password') }
@@ -197,7 +197,7 @@ export class MixingplanningPage implements OnInit {
           // data.message["locations"]=["2PI"]
           for (var key of Object.keys(data.message)) {
             if(key != "locations" && key != "numshifts"){
-      
+
               data.message[key].basepolyratio=parseFloat(data.message[key].basepolyratio)
               data.message[key].batchtotwgt=parseFloat(data.message[key].batchtotwgt)
               data.message[key].batchwgt=parseFloat(data.message[key].batchwgt)
@@ -210,7 +210,7 @@ export class MixingplanningPage implements OnInit {
               this.totalbatchwgt+=data.message[key].batchwgt;
 
               this.tableData.push(data.message[key])
-              this.tableDataTemp.push(data.message[key])              
+              this.tableDataTemp.push(data.message[key])
             }
             if(key == "locations"){
               // if(data.message["locations"].length == 1){
@@ -220,9 +220,9 @@ export class MixingplanningPage implements OnInit {
               // else{
                 data.message["locations"].map((x)=>{
                   this.locationArray.push({name:x,value:x});
-                })    
+                })
               // }
-                       
+
             }
 
             if(key=="numshifts"){
@@ -230,25 +230,25 @@ export class MixingplanningPage implements OnInit {
               for(let i=1;i<=parseInt(data.message[key]);i++){
                 this.shiftArray.push({name:i,value:i})
               }
-              
+
               this.selectedShift=this.shiftArray[0];
               this.postData.shift=parseInt(this.selectedShift.value);
             }
 
-          
-            
-          }         
+
+
+          }
           if(this.locationArray.length == 1){
             this.selected=this.locationArray[0];
             this.postData["location"]=this.locationArray[0].name;
           }
 
-          loading.dismiss();          
+          loading.dismiss();
         },
         error: errordata => {
           if(errordata.error.message){
-            loading.dismiss();         
-            this.toastfunction(errordata.error.message,"danger");  
+            loading.dismiss();
+            this.toastfunction(errordata.error.message,"danger");
             }
             else{
               this.toastfunction("Invalid Company Url, Please Check in Home page","danger");
@@ -256,13 +256,13 @@ export class MixingplanningPage implements OnInit {
         }
       });
 
-   
+
   }
 
   async callPlan(){
 
     // if(this.postData.location == ""){
-    //   this.toastfunction("Please Select Location","danger");  
+    //   this.toastfunction("Please Select Location","danger");
     //   return false;
     // }
 
@@ -285,12 +285,12 @@ export class MixingplanningPage implements OnInit {
   async submitData() {
 
     if(this.postData.location == ""){
-      this.toastfunction("Please Select Location","danger");  
+      this.toastfunction("Please Select Location","danger");
       return false;
     }
 
-    
-   
+
+
     this.tableDataTemp.map((x)=>{
       if(x.noofbatch > 0){
         this.dataArray.push({
@@ -299,38 +299,38 @@ export class MixingplanningPage implements OnInit {
           "numbatches":x.noofbatch,
           "isdirectfinal":x.directfinal
         })
-     }    
+     }
     })
 
     if(this.postData.iteminfo.length <= 0){
-      this.toastfunction("Please put any batches","danger");  
+      this.toastfunction("Please put any batches","danger");
       return false;
     }
 
     console.log(this.postData)
 
-      const headers = { 
-        'auth-id': localStorage.getItem('authid'), 
+      const headers = {
+        'auth-id': localStorage.getItem('authid'),
         'client-id': localStorage.getItem('clientid'),
         'user': localStorage.getItem('userid'),
         'password':localStorage.getItem('password') }
-      
+
       const loading = await this.loadingController.create({
         cssClass: 'my-custom-class',
         message: 'Please wait...',
         spinner:'dots'
-      });  
+      });
       await loading.present();
-      
+
       this.http.post<any>(this.dataUrl+'/api/mixplan',this.postData,{headers}).subscribe({
         next: async data => {
-          
+
           if(data.status == "success")
-          { 
-            loading.dismiss(); 
-            this.toastfunction(data.message,"success");         
+          {
+            loading.dismiss();
+            this.toastfunction(data.message,"success");
             this.scan();
-            this.tableData=[];  
+            this.tableData=[];
             this.tableDataTemp=[];
             this.dataArray=[];
             this.locationArray=[];
@@ -341,70 +341,70 @@ export class MixingplanningPage implements OnInit {
               "iteminfo": this.dataArray
             }
             this.selected=null;
-            this.modalDeleteData3=false; 
+            this.modalDeleteData3=false;
             this.totalbatch=0;
             this.searchData="";
           }
           else
-          { 
-            loading.dismiss(); 
-            this.toastfunction(data.message,"danger");  
-            this.modalDeleteData3=false;          
-            
-          }              
+          {
+            loading.dismiss();
+            this.toastfunction(data.message,"danger");
+            this.modalDeleteData3=false;
+
+          }
         },
         error: errordata => {
           if(errordata.error.message){
-            loading.dismiss();                     
-            this.toastfunction(errordata.error.message,"danger");  
+            loading.dismiss();
+            this.toastfunction(errordata.error.message,"danger");
             }
             else{
               this.toastfunction("Invalid Company Url, Please Check in Home page","danger");
             }
         }
       });
-  
+
   }
 
   mode="";
   async deleteList() {
-   
+
     // if(this.postData.location !=""){
-      const headers = { 
-        'auth-id': localStorage.getItem('authid'), 
+      const headers = {
+        'auth-id': localStorage.getItem('authid'),
         'client-id': localStorage.getItem('clientid'),
         'user': localStorage.getItem('userid'),
         'password':localStorage.getItem('password') }
-      
+
       const loading = await this.loadingController.create({
         cssClass: 'my-custom-class',
         message: 'Please wait...',
         spinner:'dots'
-      });  
+      });
       await loading.present();
       // this.dataUrl+'/api/cancelmixplan'+this.mode+this.postData.location
       this.http.get<any>(this.dataUrl+'/api/cancelmixplan'+this.mode,{headers}).subscribe({
         next: async data => {
-          
+
           if(data.status == "success")
-          { 
+          {
             this.deleteData=data.message;
             this.deleteData.map((x)=>{
               return x.planqty=parseFloat(x.planqty)
             })
             this.modalDeleteData=true;
-            loading.dismiss(); 
+            loading.dismiss();
           }
           else
           {
-            loading.dismiss(); 
+            loading.dismiss();
             this.modalDeleteData=true;
           }
         },
         error: errordata => {
           if(errordata.error.message){
-            loading.dismiss();                     
-            // this.toastfunction(errordata.error.message,"danger");  
+            loading.dismiss();
+            // this.toastfunction(errordata.error.message,"danger");
             this.modalDeleteData=true;
             }
             else{
@@ -416,7 +416,7 @@ export class MixingplanningPage implements OnInit {
     // else{
     //   this.toastfunction("Please Select Operator","danger");
     // }
-      
+
   }
 
   async callDeflashing(data){
@@ -425,44 +425,44 @@ export class MixingplanningPage implements OnInit {
   }
 
   async deleteDeflashing() {
-    
-   
 
-      const headers = { 
-        'auth-id': localStorage.getItem('authid'), 
+
+
+      const headers = {
+        'auth-id': localStorage.getItem('authid'),
         'client-id': localStorage.getItem('clientid'),
         'user': localStorage.getItem('userid'),
         'password':localStorage.getItem('password') }
-      
+
       const loading = await this.loadingController.create({
         cssClass: 'my-custom-class',
         message: 'Please wait...',
         spinner:'dots'
-      });  
+      });
 
       await loading.present();
-      
+
       this.http.post<any>(this.dataUrl+'/api/cancelmixplan/'+this.currentItem.batid,"",{headers}).subscribe({
         next: async data => {
-          
+
           if(data.status == "success")
-          { 
-            loading.dismiss(); 
-            this.toastfunction(data.message,"success");         
-            this.deleteList();  
-            this.modalDeleteData2=false;         
+          {
+            loading.dismiss();
+            this.toastfunction(data.message,"success");
+            this.deleteList();
+            this.modalDeleteData2=false;
           }
           else
-          { 
-            loading.dismiss(); 
-            this.toastfunction(data.message,"danger");   
-            this.modalDeleteData2=false;                     
-          }              
+          {
+            loading.dismiss();
+            this.toastfunction(data.message,"danger");
+            this.modalDeleteData2=false;
+          }
         },
         error: errordata => {
           if(errordata.error.message){
-            loading.dismiss();                     
-            this.toastfunction(errordata.error.message,"danger");  
+            loading.dismiss();
+            this.toastfunction(errordata.error.message,"danger");
             }
             else{
               this.toastfunction("Invalid Company Url, Please Check in Home page","danger");
@@ -470,8 +470,8 @@ export class MixingplanningPage implements OnInit {
         }
       });
 
-    
-  
+
+
   }
 
 
@@ -490,14 +490,14 @@ export class MixingplanningPage implements OnInit {
     const storage = parseInt(localStorage.getItem("your-data-key"));
     let date = new Date();
     const currentDate = date.setDate(date.getDate()); // Current date in milliseconds
-  
-    if (currentDate >= storage) {      
+
+    if (currentDate >= storage) {
       localStorage.removeItem("your-data-key");
       localStorage.removeItem("userid");
-      localStorage.removeItem("password"); 
-      this.router.navigate(["home"]);      
+      localStorage.removeItem("password");
+      this.router.navigate(["home"]);
     }
-  
+
   }
 
 
@@ -506,14 +506,14 @@ export class MixingplanningPage implements OnInit {
     this.router.navigate(['home']);
   }
 
-  // selectDate(e){    
+  // selectDate(e){
   //   this.postData["issdate"]=this.currentDate;
   // }
 
-  selectRecord(data,event){ 
+  selectRecord(data,event){
 
     if(data.noofbatch === ""){
-      this.toastfunction("Please Enter Batch Count","danger");            
+      this.toastfunction("Please Enter Batch Count","danger");
       return false;
     }
     if(event.detail.checked){
@@ -555,7 +555,7 @@ export class MixingplanningPage implements OnInit {
       } else {
         if(filterValue.length >= 3)
         {
-          this.tableData = this.tableData.filter((employee) => 
+          this.tableData = this.tableData.filter((employee) =>
           employee.cpdname.toLowerCase().includes(filterValueLower));
         }
     }
@@ -570,28 +570,28 @@ export class MixingplanningPage implements OnInit {
   prefill(index,item,e,type)
   {
     this.store=e.target.value;
-    this.tableData[index][type]="";      
+    this.tableData[index][type]="";
   }
 
   blured(index,item,e,type)
   {
     if(e.target.value == "")
     {
-      this.tableData[index][type]=this.store;       
+      this.tableData[index][type]=this.store;
     }
-    else 
-    {            
+    else
+    {
       if(e.target.type == "number")
       {
-        this.tableData[index][type]=parseInt(e.target.value);         
+        this.tableData[index][type]=parseInt(e.target.value);
       }
 
       if(e.target.type == "text")
       {
-        this.tableData[index][type]=e.target.value;        
-      }    
+        this.tableData[index][type]=e.target.value;
+      }
     }
-    
+
   }
 
 

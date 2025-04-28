@@ -6,7 +6,7 @@ import { HttpClient } from '@angular/common/http';
 
 import { formatDate } from '@angular/common';
 
-import {  IonicSelectableComponent } from 'ionic-selectable';
+import {  IonicSelectableComponent } from '@ionic-selectable/angular';
 
 @Component({
   selector: 'app-deflashplanning',
@@ -38,14 +38,14 @@ export class DeflashplanningPage implements OnInit {
   currentItem:any;
   searchData="";
   totalmouldqty=0;
-  
+
   @ViewChild('selectComponent') selectComponent: IonicSelectableComponent;
 
   constructor(private router: Router,public toastController: ToastController,private http: HttpClient,public loadingController: LoadingController) {
 
     if(localStorage.getItem('userid') == null && localStorage.getItem('password') == null)
     {
-      this.router.navigate(["home"]);   
+      this.router.navigate(["home"]);
     }
 
     this.checkStorage();
@@ -53,32 +53,32 @@ export class DeflashplanningPage implements OnInit {
    }
 
    sort(colName,flag){
-    
+
     if(this.flag){
-      this.tableData.sort((a, b) => a[colName] > b[colName] ? 1 : a[colName] < b[colName] ? -1 : 0)  
+      this.tableData.sort((a, b) => a[colName] > b[colName] ? 1 : a[colName] < b[colName] ? -1 : 0)
       this.flag=false;
-      return false;   
+      return false;
     }
     if(!this.flag)
     {
-      this.tableData=this.tableData.reverse() 
+      this.tableData=this.tableData.reverse()
       this.flag=true
-      return false;      
+      return false;
     }
    }
-   
+
    sort2(colName,flag){
-    
+
     if(this.flag2){
-      this.deleteData.sort((a, b) => a[colName] > b[colName] ? 1 : a[colName] < b[colName] ? -1 : 0)  
+      this.deleteData.sort((a, b) => a[colName] > b[colName] ? 1 : a[colName] < b[colName] ? -1 : 0)
       this.flag2=false;
-      return false;   
+      return false;
     }
     if(!this.flag2)
     {
-      this.deleteData=this.deleteData.reverse() 
+      this.deleteData=this.deleteData.reverse()
       this.flag2=true
-      return false;      
+      return false;
     }
    }
 
@@ -93,9 +93,9 @@ export class DeflashplanningPage implements OnInit {
       message: 'Please wait...',
       spinner:'dots'
     });
-    
-  const headers = { 
-    'auth-id': localStorage.getItem('authid'), 
+
+  const headers = {
+    'auth-id': localStorage.getItem('authid'),
     'client-id': localStorage.getItem('clientid'),
     'user': localStorage.getItem('userid'),
     'password':localStorage.getItem('password') }
@@ -114,15 +114,15 @@ export class DeflashplanningPage implements OnInit {
                 this.operatorArray.push({name:x,value:x});
               })
             }
-            
+
           }
 
-          loading.dismiss();  
+          loading.dismiss();
         },
         error: errordata => {
           if(errordata.error.message){
-            loading.dismiss();         
-            this.toastfunction(errordata.error.message,"danger");  
+            loading.dismiss();
+            this.toastfunction(errordata.error.message,"danger");
             }
             else{
               this.toastfunction("Invalid Company Url, Please Check in Home page","danger");
@@ -130,7 +130,7 @@ export class DeflashplanningPage implements OnInit {
         }
       });
 
-   
+
   }
 
 
@@ -142,31 +142,31 @@ export class DeflashplanningPage implements OnInit {
       this.modalDeleteData3=false;
       return false;
     }
-    
+
     if(this.postData.operator !=""){
 
-      const headers = { 
-        'auth-id': localStorage.getItem('authid'), 
+      const headers = {
+        'auth-id': localStorage.getItem('authid'),
         'client-id': localStorage.getItem('clientid'),
         'user': localStorage.getItem('userid'),
         'password':localStorage.getItem('password') }
-      
+
       const loading = await this.loadingController.create({
         cssClass: 'my-custom-class',
         message: 'Please wait...',
         spinner:'dots'
-      });  
+      });
       await loading.present();
-      
+
       this.http.post<any>(this.dataUrl+'/api/deflashissue',this.postData,{headers}).subscribe({
         next: async data => {
-          
+
           if(data.status == "success")
-          { 
-            loading.dismiss(); 
-            this.toastfunction(data.message,"success");         
+          {
+            loading.dismiss();
+            this.toastfunction(data.message,"success");
             this.scan();
-            this.tableData=[];  
+            this.tableData=[];
             this.tableDataTemp=[];
             this.dataArray=[];
             this.operatorArray=[];
@@ -181,16 +181,16 @@ export class DeflashplanningPage implements OnInit {
             this.totalmouldqty=0;
           }
           else
-          { 
-            loading.dismiss(); 
-            this.toastfunction(data.message,"danger");           
-            
-          }              
+          {
+            loading.dismiss();
+            this.toastfunction(data.message,"danger");
+
+          }
         },
         error: errordata => {
           if(errordata.error.message){
-            loading.dismiss();                     
-            this.toastfunction(errordata.error.message,"danger");  
+            loading.dismiss();
+            this.toastfunction(errordata.error.message,"danger");
             }
             else{
               this.toastfunction("Invalid Company Url, Please Check in Home page","danger");
@@ -203,48 +203,48 @@ export class DeflashplanningPage implements OnInit {
       this.toastfunction("Please Select Operator","danger");
       this.modalDeleteData3=false;
     }
-  
+
   }
 
 
   async deleteList() {
-   
+
     if(this.postData.operator !=""){
-      const headers = { 
-        'auth-id': localStorage.getItem('authid'), 
+      const headers = {
+        'auth-id': localStorage.getItem('authid'),
         'client-id': localStorage.getItem('clientid'),
         'user': localStorage.getItem('userid'),
         'password':localStorage.getItem('password') }
-      
+
       const loading = await this.loadingController.create({
         cssClass: 'my-custom-class',
         message: 'Please wait...',
         spinner:'dots'
-      });  
+      });
       await loading.present();
-      
+
       this.http.get<any>(this.dataUrl+'/api/canceldeflashissue/'+this.postData.operator,{headers}).subscribe({
         next: async data => {
-          
+
           if(data.status == "success")
-          { 
+          {
             this.deleteData=data.message;
             this.deleteData.map((x)=>{
               return x.issqty=parseFloat(x.issqty)
             })
             this.modalDeleteData=true;
-            loading.dismiss(); 
+            loading.dismiss();
           }
           else
           {
-            loading.dismiss(); 
+            loading.dismiss();
             this.modalDeleteData=false;
           }
         },
         error: errordata => {
           if(errordata.error.message){
-            loading.dismiss();                     
-            this.toastfunction(errordata.error.message,"danger");  
+            loading.dismiss();
+            this.toastfunction(errordata.error.message,"danger");
             }
             else{
               this.toastfunction("Invalid Company Url, Please Check in Home page","danger");
@@ -255,7 +255,7 @@ export class DeflashplanningPage implements OnInit {
     else{
       this.toastfunction("Please Select Operator","danger");
     }
-      
+
   }
 
   async callDeflashing(data){
@@ -264,23 +264,23 @@ export class DeflashplanningPage implements OnInit {
   }
 
   async deleteDeflashing() {
-    
-   
 
-      const headers = { 
-        'auth-id': localStorage.getItem('authid'), 
+
+
+      const headers = {
+        'auth-id': localStorage.getItem('authid'),
         'client-id': localStorage.getItem('clientid'),
         'user': localStorage.getItem('userid'),
         'password':localStorage.getItem('password') }
-      
+
       const loading = await this.loadingController.create({
         cssClass: 'my-custom-class',
         message: 'Please wait...',
         spinner:'dots'
-      });  
+      });
 
       await loading.present();
-      
+
       this.http.post<any>(this.dataUrl+'/api/canceldeflashissue',
       {
         "defiss": this.currentItem.defiss,
@@ -289,25 +289,25 @@ export class DeflashplanningPage implements OnInit {
       },
     {headers}).subscribe({
         next: async data => {
-          
+
           if(data.status == "success")
-          { 
-            loading.dismiss(); 
-            this.toastfunction(data.message,"success");         
-            this.deleteList();  
-            this.modalDeleteData2=false;         
+          {
+            loading.dismiss();
+            this.toastfunction(data.message,"success");
+            this.deleteList();
+            this.modalDeleteData2=false;
           }
           else
-          { 
-            loading.dismiss(); 
-            this.toastfunction(data.message,"danger");   
-            this.modalDeleteData2=false;                     
-          }              
+          {
+            loading.dismiss();
+            this.toastfunction(data.message,"danger");
+            this.modalDeleteData2=false;
+          }
         },
         error: errordata => {
           if(errordata.error.message){
-            loading.dismiss();                     
-            this.toastfunction(errordata.error.message,"danger");  
+            loading.dismiss();
+            this.toastfunction(errordata.error.message,"danger");
             }
             else{
               this.toastfunction("Invalid Company Url, Please Check in Home page","danger");
@@ -315,8 +315,8 @@ export class DeflashplanningPage implements OnInit {
         }
       });
 
-    
-  
+
+
   }
 
 
@@ -330,14 +330,14 @@ export class DeflashplanningPage implements OnInit {
     const storage = parseInt(localStorage.getItem("your-data-key"));
     let date = new Date();
     const currentDate = date.setDate(date.getDate()); // Current date in milliseconds
-  
-    if (currentDate >= storage) {      
+
+    if (currentDate >= storage) {
       localStorage.removeItem("your-data-key");
       localStorage.removeItem("userid");
-      localStorage.removeItem("password"); 
-      this.router.navigate(["home"]);      
+      localStorage.removeItem("password");
+      this.router.navigate(["home"]);
     }
-  
+
   }
 
 
@@ -346,11 +346,11 @@ export class DeflashplanningPage implements OnInit {
     this.router.navigate(['home']);
   }
 
-  // selectDate(e){    
+  // selectDate(e){
   //   this.postData["issdate"]=this.currentDate;
   // }
 
-  selectRecord(data,event,index){ 
+  selectRecord(data,event,index){
 
     if(event.detail.checked){
       this.tableData[index].check=true;
@@ -371,7 +371,7 @@ export class DeflashplanningPage implements OnInit {
        }
      })
     }
-     this.postData['iteminfo']=this.dataArray;    
+     this.postData['iteminfo']=this.dataArray;
    }
 
 
@@ -405,10 +405,10 @@ export class DeflashplanningPage implements OnInit {
       } else {
         if(filterValue.length >= 3)
         {
-           this.tableData = this.tableData.filter((employee) => 
-              employee.cmpdname.includes(filterValueLower) || 
-              employee.cmpdrefno.toLowerCase().includes(filterValueLower) ||               
-              employee.planid.toLowerCase().includes(filterValueLower) || 
+           this.tableData = this.tableData.filter((employee) =>
+              employee.cmpdname.includes(filterValueLower) ||
+              employee.cmpdrefno.toLowerCase().includes(filterValueLower) ||
+              employee.planid.toLowerCase().includes(filterValueLower) ||
               employee.mouldqty.toString().includes(filterValueLower));
               // this.dataArray=[];
               // this.postData['iteminfo']=this.dataArray;

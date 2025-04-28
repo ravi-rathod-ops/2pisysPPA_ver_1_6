@@ -8,7 +8,7 @@ import { CalenderingplanningPageRoutingModule } from './calenderingplanning-rout
 
 import { CalenderingplanningPage } from './calenderingplanning.page';
 
-import { IonicSelectableModule } from 'ionic-selectable';
+import { IonicSelectableModule } from '@ionic-selectable/angular';
 
 import { ReactiveFormsModule } from '@angular/forms';
 

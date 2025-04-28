@@ -13,7 +13,7 @@ import { InAppBrowser, InAppBrowserOptions } from '@ionic-native/in-app-browser/
 import { Printer,PrintOptions } from '@ionic-native/printer/ngx/index';
 
 
-import {  IonicSelectableComponent } from 'ionic-selectable';
+import {  IonicSelectableComponent } from '@ionic-selectable/angular';
 import { Socket,SocketIoConfig  } from 'ngx-socket-io';
 
 import { BarcodeScanner } from '@ionic-native/barcode-scanner';
@@ -62,14 +62,14 @@ export class MouldingPage implements OnInit {
   pageUrl="";
 
   @ViewChild('selectComponent') selectComponent: IonicSelectableComponent;
-  
+
 
   constructor(public inappbrowser:InAppBrowser,private printer: Printer,private http: HttpClient,public loadingController: LoadingController,private screenOrientation: ScreenOrientation,public toastController: ToastController,private router: Router,
-    private formBuilder: FormBuilder,private socket: Socket,private file: File, private transfer: FileTransfer) { 
+    private formBuilder: FormBuilder,private socket: Socket,private file: File, private transfer: FileTransfer) {
 
     if(localStorage.getItem('userid') == null && localStorage.getItem('password') == null)
     {
-      this.router.navigate(["home"]);   
+      this.router.navigate(["home"]);
     }
     this.checkStorage();
     this.socketIp=localStorage.getItem("IPAddr");
@@ -95,8 +95,8 @@ export class MouldingPage implements OnInit {
       message: 'Please wait...',
       spinner:'dots'
     });
-    
-    const headers = { 
+
+    const headers = {
       'auth-id': localStorage.getItem('authid'),
       'client-id': localStorage.getItem('clientid'),
       'user': localStorage.getItem('userid'),
@@ -109,7 +109,7 @@ export class MouldingPage implements OnInit {
         this.datapass=data;
         this.datapassTemp=data;
         loading.dismiss();
-        
+
         this.datapass.message.filter((x,index)=>{
           x.group === "purchase" ? this.purchase = true : null;
           x.group === "production" ? this.production = true : null;
@@ -131,12 +131,12 @@ export class MouldingPage implements OnInit {
         //   item === "calendering" ? this.calendering = true : this.calendering =false;
         //   item === "final" ? this.final = true : this.final =false;
         // })
-        
+
       },
       error: errordata => {
         if(errordata.error.message){
-          loading.dismiss();         
-          this.toastfunction(errordata.error.message,"danger");  
+          loading.dismiss();
+          this.toastfunction(errordata.error.message,"danger");
           }
           else{
             this.toastfunction("Invalid Company Url, Please Check in Home page","danger");
@@ -164,23 +164,23 @@ export class MouldingPage implements OnInit {
     const storage = parseInt(localStorage.getItem("your-data-key"));
     let date = new Date();
     const currentDate = date.setDate(date.getDate()); // Current date in milliseconds
-    if (currentDate >= storage) {      
+    if (currentDate >= storage) {
       localStorage.removeItem("your-data-key");
       localStorage.removeItem("userid");
-      localStorage.removeItem("password"); 
-      this.router.navigate(["home"]);      
+      localStorage.removeItem("password");
+      this.router.navigate(["home"]);
     }
   }
 
   ReportChanged(event: {component: IonicSelectableComponent,value: any})
   {
-    this.dropdownObject=event.value == "Select" ? "": event.value;  
+    this.dropdownObject=event.value == "Select" ? "": event.value;
     let url=event.value.link;
-    url=url.replace("&amp;", "&");  
+    url=url.replace("&amp;", "&");
     this.datalist=event.value.link;
-    event.value.print == "1" ? this.showprinter = true : this.showprinter =false; 
-    event.value.credentials == "1" ? 
-    this.datalist=url+"?user="+localStorage.getItem('userid')+"&pass="+localStorage.getItem('password') : this.datalist=url; 
+    event.value.print == "1" ? this.showprinter = true : this.showprinter =false;
+    event.value.credentials == "1" ?
+    this.datalist=url+"?user="+localStorage.getItem('userid')+"&pass="+localStorage.getItem('password') : this.datalist=url;
     this.pageUrl=event.value.link;
     console.log(this.datalist);
     this.currentReport=event.value.name;
@@ -188,7 +188,7 @@ export class MouldingPage implements OnInit {
 
   scanData=null;
   async castData(type)
-  {    
+  {
     if(type == "open"){
       this.scanData = await BarcodeScanner.scan();
       // this.scanData = {text:"In-01"}
@@ -197,13 +197,13 @@ export class MouldingPage implements OnInit {
         this.socket.emit('newMessage', JSON.stringify({ "userName":this.socketIp,"messageContent": this.datalist, "roomName": this.scanData.text}));
       }
     }
-   
+
     if(type == "close"){
       this.socket.emit('subscribe', JSON.stringify({"userName":this.socketIp,"roomName":this.scanData.text}));
       this.socket.emit('newMessage', JSON.stringify({ "userName":this.socketIp,"messageContent": "", "roomName": this.scanData.text}));
       this.scanData=null;
     }
-    
+
   }
 
   navBack()
@@ -238,20 +238,20 @@ export class MouldingPage implements OnInit {
 
       // await Browser.open({ url: tempurl });
       window.open(tempurl)
-      loading.dismiss();  
-      
-    
+      loading.dismiss();
+
+
       // const fileTransfer: FileTransferObject = this.transfer.create();
       // this.file.createDir(this.file.externalRootDirectory, 'Download', true)
       // .then((resp) => {
       //   let path = resp.toURL();
       //   fileTransfer.download(tempurl, path + (this.currentReport+new Date().getMilliseconds()).split(/\s/).join('')+'.csv').then((entry) => {
       //     console.log('download complete: ' + entry.toURL());
-      //     loading.dismiss();  
+      //     loading.dismiss();
       //     this.toastfunction("File Saved Successfully!!!","success");
       //   }, (error) => {
       //     console.log(error)
-      //     loading.dismiss();  
+      //     loading.dismiss();
       //   });
       // }
 

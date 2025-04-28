@@ -1,143 +1,288 @@
-/////////////////////////////////
+// /////////////////////////////////
 
-.password {
-  -webkit-text-security: disc;
+// .password {
+//   -webkit-text-security: disc;
+// }
+// .inputStyle {
+//   font-size: 21px;
+// }
+
+// /////////////////////////
+
+// .grid1 {
+//   height: 100%;
+//   padding: 0px;
+// }
+
+// .contaier-login {
+//   // width: 90%;
+//   padding: 10px;
+//   background: #ffffff;
+//   border-radius: 5px;
+//   // box-shadow: 0px 0px 6px 0px #00709c30;
+//   position: absolute;
+//   top: 30%;
+//   // -webkit-box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, 0.75);
+//   // -moz-box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, 0.75);
+//   // box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, 0.75);
+// }
+
+// .row1 {
+//   height: 50%;
+//   background: linear-gradient(133deg, #3880ff 0%, rgb(0 112 156) 100%);
+//   background: -moz-linear-gradient(133deg, #3880ff 0%, rgb(0 112 156) 100%);
+//   background: -webkit-linear-gradient(133deg, #3880ff 0%, rgb(0 112 156) 100%);
+// }
+
+// .row2 {
+//   height: 50%;
+// }
+
+// ion-icon {
+//   margin-right: 15px;
+// }
+
+// ion-button {
+//   margin-top: 5px;
+//   margin-bottom: 15px;
+// }
+
+// ion-slide {
+//   width: 100%;
+//   height: 100%;
+//   position: relative !important;
+//   // top: 10% !important;
+//   background: linear-gradient(0deg, #00709c, white 53%);
+//   // animation-name: backanime;
+//   // animation-duration: 7s;
+//   // animation-iteration-count: infinite;
+// }
+
+// .img-container {
+//   display: flex;
+//   align-items: flex-start;
+//   justify-content: space-around;
+// }
+
+// .roundshadow {
+//   border-radius: 100%;
+//   box-shadow: 0px 4px 6px 0px #808080ad;
+// }
+
+// .textcolor {
+//   color: grey;
+//   font-family: fangsong;
+//   font-size: larger;
+// }
+
+// .icon-round {
+//   box-shadow: 0px 1px 5px #00709c;
+//   padding: 4%;
+//   border-radius: 100%;
+//   margin-left: 1%;
+// }
+
+// @keyframes backanime {
+//   10% {
+//     background: linear-gradient(0deg, #00709c, white 10%);
+//   }
+//   15% {
+//     background: linear-gradient(0deg, #00709c, white 15%);
+//   }
+//   20% {
+//     background: linear-gradient(0deg, #00709c, white 20%);
+//   }
+//   25% {
+//     background: linear-gradient(0deg, #00709c, white 25%);
+//   }
+//   30% {
+//     background: linear-gradient(0deg, #00709c, white 30%);
+//   }
+//   35% {
+//     background: linear-gradient(0deg, #00709c, white 35%);
+//   }
+//   40% {
+//     background: linear-gradient(0deg, #00709c, white 40%);
+//   }
+//   45% {
+//     background: linear-gradient(0deg, #00709c, white 45%);
+//   }
+//   50% {
+//     background: linear-gradient(0deg, #00709c, white 53%);
+//   }
+//   55% {
+//     background: linear-gradient(0deg, #00709c, white 53%);
+//   }
+//   60% {
+//     background: linear-gradient(0deg, #00709c, white 53%);
+//   }
+//   65% {
+//     background: linear-gradient(0deg, #00709c, white 53%);
+//   }
+//   70% {
+//     background: linear-gradient(0deg, #00709c, white 45%);
+//   }
+//   75% {
+//     background: linear-gradient(0deg, #00709c, white 40%);
+//   }
+//   80% {
+//     background: linear-gradient(0deg, #00709c, white 35%);
+//   }
+//   85% {
+//     background: linear-gradient(0deg, #00709c, white 30%);
+//   }
+//   90% {
+//     background: linear-gradient(0deg, #00709c, white 25%);
+//   }
+//   95% {
+//     background: linear-gradient(0deg, #00709c, white 20%);
+//   }
+//   100% {
+//     background: linear-gradient(0deg, #00709c, white 10%);
+//   }
+// }
+
+
+.login-content {
+  --background: linear-gradient(180deg, #00709c, #ffffff);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
 }
-.inputStyle {
-  font-size: 21px;
+
+
+.login-wrapper {
+  width: 90%;
+  max-width: 400px;
+  margin: auto;
+  background: white;
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 4px 12px rgba(0, 112, 156, 0.2);
+  position: relative;
+  top: 25%;
+  box-sizing: border-box;
+  justify-content: center;
+  align-items: center;
 }
 
-/////////////////////////
-
-.grid1 {
-  height: 100%;
-  padding: 0px;
+.logo-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
 }
 
-.contaier-login {
-  // width: 90%;
-  padding: 10px;
-  background: #ffffff;
-  border-radius: 5px;
-  // box-shadow: 0px 0px 6px 0px #00709c30;
-  position: absolute;
-  top: 30%;
-  // -webkit-box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, 0.75);
-  // -moz-box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, 0.75);
-  // box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, 0.75);
+.logo-img {
+  height: 100px;
+  width: 100px;
+  border-radius: 50%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-.row1 {
-  height: 50%;
-  background: linear-gradient(133deg, #3880ff 0%, rgb(0 112 156) 100%);
-  background: -moz-linear-gradient(133deg, #3880ff 0%, rgb(0 112 156) 100%);
-  background: -webkit-linear-gradient(133deg, #3880ff 0%, rgb(0 112 156) 100%);
+.welcome-text {
+  text-align: center;
+  color: #333;
+  margin-bottom: 20px;
 }
 
-.row2 {
-  height: 50%;
+.welcome-text h1 {
+  font-size: 24px;
+  margin: 5px 0;
+}
+
+.welcome-text p {
+  font-size: 14px;
+  color: #666;
+}
+
+.version {
+  font-size: 12px;
+  color: #00709c;
+}
+
+.input-item {
+  --border-color: transparent;
+  border-radius: 10px;
+  box-shadow: 0 1px 4px rgba(0, 112, 156, 0.15);
+  margin-bottom: 10px;
+  padding-left: 10px;
 }
 
 ion-icon {
-  margin-right: 15px;
+  color: #00709c;
+}
+
+.error-text {
+  font-size: 12px;
+  font-weight: bold;
+  margin: 0 10px 10px auto;
+  display: block;
+  text-align: right;
 }
 
 ion-button {
-  margin-top: 5px;
-  margin-bottom: 15px;
+  margin-top: 15px;
+  --background: #00709c;
+  --border-radius: 20px;
+  font-size: 16px;
+  font-weight: 600;
 }
 
-ion-slide {
-  width: 100%;
-  height: 100%;
-  position: relative !important;
-  // top: 10% !important;
-  background: linear-gradient(0deg, #00709c, white 53%);
-  // animation-name: backanime;
-  // animation-duration: 7s;
-  // animation-iteration-count: infinite;
+.icon-btn {
+  width: 40px;
+  height: 40px;
+  position: absolute;
+  z-index: 10;
 }
 
-.img-container {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-around;
+.refresh-icon {
+  top: 10px;
+  right: 60px;
 }
 
-.roundshadow {
-  border-radius: 100%;
-  box-shadow: 0px 4px 6px 0px #808080ad;
+.admin-icon {
+  top: 10px;
+  right: 10px;
 }
 
-.textcolor {
-  color: grey;
-  font-family: fangsong;
-  font-size: larger;
+.logo-icon{
+  top: 10px;
+  left: 10px;
 }
 
-.icon-round {
-  box-shadow: 0px 1px 5px #00709c;
-  padding: 4%;
-  border-radius: 100%;
-  margin-left: 1%;
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-@keyframes backanime {
-  10% {
-    background: linear-gradient(0deg, #00709c, white 10%);
+.login-form {
+  animation: fadeInUp 0.6s ease-in-out;
+}
+
+
+@media (max-width: 480px) {
+  .login-wrapper {
+    padding: 15px;
+    border-radius: 10px;
   }
-  15% {
-    background: linear-gradient(0deg, #00709c, white 15%);
+
+  .logo-img {
+    height: 80px;
+    width: 80px;
   }
-  20% {
-    background: linear-gradient(0deg, #00709c, white 20%);
+
+  .welcome-text h1 {
+    font-size: 20px;
   }
-  25% {
-    background: linear-gradient(0deg, #00709c, white 25%);
-  }
-  30% {
-    background: linear-gradient(0deg, #00709c, white 30%);
-  }
-  35% {
-    background: linear-gradient(0deg, #00709c, white 35%);
-  }
-  40% {
-    background: linear-gradient(0deg, #00709c, white 40%);
-  }
-  45% {
-    background: linear-gradient(0deg, #00709c, white 45%);
-  }
-  50% {
-    background: linear-gradient(0deg, #00709c, white 53%);
-  }
-  55% {
-    background: linear-gradient(0deg, #00709c, white 53%);
-  }
-  60% {
-    background: linear-gradient(0deg, #00709c, white 53%);
-  }
-  65% {
-    background: linear-gradient(0deg, #00709c, white 53%);
-  }
-  70% {
-    background: linear-gradient(0deg, #00709c, white 45%);
-  }
-  75% {
-    background: linear-gradient(0deg, #00709c, white 40%);
-  }
-  80% {
-    background: linear-gradient(0deg, #00709c, white 35%);
-  }
-  85% {
-    background: linear-gradient(0deg, #00709c, white 30%);
-  }
-  90% {
-    background: linear-gradient(0deg, #00709c, white 25%);
-  }
-  95% {
-    background: linear-gradient(0deg, #00709c, white 20%);
-  }
-  100% {
-    background: linear-gradient(0deg, #00709c, white 10%);
+
+  ion-button {
+    font-size: 14px;
   }
 }

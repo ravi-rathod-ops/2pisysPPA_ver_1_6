@@ -10,7 +10,9 @@ ion-card {
   
   ion-card:hover {
     transform: scale(1.02);
+    background-color: #e0f7ff;
   }
+
   
   .image {
     width: 100%;
@@ -25,6 +27,16 @@ ion-card {
     font-weight: bold;
     margin: 0;
   }
+
+  .logout-button {
+    // --background: #efffa8; /* Ionic primary blue */
+    --color: #070707;
+    font-weight: bold;
+    border-radius: 8px;
+    padding: 0 16px;
+    height: 40px;
+  }
+  
   
   /* Responsive */
   @media (min-width: 768px) {

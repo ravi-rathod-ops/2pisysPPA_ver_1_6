@@ -10,7 +10,7 @@ import { MouldingPage } from './moulding.page';
 import { ReactiveFormsModule } from '@angular/forms';
 import { YoutubePipe } from '../youtube.pipe';
 
-import { IonicSelectableModule } from 'ionic-selectable';
+import { IonicSelectableModule } from '@ionic-selectable/angular';
 
 // import { PdfViewerModule } from 'ng2-pdf-viewer';
 

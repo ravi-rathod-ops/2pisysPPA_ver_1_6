@@ -9,7 +9,7 @@ import { DispatchplanningPageRoutingModule } from './dispatchplanning-routing.mo
 import { DispatchplanningPage } from './dispatchplanning.page';
 import { DispatchplanningPipe } from '../dispatchplanning.pipe';
 
-import { IonicSelectableModule } from 'ionic-selectable';
+import { IonicSelectableModule } from '@ionic-selectable/angular';
 
 @NgModule({
   imports: [
