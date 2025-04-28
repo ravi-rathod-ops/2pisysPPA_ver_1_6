@@ -119,7 +119,8 @@
             "ci": {
               "progress": false,
               "watch": false
-            }
+            }, "production": {
+              "baseHref": "/",}
           }
         },
         "lint": {
