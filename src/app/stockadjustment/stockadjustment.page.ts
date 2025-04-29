@@ -5,7 +5,7 @@ import { IonInput, LoadingController } from '@ionic/angular';
 import { ToastController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-// import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
+import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
 import { zip } from 'rxjs';
 
 @Component({
@@ -37,7 +37,7 @@ export class StockadjustmentPage implements OnInit {
       remarks: ['',Validators.required],
       // pin: ['', Validators.required]
   });
-  // this.screenOrientation.unlock();
+  this.screenOrientation.unlock();
   }
 
    // convenience getter for easy access to form fields

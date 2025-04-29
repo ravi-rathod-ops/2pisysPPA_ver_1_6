@@ -1,40 +1,3 @@
-// #grid {
-//     margin: 4%;
-//   }
-  
-//   .avatar {
-//     height: 50px;
-//     width: 50px;
-//   }
-  
-//   .appfont {
-//     font-size: 17px;
-//   }
-  
-//   .labelStyle {
-//     float: right;
-//     // margin-right: 10%;
-//   }
-  
-//   .label {
-//     color: grey;
-//   }
-  
-//   .password {
-//     -webkit-text-security: disc;
-//     // border-bottom: 1px solid grey;
-//   }
-  
-//   .inputStyle {
-//     font-size: 21px;
-//     border: 1px solid #80808038;
-//     text-align: right;
-//     color: grey;
-//   }
-  
-//   .marginleft{
-//     margin-left: 2%;
-//   }
 
 .brand-logo {
   height: 40px;
@@ -53,6 +16,7 @@
   width: 50px;
   height: 50px;
   cursor: pointer;
+  margin-bottom: 0.5rem;
 }
 .table-header, .table-row {
   text-align: center;
@@ -100,6 +64,13 @@ ion-radio {
   padding: 0;
 }
 
+.qr-video {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
 /* Responsive tweaks */
 @media screen and (max-width: 576px) {
   .custom-radio-group {
@@ -111,6 +82,24 @@ ion-radio {
   .radio-option {
     width: 100%;
     justify-content: flex-start;
+  }
+
+  .input-scan-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+
+  ion-col {
+    text-align: center !important;
+  }
+
+  ion-item {
+    width: 100%;
+  }
+
+  ion-button {
+    width: 100%;
   }
 }
 
