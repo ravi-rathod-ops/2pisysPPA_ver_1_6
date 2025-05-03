@@ -1,4 +1,4 @@
-import { IonicSelectableModule } from '@ionic-selectable/angular';
+// import { IonicSelectableModule } from 'ionic-selectable';
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
@@ -19,6 +19,7 @@ import { Camera } from '@ionic-native/camera/ngx';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 // import { Printer} from '@awesome-cordova-plugins/printer/ngx';
 import { Printer } from '@ionic-native/printer/ngx/index';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 
 
@@ -44,8 +45,8 @@ const config: SocketIoConfig = { url: localStorage.getItem("IPAddr"), options: {
 
 @NgModule({
   declarations: [AppComponent, CalenderplanningPipe],
-  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, FormsModule,ReactiveFormsModule,HttpClientModule,CommonModule,IonicSelectableModule,
-    SocketIoModule.forRoot(config)],
+  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, FormsModule,ReactiveFormsModule,HttpClientModule,CommonModule,
+    SocketIoModule.forRoot(config),NgSelectModule],
   providers: [
     ScreenOrientation,Camera,FileTransfer,File,InAppBrowser,NetworkInterface,Printer,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },Chooser

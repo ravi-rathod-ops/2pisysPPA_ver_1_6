@@ -33,6 +33,34 @@
   font-size: 21px;
 }
 
+::ng-deep ng-select {
+  z-index: 9999 !important; /* Make sure it's on top */
+}
+
+::ng-deep .ng-dropdown-panel {
+  z-index: 9999 !important;
+  position: absolute !important;
+}
+
+::ng-deep ion-header {
+  overflow: visible !important;
+  z-index: 1000;
+}
+
+::ng-deep .ng-select {
+  width: 100%;
+  max-width: 400px; /* or any suitable width */
+  z-index: 1050 !important; 
+  overflow: visible !important;
+}
+
+::ng-deep .ng-select .ng-select-container {
+  min-height: 40px;
+  border-radius: 4px;
+  z-index: 1050 !important; 
+  overflow: visible !important;
+}
+
 @media print {
   #header {
     display: none;

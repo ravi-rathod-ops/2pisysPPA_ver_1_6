@@ -53,13 +53,10 @@ export class WidgetsPage implements OnInit {
 
   logout() {
 
-    console.log('Logout clicked!');
-    // Clear user data (example)
-    localStorage.clear(); // or clear your auth tokens/session storage
-
-    // Optionally show a toast or alert
-    // Then navigate to Home
-    this.navCtrl.navigateRoot('/home'); 
+    localStorage.removeItem("userid");
+    localStorage.removeItem("password");
+    localStorage.removeItem("your-data-key");
+    this.router.navigate(["home"]);
   }
 
 }

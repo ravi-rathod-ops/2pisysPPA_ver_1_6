@@ -15,6 +15,7 @@ import { IonicSelectableModule } from '@ionic-selectable/angular';
 // import { PdfViewerModule } from 'ng2-pdf-viewer';
 
 import { HTTP } from '@ionic-native/http/ngx';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 
 @NgModule({
@@ -24,7 +25,7 @@ import { HTTP } from '@ionic-native/http/ngx';
     IonicModule,
     MouldingPageRoutingModule,
     ReactiveFormsModule,
-    IonicSelectableModule,
+    NgSelectModule,
     // PdfViewerModule
   ],
   declarations: [MouldingPage,YoutubePipe],

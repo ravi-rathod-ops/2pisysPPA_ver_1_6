@@ -5,19 +5,50 @@
           <img src="./assets/image/status.png" height="25" width="25">
           <b style="font-size: 20px;">&nbsp;&nbsp;Status</b>
         </div>
-        <ion-buttons *ngIf="datapassTemp.length > 0">
-          <ionic-selectable
-                #selectComponent
-                [(ngModel)]="selected"
-                [items]="datapassTemp"
-                itemValueField="link"
-                itemTextField="name"
-                [canSearch]="true"
-                (onChange)="ReportChanged($event)"
-                searchFailText= "Report not found"
-                placeholder="Select Report">
+        <!-- <ion-item>
+          <ng-container *ngIf="datapassTemp.length > 0">
+            <ionic-selectable
+              #selectComponent
+              [(ngModel)]="selected"
+              [items]="datapassTemp"
+              itemValueField="link"
+              itemTextField="name"
+              [canSearch]="true"
+              (onChange)="ReportChanged($event)"
+              searchFailText="Report not found"
+              
+              [isMultiple]="true">
             </ionic-selectable>
-        </ion-buttons>
+          </ng-container>
+        </ion-item>   -->
+        
+        <!-- #selectComponent -->
+        <ng-container *ngIf="datapassTemp.length > 0">
+          <ng-select
+            [(ngModel)]="selected"
+            [items]="datapassTemp"
+            bindLabel="name"
+            bindValue="link"
+            (change)="ReportChanged($event)"
+            placeholder="📊 Select Report"
+            [searchable]="false"
+            appendTo="body" 
+          >
+            <ng-template ng-header>
+              <div class="dropdown-header">📑 Available Reports</div>
+            </ng-template>
+            <ng-template ng-label-tmp let-item="item">
+              <span class="selected-item">{{ item.name }}</span>
+            </ng-template>
+            <ng-template ng-option-tmp let-item="item" let-index="index">
+              <div class="option-item">
+                <i class="fas fa-file-alt"></i>
+                {{ item.name }}
+              </div>
+            </ng-template>
+          </ng-select>
+        </ng-container>
+        
         <ion-buttons slot="end">
 
           <ion-fab style="margin-left: -100%;">

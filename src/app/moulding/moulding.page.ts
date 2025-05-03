@@ -38,14 +38,14 @@ import { FileTransfer, FileTransferObject } from '@ionic-native/file-transfer/ng
 export class MouldingPage implements OnInit {
 
   datapass: any={};
-  datapassTemp=[];
+  datapassTemp:any[]=[];
   dataUrl=localStorage.getItem('url');
   registerForm: FormGroup;
   brandImage="";
   datalist;
   showprinter=false;
   dropdownObject="";
-  selected = [];
+  selected:any = [];
   socketIp='';
   showMenu=true;
   category=[];
@@ -106,7 +106,7 @@ export class MouldingPage implements OnInit {
 
     this.http.get<any>(this.dataUrl+"/api/reportlinks",{headers}).subscribe({
       next: async data => {
-        this.datapass=data;
+       this.datapass=data;
         this.datapassTemp=data;
         loading.dismiss();
 
@@ -172,19 +172,20 @@ export class MouldingPage implements OnInit {
     }
   }
 
-  ReportChanged(event: {component: IonicSelectableComponent,value: any})
+  ReportChanged(event: any)
   {
-    this.dropdownObject=event.value == "Select" ? "": event.value;
-    let url=event.value.link;
+    this.dropdownObject=event == "Select" ? "": event;
+    let url=event.link;
     url=url.replace("&amp;", "&");
-    this.datalist=event.value.link;
-    event.value.print == "1" ? this.showprinter = true : this.showprinter =false;
-    event.value.credentials == "1" ?
+    this.datalist=event.link;
+    event.print == "1" ? this.showprinter = true : this.showprinter =false;
+    event.credentials == "1" ?
     this.datalist=url+"?user="+localStorage.getItem('userid')+"&pass="+localStorage.getItem('password') : this.datalist=url;
-    this.pageUrl=event.value.link;
+    this.pageUrl=event.link;
     console.log(this.datalist);
-    this.currentReport=event.value.name;
+    this.currentReport=event.name;
   }
+
 
   scanData=null;
   async castData(type)
