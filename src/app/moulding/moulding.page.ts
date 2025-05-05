@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import {  Component, Input, OnInit, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { LoadingController } from '@ionic/angular';
 import { ToastController } from '@ionic/angular';
@@ -16,7 +16,8 @@ import { Printer,PrintOptions } from '@ionic-native/printer/ngx/index';
 import {  IonicSelectableComponent } from '@ionic-selectable/angular';
 import { Socket,SocketIoConfig  } from 'ngx-socket-io';
 
-import { BarcodeScanner } from '@ionic-native/barcode-scanner';
+// import { BarcodeScanner } from '@ionic-native/barcode-scanner';
+import { BrowserMultiFormatReader, IScannerControls } from '@zxing/browser';
 
 // import * as FileSaver from 'file-saver';
 // import * as XLSX from 'xlsx';
@@ -60,10 +61,12 @@ export class MouldingPage implements OnInit {
   final=false;
   currentReport="";
   pageUrl="";
+  scanData: any | null = null;
+codeReader = new BrowserMultiFormatReader();
+controls: IScannerControls | null = null;
+isModalOpen = false;
 
   @ViewChild('selectComponent') selectComponent: IonicSelectableComponent;
-
-
   constructor(public inappbrowser:InAppBrowser,private printer: Printer,private http: HttpClient,public loadingController: LoadingController,private screenOrientation: ScreenOrientation,public toastController: ToastController,private router: Router,
     private formBuilder: FormBuilder,private socket: Socket,private file: File, private transfer: FileTransfer) {
 
@@ -85,65 +88,76 @@ export class MouldingPage implements OnInit {
       actlift: ['', Validators.required],
       pin: ['', Validators.required]
   });
-  }
+  }  
    // convenience getter for easy access to form fields
    get f() { return this.registerForm.controls; }
 
-  async scan() {
+   async scan() {
+    const codeReader = new BrowserMultiFormatReader();
     const loading = await this.loadingController.create({
       cssClass: 'my-custom-class',
       message: 'Please wait...',
-      spinner:'dots'
+      spinner: 'dots'
     });
-
-    const headers = {
-      'auth-id': localStorage.getItem('authid'),
-      'client-id': localStorage.getItem('clientid'),
-      'user': localStorage.getItem('userid'),
-      'password':localStorage.getItem('password') }
-
-  // this.dataUrl+"/api/reportlinks/"+localStorage.getItem('userid')
-
-    this.http.get<any>(this.dataUrl+"/api/reportlinks",{headers}).subscribe({
-      next: async data => {
-       this.datapass=data;
-        this.datapassTemp=data;
-        loading.dismiss();
-
-        this.datapass.message.filter((x,index)=>{
-          x.group === "purchase" ? this.purchase = true : null;
-          x.group === "production" ? this.production = true : null;
-          x.group === "despatch" ? this.despatch = true : null;
-          x.group === "mixing" ? this.mixing = true : null;
-          x.group === "deflashing" ? this.deflashing = true : null;
-          x.group === "inspection" ? this.inspection = true : null;
-          x.group === "calendering" ? this.calendering = true : null;
-          x.group === "final" ? this.final = true : null;
-        })
-        // this.category=this.category.filter((item,index)=> {
-
-        //   item == "purchase" ? this.purchase = true : this.purchase =false;
-        //   item === "production" ? this.production = true : this.production =false;
-        //   item === "despatch" ? this.despatch = true : this.despatch =false;
-        //   item === "mixing" ? this.mixing = true : this.mixing =false;
-        //   item === "deflashing" ? this.deflashing = true : this.deflashing =false;
-        //   item === "inspection" ? this.inspection = true : this.inspection =false;
-        //   item === "calendering" ? this.calendering = true : this.calendering =false;
-        //   item === "final" ? this.final = true : this.final =false;
-        // })
-
-      },
-      error: errordata => {
-        if(errordata.error.message){
-          loading.dismiss();
-          this.toastfunction(errordata.error.message,"danger");
-          }
-          else{
-            this.toastfunction("Invalid Company Url, Please Check in Home page","danger");
-          }
+    await loading.present();
+  
+    try {
+      const videoInputDevices = await BrowserMultiFormatReader.listVideoInputDevices();
+  
+      if (videoInputDevices.length === 0) {
+        await loading.dismiss();
+        this.toastfunction('No camera device found on this device.', 'danger');
+        return;
       }
-    });
+  
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: { deviceId: videoInputDevices[0].deviceId } });
+        stream.getTracks().forEach(track => track.stop()); 
+      } catch (err) {
+        await loading.dismiss();
+        this.toastfunction('Camera permission is required to scan.', 'danger');
+        return;
+      }
+  
+      const headers = {
+        'auth-id': localStorage.getItem('authid')!,
+        'client-id': localStorage.getItem('clientid')!,
+        'user': localStorage.getItem('userid')!,
+        'password': localStorage.getItem('password')!
+      };
+  
+      this.http.get<any>(this.dataUrl + "/api/reportlinks", { headers }).subscribe({
+        next: async data => {
+          this.datapass = data;
+          this.datapassTemp = data;
+          loading.dismiss();
+  
+          this.datapass.message.filter(x => {
+            x.group === "purchase" ? this.purchase = true : null;
+            x.group === "production" ? this.production = true : null;
+            x.group === "despatch" ? this.despatch = true : null;
+            x.group === "mixing" ? this.mixing = true : null;
+            x.group === "deflashing" ? this.deflashing = true : null;
+            x.group === "inspection" ? this.inspection = true : null;
+            x.group === "calendering" ? this.calendering = true : null;
+            x.group === "final" ? this.final = true : null;
+          });
+        },
+        error: errordata => {
+          loading.dismiss();
+          if (errordata.error?.message) {
+            this.toastfunction(errordata.error.message, "danger");
+          } else {
+            this.toastfunction("Invalid Company Url, Please Check in Home page", "danger");
+          }
+        }
+      });
+    } catch (err) {
+      await loading.dismiss();
+      this.toastfunction("Error while checking camera devices.", "danger");
+    }
   }
+  
 
   print() { this.printer.print(); }
 
@@ -187,25 +201,128 @@ export class MouldingPage implements OnInit {
   }
 
 
-  scanData=null;
-  async castData(type)
-  {
-    if(type == "open"){
-      this.scanData = await BarcodeScanner.scan();
-      // this.scanData = {text:"In-01"}
-      if(this.scanData.text.length > 0){
-        this.socket.emit('subscribe', JSON.stringify({"userName":this.socketIp,"roomName":this.scanData.text}));
-        this.socket.emit('newMessage', JSON.stringify({ "userName":this.socketIp,"messageContent": this.datalist, "roomName": this.scanData.text}));
+  
+  async castData(type: 'open' | 'close') {
+    if (type === 'open') {
+      this.isModalOpen = true;
+  
+      setTimeout(async () => { 
+        try {
+          const devices = await BrowserMultiFormatReader.listVideoInputDevices();
+  
+          if (devices.length === 0) {
+            this.toastfunction('No camera device found.', 'danger');
+            return;
+          }
+  
+          try {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: { deviceId: devices[0].deviceId } });
+            stream.getTracks().forEach(track => track.stop());
+          } catch (err) {
+            this.toastfunction('Camera permission is required.', 'danger');
+            return;
+          }
+  
+          const selectedDeviceId = devices[0].deviceId;
+          this.codeReader.decodeFromVideoDevice(selectedDeviceId, 'video-preview', (result, error, controls) => {
+            if (result) {
+              this.scanData = result;
+              this.controls = controls;
+              controls.stop();
+  
+              const room = result.getText();
+              if (room) {
+                this.socket.emit('subscribe', JSON.stringify({
+                  userName: this.socketIp,
+                  roomName: room
+                }));
+                this.socket.emit('newMessage', JSON.stringify({
+                  userName: this.socketIp,
+                  messageContent: this.datalist,
+                  roomName: room
+                }));
+              }
+  
+              this.isModalOpen = false;
+            }
+          });
+  
+        } catch (error) {
+          this.toastfunction('Error accessing the camera.', 'danger');
+        }
+      });
+    }
+  
+    if (type === 'close') {
+      if (this.scanData?.getText()) {
+        const room = this.scanData.getText();
+        this.socket.emit('subscribe', JSON.stringify({
+          userName: this.socketIp,
+          roomName: room
+        }));
+        this.socket.emit('newMessage', JSON.stringify({
+          userName: this.socketIp,
+          messageContent: '',
+          roomName: room
+        }));
       }
+  
+      if (this.controls) {
+        this.controls.stop();
+        this.controls = null;
+      }
+  
+      this.scanData = null;
+      this.isModalOpen = false;
     }
-
-    if(type == "close"){
-      this.socket.emit('subscribe', JSON.stringify({"userName":this.socketIp,"roomName":this.scanData.text}));
-      this.socket.emit('newMessage', JSON.stringify({ "userName":this.socketIp,"messageContent": "", "roomName": this.scanData.text}));
-      this.scanData=null;
-    }
-
   }
+  
+  closeModal() {
+    this.castData('close');
+  }
+
+// async castData(type: 'open' | 'close') {
+//   if (type === 'open') {
+//     const modal = await this.modalCtrl.create({
+//       component: QrScannerModalComponent,
+//     });
+
+//     modal.onDidDismiss().then((res) => {
+//       const room = res.data;
+//       if (room) {
+//         this.scanData = { getText: () => room }; // simulate scanData object
+
+//         this.socket.emit('subscribe', JSON.stringify({
+//           userName: this.socketIp,
+//           roomName: room
+//         }));
+//         this.socket.emit('newMessage', JSON.stringify({
+//           userName: this.socketIp,
+//           messageContent: this.datalist,
+//           roomName: room
+//         }));
+//       }
+//     });
+
+//     await modal.present();
+//   }
+
+//   if (type === 'close') {
+//     if (this.scanData?.getText()) {
+//       const room = this.scanData.getText();
+//       this.socket.emit('subscribe', JSON.stringify({
+//         userName: this.socketIp,
+//         roomName: room
+//       }));
+//       this.socket.emit('newMessage', JSON.stringify({
+//         userName: this.socketIp,
+//         messageContent: '',
+//         roomName: room
+//       }));
+//     }
+//     this.scanData = null;
+//   }
+// }
 
   navBack()
   {

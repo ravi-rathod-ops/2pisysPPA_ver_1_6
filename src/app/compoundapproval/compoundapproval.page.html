@@ -22,8 +22,7 @@
         <ion-row class="ion-align-items-center input-scan-row">
           <ion-col size="12" size-md="2" class="ion-text-center">
             <img src="./assets/image/qr-scan.png" alt="Scanner" (click)="scan()" class="qr-icon" />
-            <video #video width="100%" height="auto" autoplay muted playsinline class="qr-video"></video>
-          </ion-col>
+          </ion-col>          
           <ion-col size="12" size-md="7">
             <ion-item>
               <ion-input [(ngModel)]="planid" placeholder="Enter Planid"></ion-input>
@@ -115,3 +114,21 @@
   
 
 </ion-content>
+
+<!-- Modal (shown only if scanning is active) -->
+<div class="custom-modal" *ngIf="isScanModalOpen">
+  <ion-header>
+    <ion-toolbar>
+      <ion-title>Scan QR</ion-title>
+      <ion-buttons slot="end">
+        <ion-button (click)="closeScanModal()">Close</ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content>
+    <div class="video-container">
+      <video #video autoplay></video>
+    </div>
+  </ion-content>
+</div>

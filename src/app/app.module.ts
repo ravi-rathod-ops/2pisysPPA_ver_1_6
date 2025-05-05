@@ -36,7 +36,7 @@ if(localStorage.getItem('IPAddr') != null)
 }
 else
 {
-  localStorage.setItem("IPAddr","192.168.1.100:3000")
+  localStorage.setItem("IPAddr","ppa.2pisys.com:3000")
 }
 
 

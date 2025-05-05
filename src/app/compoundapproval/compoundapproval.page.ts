@@ -16,7 +16,7 @@ import { ElementRef } from '@angular/core';
   styleUrls: ['./compoundapproval.page.scss'],
 })
 export class CompoundapprovalPage implements OnInit {
-  @ViewChild('video') video: ElementRef<HTMLVideoElement>;
+
   
   planid: any="";
   modaldata:any;
@@ -33,6 +33,10 @@ if (stream) {
   stream.getTracks().forEach(track => track.stop());
   this.video.nativeElement.srcObject = null;
 }
+@ViewChild('video', { static: false }) video: ElementRef;
+  isScanModalOpen = false;
+codeReader = new BrowserMultiFormatReader();
+
 
 
 
@@ -98,29 +102,121 @@ if (stream) {
    
   // }
 
+  // async scan() {
+  
+  //   try {
+  //     const result: Result = await this.codeReader.decodeOnceFromVideoDevice(undefined, this.video.nativeElement);
+  //     const scannedText = result.getText();
+  
+  //     if (scannedText.length > 0) {
+  //       const loading = await this.loadingController.create({
+  //         cssClass: 'my-custom-class',
+  //         message: 'Please wait...',
+  //         spinner: 'dots'
+  //       });
+  
+  //       await loading.present();
+  
+  //       const headers = {
+  //         'auth-id': localStorage.getItem('authid'),
+  //         'client-id': localStorage.getItem('clientid'),
+  //         'user': localStorage.getItem('userid'),
+  //         'password': localStorage.getItem('password')
+  //       };
+  
+  //       this.http.get<any>(`${this.dataUrl}/api/approvecpd/${scannedText}`, { headers }).subscribe({
+  //         next: async data => {
+  //           this.datapass = data.message;
+  //           this.rmDetails = data.message.paramdata;
+  //           this.showEntryCard = true;
+  //           this.approval("1");
+  //           loading.dismiss();
+  //           this.registerForm.reset();
+  
+  //           // ✅ Stop the camera stream
+  //           const stream = this.video.nativeElement.srcObject as MediaStream;
+  //           if (stream) {
+  //             stream.getTracks().forEach(track => track.stop());
+  //             this.video.nativeElement.srcObject = null;
+  //           }
+  
+  //           setTimeout(() => {
+  //             this.myInputField.setFocus();
+  //           }, 700);
+  //         },
+  //         error: errordata => {
+  //           loading.dismiss();
+  //           this.showEntryCard = false;
+  //           this.toastfunction(
+  //             errordata?.error?.message || "Invalid Company Url, Please Check in Home page",
+  //             "danger"
+  //           );
+  //           this.registerForm.reset();
+  
+  //           // ✅ Stop the camera stream on error
+  //           const stream = this.video.nativeElement.srcObject as MediaStream;
+  //           if (stream) {
+  //             stream.getTracks().forEach(track => track.stop());
+  //             this.video.nativeElement.srcObject = null;
+  //           }
+  //         }
+  //       });
+  //     }
+  //   } catch (err) {
+  //     console.error('Scan error:', err);
+  //     this.toastfunction("Camera access denied or scanning cancelled.", "danger");
+  
+  //     // ✅ Stop the camera stream on any error
+  //     const stream = this.video.nativeElement.srcObject as MediaStream;
+  //     if (stream) {
+  //       stream.getTracks().forEach(track => track.stop());
+  //       this.video.nativeElement.srcObject = null;
+  //     }
+  //   }
+  // }
+  
+
+  // ================
   async scan() {
-    const codeReader = new BrowserMultiFormatReader();
-  
+    // Check for camera availability first
+    const devices = await navigator.mediaDevices.enumerateDevices();
+    const hasVideoInput = devices.some(device => device.kind === 'videoinput');
+
+    if (!hasVideoInput) {
+      this.toastfunction('No camera device found. Please connect a camera.', 'danger');
+      return;
+    }
+
+    this.isScanModalOpen = true;
+
+    setTimeout(() => {
+      this.startScanning();
+    }, 300);
+  }
+
+  async startScanning() {
     try {
-      const result: Result = await codeReader.decodeOnceFromVideoDevice(undefined, this.video.nativeElement);
+      const result: Result = await this.codeReader.decodeOnceFromVideoDevice(
+        undefined,
+        this.video.nativeElement
+      );
       const scannedText = result.getText();
-  
-      if (scannedText.length > 0) {
+
+      if (scannedText) {
         const loading = await this.loadingController.create({
           cssClass: 'my-custom-class',
           message: 'Please wait...',
           spinner: 'dots'
         });
-  
         await loading.present();
-  
+
         const headers = {
           'auth-id': localStorage.getItem('authid'),
           'client-id': localStorage.getItem('clientid'),
           'user': localStorage.getItem('userid'),
           'password': localStorage.getItem('password')
         };
-  
+
         this.http.get<any>(`${this.dataUrl}/api/approvecpd/${scannedText}`, { headers }).subscribe({
           next: async data => {
             this.datapass = data.message;
@@ -129,49 +225,40 @@ if (stream) {
             this.approval("1");
             loading.dismiss();
             this.registerForm.reset();
-  
-            // ✅ Stop the camera stream
-            const stream = this.video.nativeElement.srcObject as MediaStream;
-            if (stream) {
-              stream.getTracks().forEach(track => track.stop());
-              this.video.nativeElement.srcObject = null;
-            }
-  
-            setTimeout(() => {
-              this.myInputField.setFocus();
-            }, 700);
+            this.stopScan();
+            setTimeout(() => this.myInputField.setFocus(), 700);
           },
-          error: errordata => {
+          error: err => {
             loading.dismiss();
             this.showEntryCard = false;
             this.toastfunction(
-              errordata?.error?.message || "Invalid Company Url, Please Check in Home page",
+              err?.error?.message || "Invalid Company Url, Please Check in Home page",
               "danger"
             );
             this.registerForm.reset();
-  
-            // ✅ Stop the camera stream on error
-            const stream = this.video.nativeElement.srcObject as MediaStream;
-            if (stream) {
-              stream.getTracks().forEach(track => track.stop());
-              this.video.nativeElement.srcObject = null;
-            }
+            this.stopScan();
           }
         });
       }
     } catch (err) {
       console.error('Scan error:', err);
       this.toastfunction("Camera access denied or scanning cancelled.", "danger");
-  
-      // ✅ Stop the camera stream on any error
-      const stream = this.video.nativeElement.srcObject as MediaStream;
-      if (stream) {
-        stream.getTracks().forEach(track => track.stop());
-        this.video.nativeElement.srcObject = null;
-      }
+      this.stopScan();
     }
   }
-  
+
+  stopScan() {
+    const stream = this.video?.nativeElement?.srcObject as MediaStream;
+    if (stream) {
+      stream.getTracks().forEach(track => track.stop());
+      this.video.nativeElement.srcObject = null;
+    }
+    this.isScanModalOpen = false;
+  }
+
+  closeScanModal() {
+    this.stopScan();
+  }
   
   
 

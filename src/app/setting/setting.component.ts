@@ -29,7 +29,7 @@ export class SettingComponent implements OnInit {
   clientid="ppa";
   toggle="false";
   brandImage="";
-  socketIp="192.168.1.100:3000";
+  socketIp="ppa.2pisys.com:3000";
  
   constructor(private http: HttpClient,public camera:Camera,public loadingController: LoadingController,private screenOrientation: ScreenOrientation,public toastController: ToastController,private router: Router,private formBuilder: FormBuilder) { 
     if(localStorage.getItem('url') != null)

@@ -32,6 +32,7 @@
             (change)="ReportChanged($event)"
             placeholder="📊 Select Report"
             [searchable]="false"
+            [clearable]="false"
             appendTo="body" 
           >
             <ng-template ng-header>
@@ -61,7 +62,7 @@
               </ion-fab-button>
               <ion-fab-button *ngIf="selected.length != 0 && scanData == null">
                 <ion-img src="./assets/image/cast.png" style="width: 35px;height: 35px;vertical-align: middle;float: right;" (click)="castData('open')" ></ion-img> 
-              </ion-fab-button>
+              </ion-fab-button>              
               <ion-fab-button *ngIf="scanData != null">
                 <ion-img src="./assets/image/delete.png" style="width: 35px;height: 35px;vertical-align: middle;float: right;" (click)="castData('close')" ></ion-img> 
               </ion-fab-button>
@@ -173,3 +174,20 @@
   </ion-grid>
 
 </ion-content>
+
+<ion-modal [isOpen]="isModalOpen" (didDismiss)="closeModal()">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>Scan QR</ion-title>
+        <ion-buttons slot="end">
+          <ion-button (click)="castData('close')">Close</ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content>
+      <video id="video-preview" width="100%" height="auto"></video>
+    </ion-content>
+  </ng-template>
+</ion-modal>
