@@ -9,9 +9,9 @@ import { FinalplanningPageRoutingModule } from './finalplanning-routing.module';
 import { FinalplanningPage } from './finalplanning.page';
 import { FinalplanningPipe } from '../finalplanning.pipe';
 
-import { IonicSelectableModule } from '@ionic-selectable/angular';
 
 import { ReactiveFormsModule } from '@angular/forms';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 @NgModule({
   imports: [
@@ -19,7 +19,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     FormsModule,
     IonicModule,
     FinalplanningPageRoutingModule,
-    IonicSelectableModule,
+    NgSelectModule,
     ReactiveFormsModule
   ],
   declarations: [FinalplanningPage, FinalplanningPipe]

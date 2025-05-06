@@ -60,12 +60,12 @@
     background-color: #fefefe;
     margin: auto;
     padding: 0;
-    width: 98%;
+    width: 50%;
     box-shadow: 0 4px 8px 0 rgb(0 0 0 / 20%), 0 6px 20px 0 rgb(0 0 0 / 19%);
     animation-name: animatetop;
     animation-duration: 0.4s;
     top: 1%;
-    margin-left: 1%;
+    margin-left: 25%;
 }
 
 .modal-content2 {
@@ -152,4 +152,10 @@ ion-row.ios.hydrated {
   --padding-end: 0;
   --padding-bottom: 0px;
   --padding-start: 0px;
+}
+
+@media (min-width: 768px) {
+  .modal-content {
+    width: 50%;
+  }
 }

@@ -8,9 +8,9 @@ import { MixingplanningPageRoutingModule } from './mixingplanning-routing.module
 
 import { MixingplanningPage } from './mixingplanning.page';
 
-import { IonicSelectableModule } from '@ionic-selectable/angular';
 
 import { ReactiveFormsModule } from '@angular/forms';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 @NgModule({
   imports: [
@@ -18,7 +18,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     FormsModule,
     IonicModule,
     MixingplanningPageRoutingModule,
-    IonicSelectableModule,
+    NgSelectModule,
     ReactiveFormsModule
   ],
   declarations: [MixingplanningPage]

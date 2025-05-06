@@ -475,14 +475,14 @@ export class MixingplanningPage implements OnInit {
   }
 
 
-  OperatorChanged(event: {component: IonicSelectableComponent,value: any})
+  OperatorChanged(event: any)
   {
-    this.postData["location"]=event.value.name;
+    this.postData["location"]=event.name;
   }
 
-  ShiftChanged(event: {component: IonicSelectableComponent,value: any})
+  ShiftChanged(event: any)
   {
-    this.postData["shift"]=parseInt(event.value.name);
+    this.postData["shift"]=parseInt(event.name);
   }
 
 

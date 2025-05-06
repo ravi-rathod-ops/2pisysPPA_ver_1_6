@@ -136,33 +136,59 @@
   </div>
   <div class="modal-body" style="text-align: center;">
     <ion-row nowrap class="ion-align-items-center">
-      <ion-col size="2">  
-          <ion-label style="font-size: small;color: grey;">Shift</ion-label>            
-          <ionic-selectable
-                #selectComponent1
-                [(ngModel)]="selectedShift"
-                [items]="shiftArray"
-                itemValueField="value"
-                itemTextField="name"
-                [canSearch]="true"
-                (onChange)="ShiftChanged($event)"
-                searchFailText= "Shift not found"
-                placeholder="Select Shift">
-          </ionic-selectable>        
+      <ion-col size="2">
+        <ng-select
+          [(ngModel)]="selectedShift"
+          [items]="shiftArray"
+          bindLabel="name"
+          bindValue="value"
+          (change)="ShiftChanged($event)"
+          placeholder="📊 Select Shift"
+          [searchable]="true"
+          [clearable]="false"
+          searchFailText= "Shift not found"
+          >
+          <ng-template ng-header>
+            <div class="dropdown-header">📑 Available Shift</div>
+          </ng-template>
+          <ng-template ng-label-tmp let-item="item">
+            <span class="selected-item">{{ item.name }}</span>
+          </ng-template>
+          <ng-template ng-option-tmp let-item="item" let-index="index">
+            <div class="option-item">
+              <i class="fas fa-file-alt"></i>
+              {{ item.name }}
+            </div>
+          </ng-template>
+        </ng-select>
       </ion-col>
-      <ion-col size="4">
-          <ion-label style="font-size: small;color: grey;">Location</ion-label>               
-          <ionic-selectable
-                #selectComponent
-                [(ngModel)]="selected"
-                [items]="locationArray"
-                itemValueField="value"
-                itemTextField="name"
-                [canSearch]="true"
-                (onChange)="OperatorChanged($event)"
-                searchFailText= "Operator not found"
-                placeholder="Select Location">
-            </ionic-selectable>        
+
+      <ion-col size="4">            
+            <ng-select
+          [(ngModel)]="selected"
+          [items]="locationArray"
+          bindLabel="name"
+          bindValue="value"
+          (change)="OperatorChanged($event)"
+          placeholder="📊 Select Location"
+          [searchable]="true"
+          [clearable]="false"
+          searchFailText= "Location not found"
+          >
+          <ng-template ng-header>
+            <div class="dropdown-header">📑 Available Location</div>
+          </ng-template>
+          <ng-template ng-label-tmp let-item="item">
+            <span class="selected-item">{{ item.name }}</span>
+          </ng-template>
+          <ng-template ng-option-tmp let-item="item" let-index="index">
+            <div class="option-item">
+              <i class="fas fa-file-alt"></i>
+              {{ item.name }}
+            </div>
+          </ng-template>
+        </ng-select>
+            
       </ion-col>
       <ion-col size="5">              
         <ion-col>

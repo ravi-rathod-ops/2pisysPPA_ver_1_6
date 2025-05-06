@@ -135,7 +135,7 @@ export class FinalplanningPage implements OnInit {
               this.postData.shift=parseInt(this.selectedShift.value);
             }
           }
-          if(this.locationArray.length == 1){
+          if(this.locationArray.length == 1){ 
             this.totalmasterbatchwgt=0;
             this.totalexpectedbatchwgt=0;
             this.dataArray=[];
@@ -250,15 +250,15 @@ export class FinalplanningPage implements OnInit {
 
 
 
-  OperatorChanged(event: {component: IonicSelectableComponent,value: any})
+  OperatorChanged(event: any)
   {
     this.totalmasterbatchwgt=0;
     this.totalexpectedbatchwgt=0;
     this.dataArray=[];
     this.postData["iteminfo"]=[];
-    this.postData["location"]=event.value.name;
+    this.postData["location"]=event.name;
     this.tableData=this.tableDataTemp.filter((x)=>{
-      return x.location === event.value.name;
+      return x.location === event.name;
     })
     // this.tableData.map((x)=> {
     //   //  if(x.check){
@@ -268,9 +268,9 @@ export class FinalplanningPage implements OnInit {
     //   })
   }
 
-  ShiftChanged(event: {component: IonicSelectableComponent,value: any})
+  ShiftChanged(event: any)
   {
-    this.postData["shift"]=parseInt(event.value.name);
+    this.postData["shift"]=parseInt(event.name);
   }
 
 
