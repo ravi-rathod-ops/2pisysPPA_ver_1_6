@@ -8,6 +8,7 @@ import { MouldingplanningPageRoutingModule } from './mouldingplanning-routing.mo
 
 import { MouldingplanningPage } from './mouldingplanning.page';
 import { IonicSelectableModule } from '@ionic-selectable/angular';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 @NgModule({
   imports: [
@@ -15,7 +16,7 @@ import { IonicSelectableModule } from '@ionic-selectable/angular';
     FormsModule,
     IonicModule,
     MouldingplanningPageRoutingModule,
-    IonicSelectableModule
+    NgSelectModule
   ],
   declarations: [MouldingplanningPage]
 })

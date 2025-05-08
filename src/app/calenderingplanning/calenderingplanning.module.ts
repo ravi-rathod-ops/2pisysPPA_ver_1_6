@@ -11,6 +11,7 @@ import { CalenderingplanningPage } from './calenderingplanning.page';
 import { IonicSelectableModule } from '@ionic-selectable/angular';
 
 import { ReactiveFormsModule } from '@angular/forms';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 @NgModule({
   imports: [
@@ -18,7 +19,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     FormsModule,
     IonicModule,
     CalenderingplanningPageRoutingModule,
-    IonicSelectableModule,
+    NgSelectModule,
     ReactiveFormsModule
   ],
   declarations: [CalenderingplanningPage]

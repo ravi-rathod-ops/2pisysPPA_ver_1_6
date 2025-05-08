@@ -320,9 +320,9 @@ export class DeflashplanningPage implements OnInit {
   }
 
 
-  OperatorChanged(event: {component: IonicSelectableComponent,value: any})
+  OperatorChanged(event: any)
   {
-    this.postData["operator"]=event.value.name;
+    this.postData["operator"]=event.name;
   }
 
 

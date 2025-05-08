@@ -10,13 +10,14 @@ import { DeflashplanningPage } from './deflashplanning.page';
 import { IonicSelectableModule } from '@ionic-selectable/angular';
 
 import { ReactiveFormsModule } from '@angular/forms';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    IonicSelectableModule,
+    NgSelectModule,
     DeflashplanningPageRoutingModule,
     ReactiveFormsModule
   ],

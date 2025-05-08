@@ -453,9 +453,9 @@ export class CalenderingplanningPage implements OnInit {
   //   this.postData["location"]=event.value.name;
   // }
 
-  ShiftChanged(event: {component: IonicSelectableComponent,value: any})
+  ShiftChanged(event: any)
   {
-    this.postData["shift"]=parseInt(event.value.name);
+    this.postData["shift"]=parseInt(event.name);
   }
 
 

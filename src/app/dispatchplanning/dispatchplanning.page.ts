@@ -84,7 +84,7 @@ export class DispatchplanningPage implements OnInit {
 
       if(this.mode){
         let datass=this.sampleArray.filter((x)=>{
-          return x.cmpdid == data.value.value;
+          return x.cmpdid == data.value;
         })
 
         this.tableData[index].cmpdid = datass[0].cmpdid;
@@ -95,7 +95,7 @@ export class DispatchplanningPage implements OnInit {
         console.log(this.tableData);
       }
       else{
-        this.tableData[index].cmpdid = data.value.value;
+        this.tableData[index].cmpdid = data.value;
       }
 
     }
@@ -219,107 +219,87 @@ export class DispatchplanningPage implements OnInit {
 
   excelData=[];
   fileObj:ChooserResult;
-  pickfile(){
-    this.chooser.getFile().then((value:ChooserResult)=>{
-      let val=value.dataURI.split(",");
-      this.fileObj = value;
-      let a=atob(val[1])
-
-      var array = a.split("\n");
-      var headers=["cmpdid","didesc","diqty"]
-
-      for(var i=0;i<array.length;i++){
-        let obj;
-        if(array[i] != ""){
-          obj = {};
-          var currentline=array[i].split(",");
-          let  chkval=this.componentArray.some(el => el.name === currentline[0])
-          let  comName=this.componentArray.filter(el => el.name === currentline[0])
-          if(chkval){
-
-            if(!this.mode){
-
-              for(var j=0;j<headers.length;j++){
-                if(currentline.length == 2){
-                  obj["cmpdid"]=comName[0].value;
-                  obj["didesc"]="";
-                  let a=currentline[1];
-                  a=a.replace("\r","")
-                  obj["diqty"]=parseInt(a)
-                }
-                if(currentline.length == 3){
-                  obj["cmpdid"]=comName[0].value;
-                  obj["didesc"]=currentline[1]
-                  let a=currentline[2];
-                  a=a.replace("\r","")
-                  obj["diqty"]=parseInt(a)
-                }
-              }
-
-            }
-            else{
-
-              for(var j=0;j<headers.length;j++){
-
-
-                  obj["cmpdid"]=comName[0].value;
-                  obj["didesc"]=currentline[1]
-                  let a=currentline[2];
-                  a=a.replace("\r","")
-                  obj["diqty"]=parseInt(a)
-
-                  let arr=this.sampleArray.filter((x)=>{
-                    return x.cmpdname === currentline[0]
-                  })
-
-                  console.log(arr)
-
-                  if(arr[0].soref != currentline[1]){
-                    this.toastfunction("DI not match with "+currentline[0],"danger");
-                    this.modalDeleteData2=false;
-                    return false;
-                  }
-
-                  if(parseInt(currentline[2]) > parseInt(arr[0].penqty)){
-                    this.toastfunction("DI Qty : "+currentline[2]+" is greater then : "+arr[0].penqty+" for "+currentline[0],"danger");
-                    this.modalDeleteData2=false;
-                    return false;
-                  }
-              }
-
-            }
-
-
-
-
-          }
-          else{
-            this.toastfunction("No Such Part Number for "+currentline[0],"danger");
-            this.modalDeleteData2=false;
-            return false;
-          }
-
+   pickFile(event: any) {
+    const file = event.target.files[0];
+  
+    if (!file) {
+      this.toastfunction("No file selected", "danger");
+      return;
+    }
+  
+    const reader = new FileReader();
+  
+    reader.onload = () => {
+      const text = reader.result as string;
+      const lines = text.split("\n");
+      const headers = ["cmpdid", "didesc", "diqty"];
+  
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i].trim();
+        if (!line) continue;
+  
+        const currentline = line.split(",");
+        let obj: any = {};
+        const partNumber = currentline[0];
+        const component = this.componentArray.find(el => el.name === partNumber);
+  
+        if (!component) {
+          this.toastfunction("No Such Part Number for " + partNumber, "danger");
+          this.modalDeleteData2 = false;
+          return;
         }
-
-        if(this.selectedCustomer === "" || this.selectedCustomer == undefined){
-          this.toastfunction("Please Select Customer","danger");
-        }else{
-          // this.tableData.push(obj);
-          if(obj != undefined){
-            this.excelData.push(obj)
+  
+        if (!this.mode) {
+          obj["cmpdid"] = component.value;
+          obj["didesc"] = currentline.length === 3 ? currentline[1] : "";
+          obj["diqty"] = parseInt(currentline[currentline.length - 1].replace("\r", ""));
+        } else {
+          const arr = this.sampleArray.filter(x => x.cmpdname === partNumber);
+          if (!arr.length) {
+            this.toastfunction("No match in sample array for " + partNumber, "danger");
+            this.modalDeleteData2 = false;
+            return;
           }
-
-          console.log(this.tableData)
-          this.modalDeleteData2=true;
+  
+          if (arr[0].soref !== currentline[1]) {
+            this.toastfunction("DI not match with " + partNumber, "danger");
+            this.modalDeleteData2 = false;
+            return;
+          }
+  
+          const qty = parseInt(currentline[2].replace("\r", ""));
+          if (qty > parseInt(arr[0].penqty)) {
+            this.toastfunction(
+              `DI Qty: ${qty} is greater than ${arr[0].penqty} for ${partNumber}`,
+              "danger"
+            );
+            this.modalDeleteData2 = false;
+            return;
+          }
+  
+          obj["cmpdid"] = component.value;
+          obj["didesc"] = currentline[1];
+          obj["diqty"] = qty;
         }
-
-
+  
+        if (this.selectedCustomer === "" || this.selectedCustomer === undefined) {
+          this.toastfunction("Please Select Customer", "danger");
+        } else {
+          this.excelData.push(obj);
+          this.modalDeleteData2 = true;
+        }
       }
-
-    },(err)=>{
-      alert(JSON.stringify(err))
-    })
+  
+      console.log("Excel Data:", this.excelData);
+    };
+  
+    reader.onerror = () => {
+      this.toastfunction("Error reading file", "danger");
+    };
+  
+    reader.readAsText(file);
   }
+  
 
   getComponentValue(data){
     let a=this.componentArray.filter((x)=>{ return x.name === data})
@@ -434,9 +414,9 @@ export class DispatchplanningPage implements OnInit {
   }
 
 
-  async CustomerChanged(event: {component: IonicSelectableComponent,value: any})
+  async CustomerChanged(event:  any)
   {
-    this.postData["cusid"]=event.value.value;
+    this.postData["cusid"]=event.value;
     const loading = await this.loadingController.create({
       cssClass: 'my-custom-class',
       message: 'Please wait...',
@@ -450,7 +430,7 @@ export class DispatchplanningPage implements OnInit {
       'user': localStorage.getItem('userid'),
       'password':localStorage.getItem('password') }
 
-      let data=!this.mode ? event.value.value: event.value.value+"/so"
+      let data=!this.mode ? event.value: event.value+"/so"
       this.componentArray=[];
       this.http.get<any>(this.dataUrl+"/api/despatchplan/"+data,{headers}).subscribe({
         next: async data => {

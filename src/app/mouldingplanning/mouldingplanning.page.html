@@ -10,22 +10,33 @@
 </ion-header>
 
 <ion-content>
-
   <ion-grid>   
-
     <ion-row nowrap class="ion-align-items-center">
-      <ion-col size="6">          
-        <ionic-selectable
-              #selectComponent  
-              [(ngModel)]="selected"           
+      <ion-col size="6" *ngIf="locationArray.length > 0">          
+         <ng-select
+              [(ngModel)]="selected"
               [items]="locationArray"
-              itemValueField="value"
-              itemTextField="name"
-              [canSearch]="true"
-              (onChange)="OperatorChanged($event,'location')"
-              searchFailText= "Operator not found"
-              placeholder="Select Location">
-          </ionic-selectable>  
+              bindLabel="name"
+              bindValue="value"
+              (change)="OperatorChanged($event,'location')"
+              placeholder="📊 Select Location"
+              [searchable]="true"
+              [clearable]="false"
+              searchFailText= "Location not found"
+              >
+              <ng-template ng-header>
+                <div class="dropdown-header">📑 Available Location</div>
+              </ng-template>
+              <ng-template ng-label-tmp let-item="item">
+                <span class="selected-item">{{ item.name }}</span>
+              </ng-template>
+              <ng-template ng-option-tmp let-item="item" let-index="index">
+                <div class="option-item">
+                  <i class="fas fa-file-alt"></i>
+                  {{ item.name }}
+                </div>
+              </ng-template>
+            </ng-select>
     </ion-col> 
     <ion-col size="4">                    
       <ion-label style="font-size: small;color: grey;">Date </ion-label> 
@@ -74,18 +85,31 @@
   
         <ion-row nowrap class="headers" *ngFor="let x of tableData;index as i">
           <ion-col size="3" class="single-border" tappable>
-            <ionic-selectable
-                #selectComponent1  
-                [(ngModel)]="x.bind"                        
-                [items]="componentArray"
-                itemValueField="value"
-                [hasVirtualScroll]="true"
-                itemTextField="name"
-                [canSearch]="true"
-                (onChange)="onChangeValue($event,i)"
-                searchFailText= "Component not found"
-                placeholder="Component">
-          </ionic-selectable>        
+            
+          <ng-select
+              [(ngModel)]="x.bind"
+              [items]="componentArray"
+              bindLabel="name"
+              bindValue="value"
+              (change)="onChangeValue($event,i)"
+              placeholder="📊 Select Component"
+              [searchable]="true"
+              [clearable]="false"
+              searchFailText= "Component not found"
+              >
+              <ng-template ng-header>
+                <div class="dropdown-header">📑 Available Component</div>
+              </ng-template>
+              <ng-template ng-label-tmp let-item="item">
+                <span class="selected-item">{{ item.name }}</span>
+              </ng-template>
+              <ng-template ng-option-tmp let-item="item" let-index="index">
+                <div class="option-item">
+                  <i class="fas fa-file-alt"></i>
+                  {{ item.name }}
+                </div>
+              </ng-template>
+            </ng-select>
           </ion-col>       
           <ion-col size="2" class="single-border" style="margin-top: 1%;">
             <!-- <ion-input class="textbox" type="text" (ionChange)="onChangeValue($event,i,x,'di')" [(ngModel)]="x.tool_ref"></ion-input> -->

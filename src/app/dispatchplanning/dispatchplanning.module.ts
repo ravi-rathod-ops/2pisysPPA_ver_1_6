@@ -10,13 +10,14 @@ import { DispatchplanningPage } from './dispatchplanning.page';
 import { DispatchplanningPipe } from '../dispatchplanning.pipe';
 
 import { IonicSelectableModule } from '@ionic-selectable/angular';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    IonicSelectableModule,
+    NgSelectModule,
     DispatchplanningPageRoutingModule
   ],
   declarations: [DispatchplanningPage, DispatchplanningPipe]

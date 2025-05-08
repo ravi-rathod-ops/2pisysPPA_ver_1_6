@@ -35,17 +35,30 @@
     <ion-row nowrap class="ion-align-items-center">
       <ion-col size="6">  
         <!-- <ion-label style="font-size: small;color: grey;">Customer</ion-label>             -->
-        <ionic-selectable
-              #selectComponent
+        <ng-select
               [(ngModel)]="selectedCustomer"
               [items]="customerArray"
-              itemValueField="value"
-              itemTextField="name"
-              [canSearch]="true"
-              (onChange)="CustomerChanged($event)"
+              bindLabel="name"
+              bindValue="value"
+              (change)="CustomerChanged($event)"
+              placeholder="📊 Select Customer"
+              [searchable]="true"
+              [clearable]="false"
               searchFailText= "Customer not found"
-              placeholder="Customer">
-        </ionic-selectable>        
+              >
+              <ng-template ng-header>
+                <div class="dropdown-header">📑 Available Customer</div>
+              </ng-template>
+              <ng-template ng-label-tmp let-item="item">
+                <span class="selected-item">{{ item.name }}</span>
+              </ng-template>
+              <ng-template ng-option-tmp let-item="item" let-index="index">
+                <div class="option-item">
+                  <i class="fas fa-file-alt"></i>
+                  {{ item.name }}
+                </div>
+              </ng-template>
+            </ng-select>
     </ion-col> 
     <ion-col size="6">              
       <ion-col>
@@ -59,7 +72,18 @@
       <ion-col size="6">
         <!-- <ion-label position="stacked" class="label">File Upload</ion-label> -->
         <!-- <ion-input type="file" name="file" (change)="filesel($event)" style="font-size: 70%;" #myInput></ion-input>   -->
-        <ion-button color="danger" size="small" (click)="pickfile()">Choose CSV File</ion-button>
+        <!-- <ion-button color="danger" size="small" (click)="pickfile()">Choose CSV File</ion-button> -->
+        <ion-button color="danger" size="small">
+          <label for="csvInput" style="margin: 0; width: 100%; cursor: pointer;">Choose CSV File</label>
+        </ion-button>
+        
+        <input
+          id="csvInput"
+          type="file"
+          accept=".csv"
+          (change)="pickFile($event)"
+          hidden
+        />
     </ion-col>    
       <ion-col size="3"><ion-button color="primary" size="small" >Upload</ion-button></ion-col>
       <ion-col size="3"><ion-button color="success" size="small" (click)="submitData()">Create</ion-button></ion-col>
@@ -85,17 +109,31 @@
   
         <ion-row nowrap class="headers" *ngFor="let x of tableData;index as i">
           <ion-col size="5" class="single-border" tappable>
-            <ionic-selectable
-                #selectComponent1                
-                [items]="componentArray"
-                itemValueField="value"
-                itemTextField="name"
-                [canSearch]="true"
-                (onChange)="onChangeValue($event,i,x,'component')"
-                searchFailText= "Component not found"
-                placeholder="Component"                
-                >
-          </ionic-selectable>        
+          <ng-select
+              [(ngModel)]="selected"
+              [items]="componentArray"
+              bindLabel="name"
+              bindValue="value"
+              (change)="onChangeValue($event,i,x,'component')"
+              placeholder="📊 Select Component"
+              [searchable]="true"
+              [clearable]="false"
+              searchFailText= "Component not found"
+              >
+              <ng-template ng-header>
+                <div class="dropdown-header">📑 Available Component</div>
+              </ng-template>
+              <ng-template ng-label-tmp let-item="item">
+                <span class="selected-item">{{ item.name }}</span>
+              </ng-template>
+              <ng-template ng-option-tmp let-item="item" let-index="index">
+                <div class="option-item">
+                  <i class="fas fa-file-alt"></i>
+                  {{ item.name }}
+                </div>
+              </ng-template>
+            </ng-select>
+          
           </ion-col>       
           <ion-col size="3" class="single-border">
             <ion-input class="textbox" type="text" (ionChange)="onChangeValue($event,i,x,'di')" [(ngModel)]="x.didesc" [disabled]="setDisabled" style="height:25px;font-size: medium;"></ion-input>
