@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild,ElementRef,NgZone } from '@angular/core';
+import { Component, Input, OnInit, ViewChild,ElementRef,NgZone, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
 import { LoadingController } from '@ionic/angular';
@@ -12,6 +12,7 @@ import {  IonicSelectableComponent } from '@ionic-selectable/angular';
   selector: 'app-mouldingplanning',
   templateUrl: './mouldingplanning.page.html',
   styleUrls: ['./mouldingplanning.page.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class MouldingplanningPage implements OnInit {
 
@@ -274,7 +275,7 @@ export class MouldingplanningPage implements OnInit {
 
 
   async OperatorChanged(event:any,type)
-  {
+  {    
     if(type=="location"){this.selectedLocation=event.value;}
 
     const loading = await this.loadingController.create({
@@ -356,7 +357,7 @@ export class MouldingplanningPage implements OnInit {
       this.http.get<any>(this.dataUrl+"/api/mouldplan/toollist/"+this.selectedLocation+"/"+this.selectedComponent,{headers}).subscribe({
         next: async data => {
 
-          this.selectedComponent=event;
+          this.selectedComponent=event.value;
           this.stockName=event.name;
           this.machineArray=[];
           this.shiftArray=[];
@@ -376,7 +377,7 @@ export class MouldingplanningPage implements OnInit {
           for (var index of Object.keys(data.message)) {
             if(index != "stocklevel"){
               this.tableData[indexs+parseInt(index)]=data.message[index];
-              this.tableData[indexs+parseInt(index)]["bind"]=event;
+              this.tableData[indexs+parseInt(index)]["bind"]=event.value;
               this.tableData[indexs+parseInt(index)].no_of_active_cavities=parseFloat(this.tableData[indexs+parseInt(index)].no_of_active_cavities)
               this.tableData[indexs+parseInt(index)].std_lifts_per_plan=parseFloat(this.tableData[indexs+parseInt(index)].std_lifts_per_plan)
               this.tableData[indexs+parseInt(index)].expOutput=this.tableData[indexs+parseInt(index)].no_of_active_cavities * this.tableData[indexs+parseInt(index)].std_lifts_per_plan;

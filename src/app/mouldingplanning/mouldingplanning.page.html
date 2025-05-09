@@ -12,7 +12,7 @@
 <ion-content>
   <ion-grid>   
     <ion-row nowrap class="ion-align-items-center">
-      <ion-col size="6" *ngIf="locationArray.length > 0">          
+      <ion-col size="6" *ngIf="locationArray.length > 0">  
          <ng-select
               [(ngModel)]="selected"
               [items]="locationArray"
@@ -54,7 +54,7 @@
       <ion-col size="3"><ion-button color="danger" expand="block" (click)="deleteList()">Delete</ion-button></ion-col>             
     </ion-row>
 
-    <div class="reports-table" style="position: relative;top:-4%;overflow: auto;">   
+    <div class="reports-table" style="position: relative;top:-4%;overflow: auto;height: 500px;">   
       <ion-grid class="orientation">
         <ion-row nowrap class="headers">
           <ion-col size="3" class="single-border" tappable (click)="sort('bind',true)">
@@ -125,16 +125,6 @@
             {{x.expOutput}}
           </ion-col>
           <ion-col size="1" class="single-border">
-            <!-- <ionic-selectable
-                #selectComponent2                
-                [items]="shiftArray"
-                itemValueField="value"
-                itemTextField="name"
-                [canSearch]="true"
-                (onChange)="changeshift($event,i)"
-                searchFailText= "Shift not found"
-                placeholder="Select Shift">
-            </ionic-selectable>    -->
             <select [(ngModel)]="x.numshifts" (change)="changeshift(x.numshifts,i)" style="background: white;border-radius: 3px;border-color: #8080807a;">             
               <option *ngFor="let s of x.shiftArray" [ngValue]="s">{{s}}</option>
             </select>
