@@ -104,10 +104,24 @@ export class RollstockPage implements OnInit {
     toast.present();
   }
   
-  print()
-  {
-    this.printer.print(); 
+  // print()
+  // {
+  //   this.printer.print(); 
+  // }
+
+   print() {
+  const win = window.open(this.framelink, '_blank');
+  if (win) {
+    win.focus();
+    win.onload = () => {
+      try {
+        win.print();
+      } catch (e) {
+        console.warn("Print failed or PDF not fully loaded yet.");
+      }
+    };
   }
+}
 
 
 }
