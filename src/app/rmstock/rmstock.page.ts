@@ -28,7 +28,7 @@ export class RmstockPage implements OnInit {
 
   ngOnInit() {
     this.brandImage=localStorage.getItem('brandImage');
-    this.getlink();   
+    this.getlink();
   }
 
   async getlink(){
@@ -38,9 +38,9 @@ export class RmstockPage implements OnInit {
       // duration: 2000,
       spinner:'dots'
     });
-  
-    const headers = { 
-      'auth-id': localStorage.getItem('authid'), 
+
+    const headers = {
+      'auth-id': localStorage.getItem('authid'),
       'client-id': localStorage.getItem('clientid'),
       'user': localStorage.getItem('userid'),
       'password':localStorage.getItem('password') } 
@@ -50,46 +50,46 @@ export class RmstockPage implements OnInit {
           this.storeArray=data.message["stores"];
           this.storeArray.unshift("All");
           console.log(data)    
-          loading.dismiss(); 
+          loading.dismiss();
         },
         error: errordata => {
           if(errordata.error.message){
-          loading.dismiss();                   
+            loading.dismiss();
           this.toastfunction(errordata.error.message,"danger");  
           }
           else{
             this.toastfunction("Invalid Company Url, Please Check in Home page","danger");
             loading.dismiss();  
-          }          
+          }
         }
       });
   
-   }
+  }
 
   // async scan() {
   //   const data = await BarcodeScanner.scan();
 
   //   if(data.text.length > 0){
   //     this.datapass.link=this.datapass.link.replace("{{1}}",data.text);
-  //     this.datapass.link= this.datapass.credentials == 1 ? this.datapass.link+"?user="+localStorage.getItem('userid')+"&pass="+localStorage.getItem('password') : this.datapass.link=this.datapass.link; 
-  //     window.open(this.datapass.link);    
+  //     this.datapass.link= this.datapass.credentials == 1 ? this.datapass.link+"?user="+localStorage.getItem('userid')+"&pass="+localStorage.getItem('password') : this.datapass.link=this.datapass.link;
+  //     window.open(this.datapass.link);
   //   }
-   
+
   // }
 
 
   // async sendData()
   // {
-   
+
   //   // if(this.planid.length > 0)
-  //   // {   
-  //     this.link=this.datapass.link; 
+  //   // {
+  //     this.link=this.datapass.link;
   //     this.link=this.link.replace("{{1}}",this.planid);
-  //     this.link= this.datapass.credentials == 1 ? this.link+"?user="+localStorage.getItem('userid')+"&pass="+localStorage.getItem('password') : this.link=this.link; 
-  //     // window.open(this.datapass.link);    
+  //     this.link= this.datapass.credentials == 1 ? this.link+"?user="+localStorage.getItem('userid')+"&pass="+localStorage.getItem('password') : this.link=this.link;
+  //     // window.open(this.datapass.link);
   //     this.framelink=this.link;
   //   // }
-    
+
   // }
 
 
@@ -107,12 +107,27 @@ export class RmstockPage implements OnInit {
     toast.present();
   }
 
-  print()
-  {
-    this.printer.print(); 
-  }
+  //   print()
+  //   {
+  //     // this.printer.print();
+  //    const iframe = document.getElementById('ReportPanel') as HTMLIFrameElement;
+  // const iframeDoc = iframe?.contentWindow?.document;
 
-  link
+  // if (iframeDoc) {
+  //   const printWindow = window.open('', '', 'width=600,height=600');
+  //   if (printWindow) {
+  //     printWindow.document.write(`<html><head><title>Print</title></head><body>${iframeDoc.documentElement.innerHTML}</body></html>`);
+  //     printWindow.document.close();
+  //     printWindow.focus();
+  //     printWindow.print();
+  //     printWindow.close();
+  //   }
+  //   }else{
+  //     alert('not working')
+  //   }
+  //   }
+
+  link;
   selectDevice(ind) {
   
     if(ind.detail.value == "All"){
@@ -127,7 +142,19 @@ export class RmstockPage implements OnInit {
       this.link= this.datapass.credentials == 1 ? this.link+"?user="+localStorage.getItem('userid')+"&pass="+localStorage.getItem('password') : this.link=this.link;    
       this.framelink=this.link;
     }
-    
-
   }
+
+  print() {
+  const win = window.open(this.framelink, '_blank');
+  if (win) {
+    win.focus();
+    win.onload = () => {
+      try {
+        win.print();
+      } catch (e) {
+        console.warn("Print failed or PDF not fully loaded yet.");
+      }
+    };
+  }
+}
 }
