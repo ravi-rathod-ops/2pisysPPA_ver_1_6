@@ -114,8 +114,9 @@ export class FetchdrawingPage implements OnInit, AfterViewInit {
     );
 
     const scannedText = result.getText();
+    const data = await BarcodeScanner.scan();
     if (scannedText) {
-      this.fetchDrawingData(scannedText);
+      this.fetchDrawingData(data.text);
     } else {
       this.toastfunction('No QR code detected.', 'warning');
       this.closeScanModal();
