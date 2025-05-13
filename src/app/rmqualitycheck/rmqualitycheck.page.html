@@ -22,7 +22,7 @@
   </ion-grid>
 
   <ion-grid id="grid" class="appfont" style="overflow: auto;">
-    <div style="width: 140%;">
+    <div style="min-width: 200px; overflow-x: auto;">
       <ion-row style="border-bottom: 1px solid grey;">
         <ion-col size="2" (click)="sort('grnid',false)">GRN Id ({{rmArray.length}})</ion-col>
         <ion-col size="2" (click)="sort('grndate',false)">GRN Date</ion-col>

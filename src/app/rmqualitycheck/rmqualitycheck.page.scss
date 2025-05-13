@@ -1,41 +1,81 @@
 #grid {
-    margin: 4%;
-  }
-  
-  .avatar {
-    height: 50px;
-    width: 50px;
-  }
-  
+  margin: 4%;
+  overflow-x: auto;
+}
+
+.avatar {
+  height: 50px;
+  width: 50px;
+}
+
+.appfont {
+  font-size: 16px; /* Adjustable based on screen size if needed */
+}
+
+.labelStyle {
+  float: right;
+}
+
+.label {
+  color: grey;
+}
+
+.password {
+  -webkit-text-security: disc;
+}
+
+.inputStyle {
+  font-size: 16px;
+  border: 1px solid #80808038;
+  text-align: right;
+  color: grey;
+  width: 100%;
+}
+
+.marginleft {
+  margin-left: 2%;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 768px) {
   .appfont {
-    font-size: 17px;
+    font-size: 14px;
   }
 
-  .labelStyle {
-    float: right;
-    // margin-right: 10%;
-  }
-  
-  .label {
-    color: grey;
-  }
-  
-  .password {
-    -webkit-text-security: disc;
-    // border-bottom: 1px solid grey;
-  }
-  
   .inputStyle {
-    font-size: 21px;
-    border: 1px solid #80808038;
-    text-align: right;
-    color: grey;
-  }
-  
-  .marginleft{
-    margin-left: 2%;
+    font-size: 14px;
   }
 
-  .bold{
-    // font-weight: bold;
+  ion-card {
+    top: 5% !important;
+    left: 2% !important;
+    width: 96% !important;
+    height: 90% !important;
   }
+
+  ion-row {
+    flex-wrap: wrap;
+  }
+
+  ion-col {
+    flex: 1 1 100%;
+    max-width: 100%;
+  }
+}
+
+@media screen and (min-width: 769px) and (max-width: 1024px) {
+  .inputStyle {
+    font-size: 15px;
+  }
+
+  ion-card {
+    top: 10% !important;
+    left: 3% !important;
+    width: 94% !important;
+    height: 85% !important;
+  }
+}
