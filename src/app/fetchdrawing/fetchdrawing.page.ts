@@ -107,15 +107,60 @@ export class FetchdrawingPage implements OnInit, AfterViewInit {
   //   }
   // }
 
-  async startScanning() {
+//   async startScanning() {
+//   try {
+//     const result: Result = await this.codeReader.decodeOnceFromVideoDevice(
+//       undefined,
+//       this.video.nativeElement
+//     );
+
+//     const scannedText = result.getText();
+//     const data = await BarcodeScanner.scan();
+//     if (scannedText) {
+//       this.fetchDrawingData(scannedText);
+//     } else {
+//       this.toastfunction('No QR code detected.', 'warning');
+//       this.closeScanModal();
+//     }
+
+//   } catch (err: any) {
+//     console.error('Scan error:', err);
+
+//     if (err.name === 'NotFoundException') {
+//       this.toastfunction(
+//         'No QR code found before video stream ended.',
+//         'warning'
+//       );
+//     } else {
+//       this.toastfunction('Scan error or camera not accessible.', 'danger');
+//     }
+
+//     this.closeScanModal();
+//   }
+// }
+
+async startScanning() {
   try {
+    // Make sure you initialize the reader if not already
+    if (!this.codeReader) {
+      this.codeReader = new BrowserMultiFormatReader();
+    }
+
+    const devices = await this.codeReader.listVideoInputDevices();
+
+    if (devices.length === 0) {
+      this.toastfunction('No camera devices found.', 'danger');
+      this.closeScanModal();
+      return;
+    }
+
     const result: Result = await this.codeReader.decodeOnceFromVideoDevice(
-      undefined,
+      devices[0].deviceId,
       this.video.nativeElement
     );
 
-    const scannedText = result.getText();
-    const data = await BarcodeScanner.scan();
+    const scannedText = result?.getText();
+
     if (scannedText) {
       this.fetchDrawingData(scannedText);
     } else {
@@ -127,10 +172,7 @@ export class FetchdrawingPage implements OnInit, AfterViewInit {
     console.error('Scan error:', err);
 
     if (err.name === 'NotFoundException') {
-      this.toastfunction(
-        'No QR code found before video stream ended.',
-        'warning'
-      );
+      this.toastfunction('No QR code found before video stream ended.', 'warning');
     } else {
       this.toastfunction('Scan error or camera not accessible.', 'danger');
     }
@@ -138,6 +180,8 @@ export class FetchdrawingPage implements OnInit, AfterViewInit {
     this.closeScanModal();
   }
 }
+
+
 
   async fetchDrawingData(scannedText: string) {
     const loading = await this.loadingController.create({
