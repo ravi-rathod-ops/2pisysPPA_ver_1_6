@@ -19,7 +19,8 @@ export class FetchdrawingPage implements OnInit, AfterViewInit {
   planid: any = '';
   datapass: any = {};
   dataUrl = localStorage.getItem('url');
- @ViewChild('video', { static: false }) video: ElementRef<HTMLVideoElement>;
+//  @ViewChild('video', { static: false }) video: ElementRef<HTMLVideoElement>;
+ @ViewChild('video', { static: false }) video: ElementRef;
   isScanModalOpen = false;
   codeReader = new BrowserMultiFormatReader();
   constructor(
@@ -202,7 +203,13 @@ async scan() {
   this.isScanning = true;
 
   try {
-    await navigator.mediaDevices.getUserMedia({ video: true });
+    const devices = await navigator.mediaDevices.enumerateDevices();
+    const hasVideoInput = devices.some(device => device.kind === 'videoinput');
+
+    if (!hasVideoInput) {
+      this.toastfunction('No camera device found. Please connect a camera.', 'danger');
+      return;
+    }
     this.isScanModalOpen = true;
 
     setTimeout(() => this.startScanning(), 500);
