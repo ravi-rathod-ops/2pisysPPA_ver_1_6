@@ -123,3 +123,21 @@
   
 
 </ion-content>
+
+<!-- Modal (shown only if scanning is active) -->
+<div class="custom-modal" *ngIf="isScanModalOpen">
+  <ion-header>
+    <ion-toolbar>
+      <ion-title>Scan QR</ion-title>
+      <ion-buttons slot="end">
+        <ion-button (click)="closeScanModal()">Close</ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content>
+    <div class="video-container">
+      <video #video autoplay></video>
+    </div>
+  </ion-content>
+</div>
