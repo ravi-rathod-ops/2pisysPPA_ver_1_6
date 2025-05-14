@@ -199,12 +199,12 @@ async startScanning() {
     await loading.present();
 
     this.http
-      .get<any>(`https://your-api-url/api/compdrawing/${scannedText}`, { headers })
+      .get<any>(`${this.dataUrl}/api/compdrawing/${scannedText}`, { headers })
       .subscribe({
         next: async (data) => {
           const fileUrl = data.message[0]?.drawingfile;
           if (fileUrl) {
-            window.open(`https://your-api-url/${fileUrl}`, '_blank');
+            window.open(`${this.dataUrl}/${fileUrl}`, '_blank');
           } else {
             this.toastfunction('No drawing file found.', 'warning');
           }
