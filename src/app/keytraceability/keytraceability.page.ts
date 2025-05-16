@@ -213,7 +213,7 @@ async fetchDrawingData(scannedText: string) {
       };
 
       this.planid = scannedText;
-
+      
       this.http
         .get<any>(
           this.dataUrl + '/api/reportlinks/keytrace/' + this.planid,

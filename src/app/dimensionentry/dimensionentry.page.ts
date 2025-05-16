@@ -96,30 +96,29 @@ async startScanning() {
       return;
     }
 
-    const deviceId = devices[0].deviceId;
-
-    const controls:any = await this.codeReader.decodeFromVideoDevice(
-      deviceId,
-      this.video.nativeElement,
-      (result, error) => {
-        if (result) {
-          const scannedText = result.getText();
-          if (scannedText) {
-            controls.stop(); // Use the outer scoped 'controls'
-            this.fetchDrawingData(scannedText);
-          }
-        } else if (error && !(error instanceof NotFoundException)) {
-          console.error('Scan error:', error);
-          this.toastfunction('Scan error occurred.', 'danger');
-          controls.stop();
-          this.closeScanModal();
-        }
-        // NotFoundException is ignored; it's common while scanning continuously
-      }
+    const result: Result = await this.codeReader.decodeOnceFromVideoDevice(
+      devices[0].deviceId,
+      this.video.nativeElement
     );
-  } catch (err) {
-    console.error('Camera access error:', err);
-    this.toastfunction('Camera access error or scan failed.', 'danger');
+
+    const scannedText = result?.getText();
+
+    if (scannedText) {
+      this.fetchDrawingData(scannedText);
+    } else {
+      this.toastfunction('No QR code detected.', 'warning');
+      this.closeScanModal();
+    }
+
+  } catch (err: any) {
+    console.error('Scan error:', err);
+
+    if (err.name === 'NotFoundException') {
+      this.toastfunction('No QR code found before video stream ended.', 'warning');
+    } else {
+      this.toastfunction('Scan error or camera not accessible.', 'danger');
+    }
+
     this.closeScanModal();
   }
 }

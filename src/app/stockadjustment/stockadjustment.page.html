@@ -48,7 +48,7 @@
       </ion-card-header>
       <ion-grid id="grid" class="appfont">
         <div style="overflow: auto;">
-              <div style="width: 130%;">
+              <div style="width: 100%;">
                 <ion-row style="text-align: center;border-bottom: 1px solid grey;">
                   <ion-col size="3">GRN/Plan/Batch ref.</ion-col>
                   <ion-col size="3" style="text-align: right;">Book Qty.</ion-col>
@@ -96,3 +96,21 @@
   
 
 </ion-content>
+
+<!-- Modal (shown only if scanning is active) -->
+<div class="custom-modal" *ngIf="isScanModalOpen">
+  <ion-header>
+    <ion-toolbar>
+      <ion-title>Scan QR</ion-title>
+      <ion-buttons slot="end">
+        <ion-button (click)="closeScanModal()">Close</ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content>
+    <div class="video-container">
+      <video #video autoplay></video>
+    </div>
+  </ion-content>
+</div>

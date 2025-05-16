@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner';
 import { HttpClient } from '@angular/common/http';
 import { IonInput, LoadingController } from '@ionic/angular';
@@ -7,13 +7,14 @@ import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
 import { zip } from 'rxjs';
+import { BrowserMultiFormatReader, Result } from '@zxing/library';
 
 @Component({
   selector: 'app-stockadjustment',
   templateUrl: './stockadjustment.page.html',
   styleUrls: ['./stockadjustment.page.scss'],
 })
-export class StockadjustmentPage implements OnInit {
+export class StockadjustmentPage implements OnInit, AfterViewInit {
 
   planid: any="";
   modaldata:any;
@@ -29,6 +30,9 @@ export class StockadjustmentPage implements OnInit {
 
   constructor(private http: HttpClient,private screenOrientation: ScreenOrientation,public loadingController: LoadingController,public toastController: ToastController,private router: Router,private formBuilder: FormBuilder) { }
   @ViewChild('inputId')  myInputField;
+  @ViewChild('video', { static: false }) video!: ElementRef<HTMLVideoElement>;
+  isScanModalOpen = false;
+  codeReader = new BrowserMultiFormatReader();
 
   ngOnInit() {
     this.brandImage=localStorage.getItem('brandImage');
@@ -40,11 +44,89 @@ export class StockadjustmentPage implements OnInit {
   this.screenOrientation.unlock();
   }
 
+  ngAfterViewInit() {
+    const videoEl = this.video?.nativeElement;
+    if (videoEl) {
+      videoEl.onloadedmetadata = () => {
+        setTimeout(() => this.startScanning(), 300);
+      };
+    }
+  }
+
    // convenience getter for easy access to form fields
    get f() { return this.registerForm.controls; }
 
-  async scan() {
-    const data = await BarcodeScanner.scan();
+  // ================
+    async scan() {
+    const devices = await navigator.mediaDevices.enumerateDevices();
+    const hasVideoInput = devices.some(device => device.kind === 'videoinput');
+
+    if (!hasVideoInput) {
+      this.toastfunction('No camera device found. Please connect a camera.', 'danger');
+      return;
+    }
+
+    this.isScanModalOpen = true;
+
+    setTimeout(() => {
+      this.startScanning();
+    }, 300);
+  }
+
+  async startScanning() {
+    try {
+      if (!this.codeReader) {
+        this.codeReader = new BrowserMultiFormatReader();
+      }
+  
+      const devices = await this.codeReader.listVideoInputDevices();
+      if (devices.length === 0) {
+        this.toastfunction('No camera devices found.', 'danger');
+        this.closeScanModal();
+        return;
+      }
+  
+      const result: Result = await this.codeReader.decodeOnceFromVideoDevice(
+        devices[0].deviceId,
+        this.video.nativeElement
+      );
+  
+      const scannedText = result?.getText();
+  
+      if (scannedText) {
+        this.fetchDrawingData(scannedText);
+      } else {
+        this.toastfunction('No QR code detected.', 'warning');
+        this.closeScanModal();
+      }
+  
+    } catch (err: any) {
+      console.error('Scan error:', err);
+  
+      if (err.name === 'NotFoundException') {
+        this.toastfunction('No QR code found before video stream ended.', 'warning');
+      } else {
+        this.toastfunction('Scan error or camera not accessible.', 'danger');
+      }
+  
+      this.closeScanModal();
+    }
+  }
+
+   closeScanModal() {
+    this.stopScan();
+  }
+
+  stopScan() {
+    const stream = this.video?.nativeElement?.srcObject as MediaStream;
+    if (stream) {
+      stream.getTracks().forEach(track => track.stop());
+      this.video.nativeElement.srcObject = null;
+    }
+    this.isScanModalOpen = false;
+  }
+
+   async fetchDrawingData(scannedText: string) {
     const loading = await this.loadingController.create({
       cssClass: 'my-custom-class',
       message: 'Please wait...',
@@ -52,13 +134,11 @@ export class StockadjustmentPage implements OnInit {
       spinner:'dots'
     });
     
-    if(data.text.length > 0)
-    {
-      await loading.present();
-      const headers = { 'auth-id': localStorage.getItem('authid'), 'client-id': localStorage.getItem('clientid'),'user': localStorage.getItem('userid'),
+    const headers = { 'auth-id': localStorage.getItem('authid'), 'client-id': localStorage.getItem('clientid'),'user': localStorage.getItem('userid'),
       'password':localStorage.getItem('password') }
-
-      this.http.get<any>(this.dataUrl+'/api/stockadjust/'+this.itemType+'/'+data.text,{headers}).subscribe({
+      await loading.present();
+      
+      this.http.get<any>(this.dataUrl+'/api/stockadjust/'+this.itemType+'/'+scannedText,{headers}).subscribe({
         next: async data => {
           this.datapass=data.message;  
           this.datapass.map((x)=>{
@@ -68,6 +148,7 @@ export class StockadjustmentPage implements OnInit {
           this.showEntryCard=true;      
           loading.dismiss();    
           this.registerForm.reset();
+           this.stopScan();
           setTimeout(() => {
             this.myInputField.setFocus();
           },700);
@@ -82,11 +163,9 @@ export class StockadjustmentPage implements OnInit {
             this.toastfunction("Invalid Company Url, Please Check in Home page","danger");
           }
           this.registerForm.reset();
+           this.stopScan();
         }
       });
-
-    }
-   
   }
 
   async sendData()
