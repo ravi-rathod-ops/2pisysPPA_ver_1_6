@@ -92,7 +92,7 @@ export class StockadjustmentPage implements OnInit, AfterViewInit {
       );
   
       const scannedText = result?.getText();
-  
+      this.planid = scannedText;
       if (scannedText) {
         this.fetchDrawingData(scannedText);
       } else {

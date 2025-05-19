@@ -86,6 +86,7 @@ codeReader = new BrowserMultiFormatReader();
         this.video.nativeElement
       );
       const scannedText = result.getText();
+      this.planid = scannedText;
 
       if (scannedText) {
         const loading = await this.loadingController.create({

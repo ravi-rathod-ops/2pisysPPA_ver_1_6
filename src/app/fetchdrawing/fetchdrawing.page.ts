@@ -67,6 +67,8 @@ async startScanning() {
     );
 
     const scannedText = result?.getText();
+    this.planid = scannedText;
+    
 
     if (scannedText) {
       this.fetchDrawingData(scannedText);
