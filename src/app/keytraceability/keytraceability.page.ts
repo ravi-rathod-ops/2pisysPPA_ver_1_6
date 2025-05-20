@@ -177,6 +177,8 @@ async scan() {
     );
 
     const scannedText = result.getText();
+    console.log({scannedText});
+    
     if (scannedText) {
       this.fetchDrawingData(scannedText);
     } else {
@@ -213,11 +215,20 @@ async fetchDrawingData(scannedText: string) {
       };
 
       this.planid = scannedText;
+
+      this.datapass.link = this.datapass.link.replace('{{1}}', this.planid);
+      this.datapass.link =
+        this.datapass.credentials == 1
+          ? this.datapass.link +
+            '?user=' +
+            localStorage.getItem('userid') +
+            '&pass=' +
+            localStorage.getItem('password')
+          : (this.datapass.link = this.datapass.link);
+      this.framelink = this.datapass.link;
       
       this.http
-        .get<any>(
-          this.dataUrl + '/api/reportlinks/keytrace/' + this.planid,
-          { headers }
+        .get<any>(this.framelink
         )
         .subscribe({
           next: async (data) => {
@@ -232,12 +243,7 @@ async fetchDrawingData(scannedText: string) {
             loading.dismiss();
             if (errordata.error.message) {
               this.toastfunction(errordata.error.message, 'danger');
-            } else {
-              this.toastfunction(
-                'Invalid Company Url, Please Check in Home page',
-                'danger'
-              );
-            }
+            } 
             this.closeScanModal();
           },
         });
