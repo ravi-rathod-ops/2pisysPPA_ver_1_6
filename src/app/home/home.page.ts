@@ -7,6 +7,7 @@ import { ToastController } from '@ionic/angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import {Md5} from 'ts-md5';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-home',
@@ -15,13 +16,15 @@ import {Md5} from 'ts-md5';
 })
 export class HomePage {
   
-  url="https://ppa.2pisys.com";
- data= localStorage.setItem('url',this.url);
+//   url="https://ppa.2pisys.com";
+//  data= localStorage.setItem('url',this.url);
   
-  dataUrl="https://ppa.2pisys.com";
+  // dataUrl="https://ppa.2pisys.com";
   datapass: any={"base64encodedimage":"./assets/image/no_logo.png"};
-  authid="PXpv2YWV41L223hGDuXY";
-  clientid="ppa";
+  dataUrl='';
+  dataUrls=environment.COMPANY_URL;//"https://ppa.2pisys.com";
+  authid=environment.AUTHENTICATE_ID;//"PXpv2YWV41L223hGDuXY";
+  clientid=environment.CLIENT_ID;//"ppa";
   registerForm: FormGroup;
   submitted=false;
   cversion=1.61;
@@ -32,20 +35,10 @@ export class HomePage {
   ngOnInit() {
     this.registerForm = this.formBuilder.group({
       userid: ['', Validators.required],
-      password: ['', Validators.required]
+      password: ['', Validators.required],
+      company_id: ['', Validators.required]
   });
 
-  if(localStorage.getItem('url') != null || localStorage.length != 0)
-    {
-      console.log("In if");
-      
-      this.dataUrl=localStorage.getItem('url');       
-    }
-    else
-    {
-      console.log("In else");
-      localStorage.setItem('url',this.url);
-    }
 
     if(localStorage.getItem('authid') != null)
     {
@@ -156,7 +149,26 @@ console.log(this.dataUrl);
         'client-id': localStorage.getItem('clientid'),
         'user': this.registerForm.value.userid,
         'password':Md5.hashStr(this.registerForm.value.password) }
-        console.log(this.dataUrl);
+
+        let company_id = this.registerForm.value.company_id?.toLowerCase().trim();
+
+        let fullUrl = `https://${company_id}.2pisys.com`;
+            
+        if (this.dataUrls?.includes(fullUrl)) {
+           const storedUrl = localStorage.getItem('url');
+
+            if (storedUrl) {
+              this.dataUrl = storedUrl;
+            } else {
+              this.dataUrl = company_id;
+              localStorage.setItem('url', company_id);
+            }
+        } else {
+          this.toastfunction("Invalid Company Id","danger");
+           loading.dismiss();  
+          return;
+        }
+        
         
       this.http.get<any>(this.dataUrl+"/api/userlogin/"+this.registerForm.value.userid,{headers}).subscribe({
         next: async data => {

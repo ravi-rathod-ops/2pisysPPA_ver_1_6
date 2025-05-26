@@ -9,6 +9,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
 
 import { Camera,CameraOptions } from '@ionic-native/camera/ngx';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-setting',
@@ -24,12 +25,14 @@ export class SettingComponent implements OnInit {
   registerForm: FormGroup;
   submitted = false;
   base64=null;
-  url="https://ppa.2pisys.com";
-  authid="PXpv2YWV41L223hGDuXY";
-  clientid="ppa";
+  url='';//"https://ppa.2pisys.com";
+  url2=environment.COMPANY_URL;//"https://ppa.2pisys.com";
+  authid=environment.AUTHENTICATE_ID;//"PXpv2YWV41L223hGDuXY";
+  clientid=environment.CLIENT_ID;//"ppa";
   toggle="false";
   brandImage="";
-  socketIp="ppa.2pisys.com:3000";
+  socketIp= environment.SOCKET_NETWORK_IP; "ppa.2pisys.com:3000";
+  // socketIp="ppa.2pisys.com:3000";
  
   constructor(private http: HttpClient,public camera:Camera,public loadingController: LoadingController,private screenOrientation: ScreenOrientation,public toastController: ToastController,private router: Router,private formBuilder: FormBuilder) { 
     if(localStorage.getItem('url') != null)

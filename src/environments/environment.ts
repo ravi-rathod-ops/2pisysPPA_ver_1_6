@@ -3,7 +3,11 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  COMPANY_URL : ['https://ppa.2pisys.com','https://demo.2pisys.com'],
+  AUTHENTICATE_ID :'PXpv2YWV41L223hGDuXY',
+  CLIENT_ID:'ppa',
+  SOCKET_NETWORK_IP:'192.168.1.100:3000'
 };
 
 /*

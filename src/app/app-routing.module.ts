@@ -106,6 +106,10 @@ const routes: Routes = [
   {
     path: 'stockadjustment',
     loadChildren: () => import('./stockadjustment/stockadjustment.module').then( m => m.StockadjustmentPageModule)
+  },
+  {
+    path: 'purchaseorderapproval',
+    loadChildren: () => import('./purchaseorderapproval/purchaseorderapproval.module').then( m => m.PurchaseorderapprovalModule)
   }
 ];
 

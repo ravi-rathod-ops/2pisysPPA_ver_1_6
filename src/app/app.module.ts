@@ -28,6 +28,7 @@ import { NetworkInterface } from '@ionic-native/network-interface/ngx';
 import { CalenderplanningPipe } from './calenderplanning.pipe';
 
 import {Chooser} from '@ionic-native/chooser/ngx';
+import { environment } from 'src/environments/environment';
 
 if(localStorage.getItem('IPAddr') != null)
 {
@@ -36,7 +37,7 @@ if(localStorage.getItem('IPAddr') != null)
 }
 else
 {
-  localStorage.setItem("IPAddr","ppa.2pisys.com:3000")
+  localStorage.setItem("IPAddr",environment.SOCKET_NETWORK_IP)
 }
 
 
