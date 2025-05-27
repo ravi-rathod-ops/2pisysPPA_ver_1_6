@@ -99,9 +99,9 @@ export class DeflashplanningPage implements OnInit {
     'client-id': localStorage.getItem('clientid'),
     'user': localStorage.getItem('userid'),
     'password':localStorage.getItem('password') }
-
+    
       this.http.get<any>(this.dataUrl+"/api/deflashissue",{headers}).subscribe({
-        next: async data => {
+        next: async data => {          
           for (var key of Object.keys(data.message)) {
             if(key != "operators"){
               data.message[key]["check"]=false;

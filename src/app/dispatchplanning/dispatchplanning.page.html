@@ -110,7 +110,7 @@
         <ion-row nowrap class="headers" *ngFor="let x of tableData;index as i">
           <ion-col size="5" class="single-border" tappable>
           <ng-select
-              [(ngModel)]="selected"
+              [(ngModel)]="x.selected"
               [items]="componentArray"
               bindLabel="name"
               bindValue="value"

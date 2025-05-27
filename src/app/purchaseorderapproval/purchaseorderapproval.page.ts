@@ -273,7 +273,9 @@ brandImage="";
             employee.purdate.toLowerCase().includes(filterValueLower) || 
             employee.supname.toLowerCase().includes(filterValueLower) ||                       
             employee.ramname.toLowerCase().includes(filterValueLower) ||
-            employee.rate.toLowerCase().includes(filterValueLower)
+            employee.qty.toLowerCase().includes(filterValueLower) ||
+            employee.rate.toLowerCase().includes(filterValueLower) ||
+            employee.purgrandtotal.toLowerCase().includes(filterValueLower)
             );
         }
       }
