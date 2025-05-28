@@ -1,12 +1,9 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { LoadingController } from '@ionic/angular';
-import { ToastController } from '@ionic/angular';
-
+import { LoadingController, Platform, ToastController } from '@ionic/angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-
-import {Md5} from 'ts-md5';
+import { Md5 } from 'ts-md5';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -15,234 +12,241 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['home.page.scss'],
 })
 export class HomePage {
-  
-//   url="https://ppa.2pisys.com";
-//  data= localStorage.setItem('url',this.url);
-  
-  // dataUrl="https://ppa.2pisys.com";
-  datapass: any={"base64encodedimage":"./assets/image/no_logo.png"};
-  dataUrl='';
-  dataUrls=environment.COMPANY_URL;//"https://ppa.2pisys.com";
-  authid=environment.AUTHENTICATE_ID;//"PXpv2YWV41L223hGDuXY";
-  clientid=environment.CLIENT_ID;//"ppa";
+  datapass: any = { "base64encodedimage": "./assets/image/no_logo.png" };
+  dataUrl = '';
+  dataUrls = environment.COMPANY_URL;
+  authid = environment.AUTHENTICATE_ID;
+  clientid = environment.CLIENT_ID;
   registerForm: FormGroup;
-  submitted=false;
-  cversion=1.61;
-  versionFlag=false;
+  submitted = false;
+  cversion = 1.61;
+  versionFlag = false;
 
-  constructor(public http: HttpClient,private formBuilder: FormBuilder,public loadingController: LoadingController,public toastController: ToastController,private router: Router){}
+  constructor(
+    public http: HttpClient,
+    private formBuilder: FormBuilder,
+    public loadingController: LoadingController,
+    public toastController: ToastController,
+    private router: Router,
+    private platform: Platform
+  ) { }
+
+  isWithinAutoLoginPeriod(days: number, lastLogin: string | null): boolean {
+    if (!lastLogin) return false;
+
+    const lastLoginDate = new Date(lastLogin);
+    const now = new Date();
+    const diffTime = now.getTime() - lastLoginDate.getTime();
+    const diffDays = diffTime / (1000 * 3600 * 24);
+
+    return diffDays <= days;
+  }
+
+  initializeApp() {
+    this.platform.ready().then(() => {
+      const userid = localStorage.getItem('userid');
+      const password = localStorage.getItem('password');
+      const lastLogin = localStorage.getItem('lastManualLogin');
+
+      if (userid && password && this.isWithinAutoLoginPeriod(2, lastLogin)) {
+        console.log("if");
+        
+        this.router.navigate(['Widgets']);
+      } else {
+        console.log("else");
+        this.router.navigate(['home']);
+      }
+    });
+  }
 
   ngOnInit() {
+    this.initializeApp();
     this.registerForm = this.formBuilder.group({
       userid: ['', Validators.required],
       password: ['', Validators.required],
-      company_id: ['', Validators.required]
-  });
-
-
-    if(localStorage.getItem('authid') != null)
-    {
-      this.authid=localStorage.getItem('authid');       
-    }
-    else
-    {
-      localStorage.setItem('authid',this.authid);
-    }
-
-    if(localStorage.getItem('clientid') != null)
-    {
-      this.clientid=localStorage.getItem('clientid');       
-    }
-    else
-    {
-      localStorage.setItem('clientid',this.clientid);
-    }
-    console.log("----------->");
-    
-    console.log(this.dataUrl);
-    
-    const headers = { 'auth-id': localStorage.getItem('authid'), 'client-id': localStorage.getItem('clientid') }
-
-    this.http.get<any>(this.dataUrl+'/api/custicon',{headers}).subscribe({
-      next: async data => {
-        this.datapass=data.message[0]; 
-        this.datapass.base64encodedimage="data:image/png;base64,"+data.message[0].base64encodedimage;
-        localStorage.setItem('brandImage',this.datapass.base64encodedimage);    
-      },
-      error: errordata => {
-        if(errordata.error.message){
-        this.toastfunction(errordata.error.message,"danger");  
-        }
-        else{
-          this.toastfunction("Invalid Company Url, Please Check in Home page 1","danger");
-        }
-      }
+      company_id: ['', Validators.required],
+      rememberMe: [false]
     });
+    
+      
 
-console.log(this.dataUrl);
+    // Load remembered credentials if available
+    const rememberedUser = localStorage.getItem('rememberedUser');
+    const rememberedPass = localStorage.getItem('rememberedPass');
+    if (rememberedUser && rememberedPass) {
+      this.registerForm.patchValue({
+        userid: rememberedUser,
+        password: rememberedPass,
+        rememberMe: true
+      });
+    }
 
-    this.http.get<any>(this.dataUrl+'/api/appversion/plan',{headers}).subscribe({
-      next: async data => {
-       
-        if(this.cversion >= data.message){
-          this.versionFlag=false;
-          if(localStorage.getItem('userid') != null && localStorage.getItem('password') != null)
-          {
-            this.router.navigate(["Widgets"]);   
+    if (localStorage.getItem('authid') != null) {
+      this.authid = localStorage.getItem('authid');
+    } else {
+      localStorage.setItem('authid', this.authid);
+    }
+
+    if (localStorage.getItem('clientid') != null) {
+      this.clientid = localStorage.getItem('clientid');
+    } else {
+      localStorage.setItem('clientid', this.clientid);
+    }
+
+    const headers = {
+      'auth-id': localStorage.getItem('authid'),
+      'client-id': localStorage.getItem('clientid')
+    };
+
+    if (localStorage.getItem('url') != '') {
+      this.dataUrl = localStorage.getItem('url');
+      this.getCustomIcon(this.dataUrl, headers);
+
+      this.http.get<any>(this.dataUrl + '/api/appversion/plan', { headers }).subscribe({
+        next: async data => {
+          if (this.cversion >= data.message) {
+            this.versionFlag = false;
+            if (localStorage.getItem('userid') != null && localStorage.getItem('password') != null) {
+              this.router.navigate(["Widgets"]);
+            } else {
+              this.router.navigate(["home"]);
+            }
+          } else {
+            this.versionToastFunction();
+            this.versionFlag = true;
           }
-          else
-          {
-            this.router.navigate(["home"]);
+        },
+        error: errordata => {
+          if (errordata.error.message) {
+            this.toastfunction(errordata.error.message, "danger");
+          } else {
+            this.toastfunction("Invalid Company Url, Please Check in Home page 2", "danger");
           }
         }
-        else{
-          this.versionToastFunction();
-          this.versionFlag=true;
-        }
-      },
-      error: errordata => {
-        if(errordata.error.message){
-        this.toastfunction(errordata.error.message,"danger");  
-        }
-        else{
-          this.toastfunction("Invalid Company Url, Please Check in Home page 2","danger");
-        }
-      }
-    });
-
+      });
+    }
   }
 
-  
-   // convenience getter for easy access to form fields
-   get f() { return this.registerForm.controls; }
+  get f() { return this.registerForm.controls; }
 
-  textChanged(obj)
-  { 
-    localStorage.setItem('url', obj);
-  }
-  
-  
   onClickMe(obj) {
     this.router.navigate([obj]);
   }
 
+  async submitData() {
+    this.submitted = true;
 
-  async submitData()
-  {   
-    this.submitted=true;
-    
     if (this.registerForm.invalid) {
       return;
     }
+
     const loading = await this.loadingController.create({
       cssClass: 'my-custom-class',
       message: 'Please wait...',
-      spinner:'dots'
-    });  
+      spinner: 'dots'
+    });
     await loading.present();
 
-    // else
-    // {
+    const headers = {
+      'auth-id': localStorage.getItem('authid'),
+      'client-id': localStorage.getItem('clientid'),
+      'user': this.registerForm.value.userid,
+      'password': Md5.hashStr(this.registerForm.value.password)
+    };
 
-      const headers = { 
-        'auth-id': localStorage.getItem('authid'), 
-        'client-id': localStorage.getItem('clientid'),
-        'user': this.registerForm.value.userid,
-        'password':Md5.hashStr(this.registerForm.value.password) }
+    let company_id = this.registerForm.value.company_id?.toLowerCase().trim();
+    let fullUrl = `https://${company_id}.2pisys.com`;
 
-        let company_id = this.registerForm.value.company_id?.toLowerCase().trim();
+    if (this.dataUrls?.includes(fullUrl)) {
+      this.dataUrl = fullUrl;
+      this.getCustomIcon(fullUrl, headers);
+      localStorage.setItem('url', fullUrl);
+    } else {
+      this.toastfunction("Invalid Company Id", "danger");
+      loading.dismiss();
+      return;
+    }
 
-        let fullUrl = `https://${company_id}.2pisys.com`;
-            
-        if (this.dataUrls?.includes(fullUrl)) {
-           const storedUrl = localStorage.getItem('url');
+    this.http.get<any>(this.dataUrl + "/api/userlogin/" + this.registerForm.value.userid, { headers }).subscribe({
+      next: async data => {
+        this.router.navigate(["Widgets"]);
 
-            if (storedUrl) {
-              this.dataUrl = storedUrl;
-            } else {
-              this.dataUrl = company_id;
-              localStorage.setItem('url', company_id);
-            }
+        localStorage.setItem('userid', this.registerForm.value.userid);
+        localStorage.setItem('password', Md5.hashStr(this.registerForm.value.password));
+        localStorage.setItem('lastManualLogin', new Date().toISOString());
+
+        // Save credentials if Remember Me is checked
+        if (this.registerForm.value.rememberMe) {
+          localStorage.setItem('rememberedUser', this.registerForm.value.userid);
+          localStorage.setItem('rememberedPass', this.registerForm.value.password);
         } else {
-          this.toastfunction("Invalid Company Id","danger");
-           loading.dismiss();  
-          return;
+          localStorage.removeItem('rememberedUser');
+          localStorage.removeItem('rememberedPass');
         }
-        
-        
-      this.http.get<any>(this.dataUrl+"/api/userlogin/"+this.registerForm.value.userid,{headers}).subscribe({
-        next: async data => {
-          this.router.navigate(["Widgets"]);
-          localStorage.setItem('userid',this.registerForm.value.userid);
-          localStorage.setItem('password',Md5.hashStr(this.registerForm.value.password));
-          this.setStorage();
-          loading.dismiss();          
-        },
-        error: errordata => {
-          if(errordata.error.message){
-            loading.dismiss();         
-            this.toastfunction(errordata.error.message,"danger");  
-            }
-            else{
-              loading.dismiss();  
-              this.toastfunction("Invalid Company Url, Please Check in Home page 3","danger");
-            }
+         localStorage.setItem('lastManualLogin', new Date().toISOString());
+        this.setStorage();
+        loading.dismiss();
+      },
+      error: errordata => {
+        loading.dismiss();
+        if (errordata.error.message) {
+          this.toastfunction(errordata.error.message, "danger");
+        } else {
+          this.toastfunction("Invalid Company Url, Please Check in Home page 3", "danger");
         }
-      });
-
-    // } 
-
+      }
+    });
   }
-
 
   expiryDate;
   setStorage() {
     let date = new Date();
-    this.expiryDate= date.setDate(date.getDate() + 1); 
+    this.expiryDate = date.setDate(date.getDate() + 1);
     localStorage.setItem("your-data-key", this.expiryDate.toString());
   }
-  
-  
-  async toastfunction(msg,colour)
-  {
+
+  async toastfunction(msg, colour) {
     const toast = await this.toastController.create({
       message: msg,
       duration: 2000,
       position: 'bottom',
-      animated:true,
-      color:colour
+      animated: true,
+      color: colour
     });
 
     toast.present();
   }
 
-  refresher()
-  {
-   this.ngOnInit();
+  refresher() {
+    this.ngOnInit();
   }
-  
-  async versionToastFunction()
-  {
+
+  async versionToastFunction() {
     const toast2 = await this.toastController.create({
-      header:"Update required",
+      header: "Update required",
       message: "A new PPA app is now available. Please update from playstore.",
       position: 'bottom',
-      animated:true,
-      color:"danger",
-      // buttons: [
-      //  {
-      //     side: 'end',
-      //     text: 'Close',
-      //     role: 'cancel',
-      //     icon:'close',
-      //     handler: () => {
-      //       console.log('Close clicked');
-      //     }
-      //   }
-      // ]
+      animated: true,
+      color: "danger"
     });
 
     toast2.present();
   }
 
+  getCustomIcon(url, headers) {
+    this.http.get<any>(url + '/api/custicon', { headers }).subscribe({
+      next: async data => {
+        this.datapass = data.message[0];
+        this.datapass.base64encodedimage = "data:image/png;base64," + data.message[0].base64encodedimage;
+        localStorage.setItem('brandImage', this.datapass.base64encodedimage);
+      },
+      error: errordata => {
+        if (errordata.error.message) {
+          this.toastfunction(errordata.error.message, "danger");
+        } else {
+          this.toastfunction("Invalid Company Url, Please Check in Home page 1", "danger");
+        }
+      }
+    });
+  }
 }

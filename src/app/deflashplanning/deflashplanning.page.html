@@ -18,32 +18,33 @@
         
         <ion-input (keyup)="applyFilter($event.target.value)" placeholder="Search" [(ngModel)]="searchData"><ion-icon name="search"></ion-icon></ion-input>
       </ion-col>
-      <ion-col size="4">      
-        <ng-select *ngIf="operatorArray.length >= 0"
-              [(ngModel)]="selected"
-              [items]="operatorArray"
-              bindLabel="name"
-              bindValue="value"
-              (change)="OperatorChanged($event)"
-              placeholder="📊 Operator"
-              [searchable]="true"
-              [clearable]="false"
-              searchFailText= "Operator not found"
-              >
-              <ng-template ng-header>
-                <div class="dropdown-header">📑 Available Operator</div>
-              </ng-template>
-              <ng-template ng-label-tmp let-item="item">
-                <span class="selected-item">{{ item.name }}</span>
-              </ng-template>
-              <ng-template ng-option-tmp let-item="item" let-index="index">
-                <div class="option-item">
-                  <i class="fas fa-file-alt"></i>
-                  {{ item.name }}
-                </div>
-              </ng-template>
-            </ng-select>
-      </ion-col>
+      <ion-col size="4">
+      <ng-select *ngIf="operatorArray && operatorArray.length > 0"
+        [(ngModel)]="selected"
+        [items]="operatorArray"
+        bindLabel="name"
+        bindValue="value"
+        (change)="OperatorChanged($event)"
+        placeholder="📊 Operator"
+        [searchable]="true"
+        [clearable]="false"
+        searchFailText="Operator not found"
+      >
+        <ng-template ng-header>
+          <div class="dropdown-header">📑 Available Operator</div>
+        </ng-template>
+        <ng-template ng-label-tmp let-item="item">
+          <span class="selected-item">{{ item.name }}</span>
+        </ng-template>
+        <ng-template ng-option-tmp let-item="item" let-index="index">
+          <div class="option-item">
+            <i class="fas fa-file-alt"></i>
+            {{ item.name }}
+          </div>
+        </ng-template>
+      </ng-select>
+    </ion-col>
+
       <ion-col size="3"><ion-button color="secondary" size="small" (click)="modalDeleteData3=true">Issue</ion-button></ion-col>
       <ion-col size="2"><ion-button color="danger" size="small" (click)="deleteList()">Delete</ion-button></ion-col>
   </ion-row>
