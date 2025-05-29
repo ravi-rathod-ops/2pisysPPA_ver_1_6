@@ -33,10 +33,6 @@
         <ion-text *ngIf="submitted && f.company_id.errors?.required" color="danger" class="error-text">
           *Required
         </ion-text>
-        <ion-item>
-          <ion-label>Remember Me</ion-label>
-          <ion-checkbox slot="start" formControlName="rememberMe"></ion-checkbox>
-        </ion-item>
       </ion-list>
 
       <ion-button type="submit" expand="block" shape="round" [disabled]="!registerForm.valid || versionFlag">

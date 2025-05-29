@@ -28,39 +28,12 @@ export class HomePage {
     public loadingController: LoadingController,
     public toastController: ToastController,
     private router: Router,
-    private platform: Platform
+    
   ) { }
 
-  isWithinAutoLoginPeriod(days: number, lastLogin: string | null): boolean {
-    if (!lastLogin) return false;
-
-    const lastLoginDate = new Date(lastLogin);
-    const now = new Date();
-    const diffTime = now.getTime() - lastLoginDate.getTime();
-    const diffDays = diffTime / (1000 * 3600 * 24);
-
-    return diffDays <= days;
-  }
-
-  initializeApp() {
-    this.platform.ready().then(() => {
-      const userid = localStorage.getItem('userid');
-      const password = localStorage.getItem('password');
-      const lastLogin = localStorage.getItem('lastManualLogin');
-
-      if (userid && password && this.isWithinAutoLoginPeriod(2, lastLogin)) {
-        console.log("if");
-        
-        this.router.navigate(['Widgets']);
-      } else {
-        console.log("else");
-        this.router.navigate(['home']);
-      }
-    });
-  }
+  
 
   ngOnInit() {
-    this.initializeApp();
     this.registerForm = this.formBuilder.group({
       userid: ['', Validators.required],
       password: ['', Validators.required],
@@ -69,17 +42,6 @@ export class HomePage {
     });
     
       
-
-    // Load remembered credentials if available
-    const rememberedUser = localStorage.getItem('rememberedUser');
-    const rememberedPass = localStorage.getItem('rememberedPass');
-    if (rememberedUser && rememberedPass) {
-      this.registerForm.patchValue({
-        userid: rememberedUser,
-        password: rememberedPass,
-        rememberMe: true
-      });
-    }
 
     if (localStorage.getItem('authid') != null) {
       this.authid = localStorage.getItem('authid');
@@ -173,16 +135,7 @@ export class HomePage {
 
         localStorage.setItem('userid', this.registerForm.value.userid);
         localStorage.setItem('password', Md5.hashStr(this.registerForm.value.password));
-        localStorage.setItem('lastManualLogin', new Date().toISOString());
-
-        // Save credentials if Remember Me is checked
-        if (this.registerForm.value.rememberMe) {
-          localStorage.setItem('rememberedUser', this.registerForm.value.userid);
-          localStorage.setItem('rememberedPass', this.registerForm.value.password);
-        } else {
-          localStorage.removeItem('rememberedUser');
-          localStorage.removeItem('rememberedPass');
-        }
+        
          localStorage.setItem('lastManualLogin', new Date().toISOString());
         this.setStorage();
         loading.dismiss();
