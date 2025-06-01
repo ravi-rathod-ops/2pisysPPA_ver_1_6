@@ -21,6 +21,7 @@ export class HomePage {
   submitted = false;
   cversion = 1.61;
   versionFlag = false;
+  
 
   constructor(
     public http: HttpClient,
@@ -115,13 +116,20 @@ export class HomePage {
       'user': this.registerForm.value.userid,
       'password': Md5.hashStr(this.registerForm.value.password)
     };
-
+    
     let company_id = this.registerForm.value.company_id?.toLowerCase().trim();
-    let fullUrl = `https://${company_id}.2pisys.com`;
+    let fullUrl: any | undefined;
+    for (let obj of this.dataUrls) {
+      if (obj.hasOwnProperty(company_id)) {
+        fullUrl = "https://"+obj[company_id];
+        break;
+      }
+    }
 
-    if (this.dataUrls?.includes(fullUrl)) {
+    
+    if (fullUrl) {
       this.dataUrl = fullUrl;
-      this.getCustomIcon(fullUrl, headers);
+      this.getCustomIcon(this.dataUrl, headers);
       localStorage.setItem('url', fullUrl);
     } else {
       this.toastfunction("Invalid Company Id", "danger");
