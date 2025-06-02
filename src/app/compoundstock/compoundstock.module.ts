@@ -10,6 +10,7 @@ import { CompoundstockPage } from './compoundstock.page';
 
 // import { PdfViewerModule } from 'ng2-pdf-viewer';
 import { YoutubePipe } from '../youtube.pipe';
+import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
   imports: [
@@ -17,8 +18,9 @@ import { YoutubePipe } from '../youtube.pipe';
     FormsModule,
     IonicModule,
     CompoundstockPageRoutingModule,
+    SharedModule
     // PdfViewerModule
   ],
-  declarations: [CompoundstockPage,YoutubePipe]
+  declarations: [CompoundstockPage]
 })
 export class CompoundstockPageModule {}

@@ -25,7 +25,8 @@ export class MouldingplanningPage implements OnInit {
   postData={
     "plandate": "",
     "location":"",
-    "iteminfo": this.dataArray
+    "iteminfo": this.dataArray,
+    "didate":''
   }
   flag;
   flag2=true;
@@ -44,7 +45,7 @@ export class MouldingplanningPage implements OnInit {
   currentDate:any;
   mode=false;
   componentArray=[]
-  modalObj={};
+  modalObj:any = {};
   dinum="";
   diqty=null;
   type=true;

@@ -10,6 +10,7 @@ import { RmstockPage } from './rmstock.page';
 
 // import { PdfViewerModule } from 'ng2-pdf-viewer';
 import { YoutubePipe } from '../youtube.pipe';
+import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
   imports: [
@@ -18,7 +19,8 @@ import { YoutubePipe } from '../youtube.pipe';
     IonicModule,
     RmstockPageRoutingModule,
     // PdfViewerModule
+    SharedModule
   ],
-  declarations: [RmstockPage,YoutubePipe]
+  declarations: [RmstockPage],
 })
 export class RmstockPageModule {}

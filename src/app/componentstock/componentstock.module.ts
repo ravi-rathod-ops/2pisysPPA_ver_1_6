@@ -10,6 +10,7 @@ import { ComponentstockPage } from './componentstock.page';
 
 // import { PdfViewerModule } from 'ng2-pdf-viewer';
 import { YoutubePipe } from '../youtube.pipe';
+import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
   imports: [
@@ -17,8 +18,9 @@ import { YoutubePipe } from '../youtube.pipe';
     FormsModule,
     IonicModule,
     ComponentstockPageRoutingModule,
+    SharedModule
     // PdfViewerModule
   ],
-  declarations: [ComponentstockPage,YoutubePipe]
+  declarations: [ComponentstockPage]
 })
 export class ComponentstockPageModule {}

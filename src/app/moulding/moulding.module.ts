@@ -16,6 +16,7 @@ import { IonicSelectableModule } from '@ionic-selectable/angular';
 
 import { HTTP } from '@ionic-native/http/ngx';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { SharedModule } from '../shared/shared.module';
 
 
 @NgModule({
@@ -26,9 +27,10 @@ import { NgSelectModule } from '@ng-select/ng-select';
     MouldingPageRoutingModule,
     ReactiveFormsModule,
     NgSelectModule,
+    SharedModule
     // PdfViewerModule
   ],
-  declarations: [MouldingPage,YoutubePipe],
+  declarations: [MouldingPage],
   providers: [HTTP]
 })
 export class MouldingPageModule {}
