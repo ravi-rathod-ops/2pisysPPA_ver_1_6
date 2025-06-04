@@ -188,6 +188,7 @@ async startScanning() {
   }
 
     stopScan() {
+    this.codeReader.reset();
     const stream = this.video?.nativeElement?.srcObject as MediaStream;
     if (stream) {
       stream.getTracks().forEach(track => track.stop());

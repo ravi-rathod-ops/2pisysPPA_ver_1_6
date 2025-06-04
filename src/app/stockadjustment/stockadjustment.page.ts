@@ -85,9 +85,29 @@ export class StockadjustmentPage implements OnInit, AfterViewInit {
         this.closeScanModal();
         return;
       }
+
+      const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+    let selectedDevice;
+
+    if (isMobile) {
+      selectedDevice = devices.find(device =>
+        device.label.toLowerCase().includes('back') ||
+        device.label.toLowerCase().includes('environment')
+      );
+    } else {
+      selectedDevice = devices.find(device =>
+        device.label.toLowerCase().includes('front') ||
+        device.label.toLowerCase().includes('user')
+      );
+    }
+
+    if (!selectedDevice) {
+      selectedDevice = devices[0];
+    }
   
       const result: Result = await this.codeReader.decodeOnceFromVideoDevice(
-        devices[0].deviceId,
+       selectedDevice.deviceId,
         this.video.nativeElement
       );
   
@@ -118,6 +138,7 @@ export class StockadjustmentPage implements OnInit, AfterViewInit {
   }
 
   stopScan() {
+    this.codeReader.reset();
     const stream = this.video?.nativeElement?.srcObject as MediaStream;
     if (stream) {
       stream.getTracks().forEach(track => track.stop());

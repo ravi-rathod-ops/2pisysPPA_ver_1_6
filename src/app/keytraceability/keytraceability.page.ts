@@ -249,39 +249,7 @@ async fetchDrawingData(scannedText: string) {
         });
   }
 
-//  async startScanning() {
-//   try {
-//     const result: Result = await this.codeReader.decodeOnceFromVideoDevice(
-//       undefined,
-//       this.video.nativeElement
-//     );
 
-//     const scannedText = result.getText();
-
-//     if (scannedText && scannedText.length > 0) {
-//       const loading = await this.loadingController.create({
-//         cssClass: 'my-custom-class',
-//         message: 'Please wait...',
-//         spinner: 'dots',
-//       });
-
-//       await loading.present();
-
-      
-//     } else {
-//       this.toastfunction('No QR code detected.', 'warning');
-//       this.closeScanModal();
-//     }
-//   } catch (err: any) {
-//     console.error('Scan error:', err);
-//     if (err.name === 'NotFoundException') {
-//       this.toastfunction('No QR code found before video stream ended.', 'warning');
-//     } else {
-//       this.toastfunction('Camera access denied or scanning cancelled.', 'danger');
-//     }
-//     this.closeScanModal();
-//   }
-// }
 
 stopScan() {
    this.codeReader.reset();
