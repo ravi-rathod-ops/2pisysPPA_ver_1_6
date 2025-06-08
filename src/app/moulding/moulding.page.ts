@@ -230,7 +230,11 @@ isModalOpen = false;
   
       setTimeout(async () => { 
         try {
-          const devices = await BrowserMultiFormatReader.listVideoInputDevices();
+         if (!this.codeReader) {
+          this.codeReader = new BrowserMultiFormatReader();
+        }
+
+        const devices = await BrowserMultiFormatReader.listVideoInputDevices();
   
           if (devices.length === 0) {
             this.toastfunction('No camera device found.', 'danger');
@@ -256,6 +260,8 @@ isModalOpen = false;
           if (!selectedDevice) {
             selectedDevice = devices[0];
           }
+          console.log({selectedDevice});
+          
   
           try {
             const stream = await navigator.mediaDevices.getUserMedia({ video: { deviceId: selectedDevice.deviceId } });
