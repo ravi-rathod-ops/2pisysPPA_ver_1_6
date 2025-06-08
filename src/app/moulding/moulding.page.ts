@@ -236,9 +236,29 @@ isModalOpen = false;
             this.toastfunction('No camera device found.', 'danger');
             return;
           }
+
+          const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+          let selectedDevice;
+
+          if (isMobile) {
+            selectedDevice = devices.find(device =>
+              device.label.toLowerCase().includes('back') ||
+              device.label.toLowerCase().includes('environment')
+            );
+          } else {
+            selectedDevice = devices.find(device =>
+              device.label.toLowerCase().includes('front') ||
+              device.label.toLowerCase().includes('user')
+            );
+          }
+
+          if (!selectedDevice) {
+            selectedDevice = devices[0];
+          }
   
           try {
-            const stream = await navigator.mediaDevices.getUserMedia({ video: { deviceId: devices[0].deviceId } });
+            const stream = await navigator.mediaDevices.getUserMedia({ video: { deviceId: selectedDevice.deviceId } });
             stream.getTracks().forEach(track => track.stop());
           } catch (err) {
             this.toastfunction('Camera permission is required.', 'danger');
