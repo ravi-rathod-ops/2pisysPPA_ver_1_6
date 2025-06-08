@@ -92,71 +92,90 @@ isModalOpen = false;
    // convenience getter for easy access to form fields
    get f() { return this.registerForm.controls; }
 
-   async scan() {
-    const codeReader = new BrowserMultiFormatReader();
-    const loading = await this.loadingController.create({
-      cssClass: 'my-custom-class',
-      message: 'Please wait...',
-      spinner: 'dots'
-    });
-    await loading.present();
-  
+  async scan() {
+  const codeReader = new BrowserMultiFormatReader();
+  const loading = await this.loadingController.create({
+    cssClass: 'my-custom-class',
+    message: 'Please wait...',
+    spinner: 'dots'
+  });
+  await loading.present();
+
+  try {
+    const videoInputDevices = await BrowserMultiFormatReader.listVideoInputDevices();
+
+    if (videoInputDevices.length === 0) {
+      await loading.dismiss();
+      this.toastfunction('No camera device found on this device.', 'danger');
+      return;
+    }
+
+    // Detect device type
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+    let selectedDeviceId = videoInputDevices[0].deviceId;
+
+    if (isMobile) {
+      // Try to find back camera for mobile
+      const backCam = videoInputDevices.find(device => 
+        /back|rear/i.test(device.label)
+      );
+      if (backCam) selectedDeviceId = backCam.deviceId;
+    } else {
+      const frontCam = videoInputDevices.find(device => 
+        /front|face/i.test(device.label)
+      );
+      if (frontCam) selectedDeviceId = frontCam.deviceId;
+    }
+
     try {
-      const videoInputDevices = await BrowserMultiFormatReader.listVideoInputDevices();
-  
-      if (videoInputDevices.length === 0) {
-        await loading.dismiss();
-        this.toastfunction('No camera device found on this device.', 'danger');
-        return;
-      }
-  
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: { deviceId: videoInputDevices[0].deviceId } });
-        stream.getTracks().forEach(track => track.stop()); 
-      } catch (err) {
-        await loading.dismiss();
-        this.toastfunction('Camera permission is required to scan.', 'danger');
-        return;
-      }
-  
-      const headers = {
-        'auth-id': localStorage.getItem('authid')!,
-        'client-id': localStorage.getItem('clientid')!,
-        'user': localStorage.getItem('userid')!,
-        'password': localStorage.getItem('password')!
-      };
-  
-      this.http.get<any>(this.dataUrl + "/api/reportlinks", { headers }).subscribe({
-        next: async data => {
-          this.datapass = data;
-          this.datapassTemp = data;
-          loading.dismiss();
-  
-          this.datapass.message.filter(x => {
-            x.group === "purchase" ? this.purchase = true : null;
-            x.group === "production" ? this.production = true : null;
-            x.group === "despatch" ? this.despatch = true : null;
-            x.group === "mixing" ? this.mixing = true : null;
-            x.group === "deflashing" ? this.deflashing = true : null;
-            x.group === "inspection" ? this.inspection = true : null;
-            x.group === "calendering" ? this.calendering = true : null;
-            x.group === "final" ? this.final = true : null;
-          });
-        },
-        error: errordata => {
-          loading.dismiss();
-          if (errordata.error?.message) {
-            this.toastfunction(errordata.error.message, "danger");
-          } else {
-            this.toastfunction("Invalid Company Url, Please Check in Home page", "danger");
-          }
-        }
-      });
+      const stream = await navigator.mediaDevices.getUserMedia({ video: { deviceId: selectedDeviceId } });
+      stream.getTracks().forEach(track => track.stop());
     } catch (err) {
       await loading.dismiss();
-      this.toastfunction("Error while checking camera devices.", "danger");
+      this.toastfunction('Camera permission is required to scan.', 'danger');
+      return;
     }
+
+    const headers = {
+      'auth-id': localStorage.getItem('authid')!,
+      'client-id': localStorage.getItem('clientid')!,
+      'user': localStorage.getItem('userid')!,
+      'password': localStorage.getItem('password')!
+    };
+
+    this.http.get<any>(this.dataUrl + "/api/reportlinks", { headers }).subscribe({
+      next: async data => {
+        this.datapass = data;
+        this.datapassTemp = data;
+        loading.dismiss();
+
+        this.datapass.message.forEach(x => {
+          if (x.group === "purchase") this.purchase = true;
+          else if (x.group === "production") this.production = true;
+          else if (x.group === "despatch") this.despatch = true;
+          else if (x.group === "mixing") this.mixing = true;
+          else if (x.group === "deflashing") this.deflashing = true;
+          else if (x.group === "inspection") this.inspection = true;
+          else if (x.group === "calendering") this.calendering = true;
+          else if (x.group === "final") this.final = true;
+        });
+      },
+      error: errordata => {
+        loading.dismiss();
+        if (errordata.error?.message) {
+          this.toastfunction(errordata.error.message, "danger");
+        } else {
+          this.toastfunction("Invalid Company Url, Please Check in Home page", "danger");
+        }
+      }
+    });
+  } catch (err) {
+    await loading.dismiss();
+    this.toastfunction("Error while checking camera devices.", "danger");
   }
+}
+
   
 
   print() { this.printer.print(); }
