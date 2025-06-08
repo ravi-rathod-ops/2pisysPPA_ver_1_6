@@ -111,25 +111,28 @@ isModalOpen = false;
     }
 
     // Detect device type
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+     const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
-    let selectedDeviceId = videoInputDevices[0].deviceId;
+    let selectedDevice;
 
     if (isMobile) {
-      // Try to find back camera for mobile
-      const backCam = videoInputDevices.find(device => 
-        /back|rear/i.test(device.label)
+      selectedDevice = videoInputDevices.find(device =>
+        device.label.toLowerCase().includes('back') ||
+        device.label.toLowerCase().includes('environment')
       );
-      if (backCam) selectedDeviceId = backCam.deviceId;
     } else {
-      const frontCam = videoInputDevices.find(device => 
-        /front|face/i.test(device.label)
+      selectedDevice = videoInputDevices.find(device =>
+        device.label.toLowerCase().includes('front') ||
+        device.label.toLowerCase().includes('user')
       );
-      if (frontCam) selectedDeviceId = frontCam.deviceId;
+    }
+
+    if (!selectedDevice) {
+      selectedDevice = videoInputDevices[0];
     }
 
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: { deviceId: selectedDeviceId } });
+      const stream = await navigator.mediaDevices.getUserMedia({ video: { deviceId: selectedDevice.deviceId } });
       stream.getTracks().forEach(track => track.stop());
     } catch (err) {
       await loading.dismiss();
