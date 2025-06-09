@@ -22,28 +22,34 @@
   </ion-grid>
 
   <ion-grid id="grid" class="appfont" style="overflow: auto;">
-    <div style="min-width: 200px; overflow-x: auto;">
-      <ion-row style="border-bottom: 1px solid grey;">
-        <ion-col size="1" (click)="sort('purid',false)">PO Id ({{rmArray.length}})</ion-col>
-        <ion-col size="2" (click)="sort('purdate',false)">PO Date</ion-col>
-        <ion-col size="2" (click)="sort('supname',false)">Sup Name</ion-col>
-        <ion-col size="4" (click)="sort('ramname',false)">RM Name(Grade)</ion-col>
-        <ion-col size="1" (click)="sort('qty',false)">PO Qty</ion-col>
-        <ion-col size="1" (click)="sort('rate',false)">PO Rate</ion-col>
-        <ion-col size="1" (click)="sort('purgrandtotal',false)">Grand Total</ion-col>
-      </ion-row>
-      <ion-row *ngFor="let x of rmArray; index as i" style="font-weight: bold;border-bottom: 1px solid grey;" (click)="itemDetail(x)">
-        <ion-col size="1">{{x.purid}}</ion-col>
-        <ion-col size="2" style="color:blue;">{{x.purdate}}</ion-col>
-        <ion-col size="2" >{{x.supname | slice:0:24}}</ion-col> 
-        <ion-col size="4">{{x.ramname}}</ion-col>
-        <ion-col size="1" style="color:blue;">{{x.qty}}</ion-col>
-        <ion-col size="1" style="color:blue;">{{x.rate}}</ion-col>
-        <ion-col size="1" style="color:blue;">{{x.purgrandtotal}}</ion-col>
-      </ion-row>  
-    </div>  
-    <br>
-  </ion-grid>
+  <div style="min-width: 200px; overflow-x: auto;">
+    <ion-row style="border-bottom: 1px solid grey;">
+      <ion-col size="1" (click)="sort('purid', false)">PO Id ({{ rmArray?.length || 0 }})</ion-col>
+      <ion-col size="2" (click)="sort('purdate', false)">PO Date</ion-col>
+      <ion-col size="2" (click)="sort('supname', false)">Sup Name</ion-col>
+      <ion-col size="4" (click)="sort('ramname', false)">RM Name(Grade)</ion-col>
+      <ion-col size="1" (click)="sort('qty', false)">PO Qty</ion-col>
+      <ion-col size="1" (click)="sort('rate', false)">PO Rate</ion-col>
+      <ion-col size="1" (click)="sort('purgrandtotal', false)">Grand Total</ion-col>
+    </ion-row>
+    <ion-row *ngFor="let x of rmArray; index as i" style="font-weight: bold; border-bottom: 1px solid grey;" (click)="itemDetail(x)">
+      <ion-col size="1">{{ x.purid }}</ion-col>
+      <ion-col size="2" style="color: blue;">{{ x.purdate }}</ion-col>
+      <ion-col size="2">{{ x.supname | slice: 0:24 }}</ion-col>
+      <ion-col size="4">{{ x.ramname }}</ion-col>
+      <ion-col size="1" style="color: blue;">{{ x.qty }}</ion-col>
+      <ion-col size="1" style="color: blue;">{{ x.rate }}</ion-col>
+      <ion-col size="1" style="color: blue;">{{ x.purgrandtotal }}</ion-col>
+    </ion-row>
+    <ion-row *ngIf="rmArray?.length === 0" style="text-align: center;">
+      <ion-col size="12" style="padding: 20px; color: red;">
+        Data not found
+      </ion-col>
+    </ion-row>
+  </div>
+</ion-grid>
+
+
 
   <form [formGroup]="registerForm" (ngSubmit)="submitData()" *ngIf="showEntryCard">
     <ion-card style="position: fixed;top:12%;left:3%;width:90%;overflow: auto;height: 80%;z-index: 12;">

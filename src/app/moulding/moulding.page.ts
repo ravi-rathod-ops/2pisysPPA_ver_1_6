@@ -271,7 +271,7 @@ isModalOpen = false;
             return;
           }
   
-          const selectedDeviceId = devices[0].deviceId;
+          const selectedDeviceId = selectedDevice.deviceId;
           this.codeReader.decodeFromVideoDevice(selectedDeviceId, 'video-preview', (result, error, controls) => {
             if (result) {
               this.scanData = result;

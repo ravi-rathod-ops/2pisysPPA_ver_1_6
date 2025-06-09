@@ -125,6 +125,7 @@ brandImage="";
             loading.dismiss(); 
             this.toastfunction(data.message,"success");         
             this.showEntryCard=false;
+            this.getData();
             this.registerForm.reset();
           }
           else
