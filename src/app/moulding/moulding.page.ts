@@ -65,6 +65,8 @@ export class MouldingPage implements OnInit {
 codeReader = new BrowserMultiFormatReader();
 controls: IScannerControls | null = null;
 isModalOpen = false;
+isback = false;
+handleRoute = '';
 
   @ViewChild('selectComponent') selectComponent: IonicSelectableComponent;
   constructor(public inappbrowser:InAppBrowser,private printer: Printer,private http: HttpClient,public loadingController: LoadingController,private screenOrientation: ScreenOrientation,public toastController: ToastController,private router: Router,
@@ -189,11 +191,24 @@ isModalOpen = false;
 
   getReport(page){
       let arr=this.datapass;
+      this.handleRoute = page;
       arr=this.datapass.message.filter((x)=>{
         return x.group == page;
       })
      this.datapassTemp=arr;
      arr.length > 0 ?  this.showMenu=false : this.toastfunction("No Reports Found","danger");
+  }
+
+  back(){
+    if(this.handleRoute != ''){
+      this.isback = false;
+      this.dropdownObject = '';
+      this.showMenu = true;
+      this.datapassTemp = [];
+      this.router.navigate(['Moulding']);
+    }else{
+      this.router.navigate(['Widgets']);
+    }
   }
 
   checkStorage() {
@@ -211,6 +226,7 @@ isModalOpen = false;
   ReportChanged(event: any)
   {
     this.dropdownObject=event == "Select" ? "": event;
+    this.isback = true;
     let url=event.link;
     url=url.replace("&amp;", "&");
     this.datalist=event.link;

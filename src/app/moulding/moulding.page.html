@@ -75,14 +75,14 @@
              
             </ion-fab-list>
           </ion-fab>
-          <ion-back-button defaultHref="Widgets" slot="end"></ion-back-button>  
+          <ion-back-button defaultHref="Widgets" slot="end" (click)="back()"></ion-back-button>  
         </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <iframe style="width:100%;height:100%;" [src]="datalist | renderUrl" frameborder="0" *ngIf="dropdownObject != ''" id="ReportPanel"></iframe>
-  <ion-img src="./assets/image/nodata.png" style="width:100%;height:100%;" *ngIf="!showMenu && dropdownObject == ''"></ion-img> 
+  <iframe style="width:100%;height:100%;" [src]="datalist | renderUrl" frameborder="0" *ngIf="dropdownObject != '' && isback" id="ReportPanel"></iframe>
+  <ion-img src="./assets/image/nodata.png" style="width:100%;height:100%;" *ngIf="!showMenu && dropdownObject == '' && !isback"></ion-img> 
 
 
   <ion-grid *ngIf="showMenu">

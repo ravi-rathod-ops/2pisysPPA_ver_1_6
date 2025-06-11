@@ -19,7 +19,7 @@ export class HomePage {
   clientid = environment.CLIENT_ID;
   registerForm: FormGroup;
   submitted = false;
-  cversion = 1.61;
+  cversion = 2.0;
   versionFlag = false;
   
 
