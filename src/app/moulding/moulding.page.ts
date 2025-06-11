@@ -205,6 +205,7 @@ handleRoute = '';
       this.dropdownObject = '';
       this.showMenu = true;
       this.datapassTemp = [];
+      this.handleRoute = '';
       this.router.navigate(['Moulding']);
     }else{
       this.router.navigate(['Widgets']);
