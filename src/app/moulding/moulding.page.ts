@@ -81,8 +81,10 @@ handleRoute = '';
   }
 
   @ViewChild('inputId', {  static: false })  inputElement: IonInput;
+  isMobile: boolean = false;
 
   ngOnInit() {
+    this.isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
     this.brandImage=localStorage.getItem('brandImage');
     this.scan();
     this.socket.connect();
@@ -242,6 +244,10 @@ handleRoute = '';
 
   
   async castData(type: 'open' | 'close') {
+    if (!this.isMobile) {
+      this.toastfunction('Camera is available only on mobile devices.', 'warning');
+      return;
+    }
     if (type === 'open') {
       this.isModalOpen = true;
   

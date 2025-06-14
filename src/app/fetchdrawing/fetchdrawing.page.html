@@ -44,9 +44,15 @@
     </ion-toolbar>
   </ion-header>
 
-  <ion-content>
+  <ion-content class="scanner-content">
     <div class="video-container">
-      <video #video autoplay></video>
+      <video #video autoplay muted playsinline></video>
+      <!-- Show scanner frame only when video is ready -->
+      <div class="overlay" *ngIf="isVideoReady">
+        <div class="focus-box">
+          <div class="scan-line"></div>
+        </div>
+      </div>
     </div>
   </ion-content>
 </div>

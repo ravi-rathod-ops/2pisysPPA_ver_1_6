@@ -7,7 +7,7 @@ import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
 import { zip } from 'rxjs';
-import { BrowserMultiFormatReader, Result } from '@zxing/library';
+import { BrowserMultiFormatReader, NotFoundException, Result } from '@zxing/library';
 
 @Component({
   selector: 'app-stockadjustment',
@@ -33,8 +33,13 @@ export class StockadjustmentPage implements OnInit, AfterViewInit {
   @ViewChild('video', { static: false }) video!: ElementRef<HTMLVideoElement>;
   isScanModalOpen = false;
   codeReader = new BrowserMultiFormatReader();
+  isMobile: boolean = false;
+  isVideoReady = false;
+  private isScanning = false;
+
 
   ngOnInit() {
+    this.isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
     this.brandImage=localStorage.getItem('brandImage');
     // this.scan();
     this.registerForm = this.formBuilder.group({
@@ -58,6 +63,14 @@ export class StockadjustmentPage implements OnInit, AfterViewInit {
 
   // ================
     async scan() {
+      if (!this.isMobile) {
+        this.toastfunction('Camera is available only on mobile devices.', 'warning');
+        return;
+      }
+       if (this.isScanning) return;
+
+    this.isScanning = true;
+    this.isVideoReady = false;
     const devices = await navigator.mediaDevices.enumerateDevices();
     const hasVideoInput = devices.some(device => device.kind === 'videoinput');
 
@@ -88,37 +101,29 @@ export class StockadjustmentPage implements OnInit, AfterViewInit {
 
       const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
-    let selectedDevice;
-
-    if (isMobile) {
-      selectedDevice = devices.find(device =>
-        device.label.toLowerCase().includes('back') ||
-        device.label.toLowerCase().includes('environment')
-      );
-    } else {
-      selectedDevice = devices.find(device =>
-        device.label.toLowerCase().includes('front') ||
-        device.label.toLowerCase().includes('user')
-      );
-    }
-
-    if (!selectedDevice) {
-      selectedDevice = devices[0];
-    }
-  
-      const result: Result = await this.codeReader.decodeOnceFromVideoDevice(
-       selectedDevice.deviceId,
-        this.video.nativeElement
-      );
-  
-      const scannedText = result?.getText();
-      this.planid = scannedText;
-      if (scannedText) {
+    let selectedDevice = devices.find(device =>
+      (isMobile
+        ? device.label.toLowerCase().includes('back') ||
+          device.label.toLowerCase().includes('environment')
+        : device.label.toLowerCase().includes('front') ||
+          device.label.toLowerCase().includes('user'))
+    ) || devices[0];
+    const videoElement = this.video.nativeElement;
+    this.codeReader.decodeFromVideoDevice(selectedDevice.deviceId, videoElement, (result, err) => {
+      if (result) {
+        const scannedText = result.getText();
+        this.planid = scannedText;
         this.fetchDrawingData(scannedText);
-      } else {
-        this.toastfunction('No QR code detected.', 'warning');
+        this.closeScanModal();
+      } else if (err && !(err instanceof NotFoundException)) {
+        this.toastfunction('Scan error or camera not accessible.', 'danger');
         this.closeScanModal();
       }
+    });
+    videoElement.onloadedmetadata = () => {
+      videoElement.play();
+      this.isVideoReady = true;
+    };
   
     } catch (err: any) {
       console.error('Scan error:', err);
@@ -139,6 +144,7 @@ export class StockadjustmentPage implements OnInit, AfterViewInit {
 
   stopScan() {
     this.codeReader.reset();
+     this.isScanning = false;
     const stream = this.video?.nativeElement?.srcObject as MediaStream;
     if (stream) {
       stream.getTracks().forEach(track => track.stop());

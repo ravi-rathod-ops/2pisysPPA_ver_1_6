@@ -34,9 +34,10 @@ if (stream) {
   this.video.nativeElement.srcObject = null;
 }
 @ViewChild('video', { static: false }) video: ElementRef;
-  isScanModalOpen = false;
+isScanModalOpen = false;
 codeReader = new BrowserMultiFormatReader();
-
+isMobile: boolean = false;
+isVideoReady = false;
 
 
 
@@ -47,12 +48,12 @@ codeReader = new BrowserMultiFormatReader();
 
   ngOnInit() {
     this.brandImage=localStorage.getItem('brandImage');
+    this.isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
     this.scan();
     this.registerForm = this.formBuilder.group({
       remarks: [''],
       // pin: ['', Validators.required]
   });
-  // this.screenOrientation.unlock();
   }
 
    // convenience getter for easy access to form fields
@@ -63,30 +64,36 @@ codeReader = new BrowserMultiFormatReader();
 
   // ================
   async scan() {
-    // Check for camera availability first
-    const devices = await navigator.mediaDevices.enumerateDevices();
-    const hasVideoInput = devices.some(device => device.kind === 'videoinput');
+  if (!this.isMobile) {
+    this.toastfunction('Camera is available only on mobile devices.', 'warning');
+    return;
+  }
+  const devices = await navigator.mediaDevices.enumerateDevices();
+  const hasVideoInput = devices.some(device => device.kind === 'videoinput');
 
-    if (!hasVideoInput) {
-      this.toastfunction('No camera device found. Please connect a camera.', 'danger');
-      return;
-    }
-
-    this.isScanModalOpen = true;
-
-    setTimeout(() => {
-      this.startScanning();
-    }, 300);
+  if (!hasVideoInput) {
+    this.toastfunction('No camera device found. Please connect a camera.', 'danger');
+    return;
   }
 
-  async startScanning() {
+  this.isScanModalOpen = true;
+
+      setTimeout(() => {
+        this.startScanning();
+    }, 100);
+    setTimeout(() => {
+    this.isVideoReady = true;  
+    }, 200);
+}
+
+ async startScanning() {
     try {
       const result: Result = await this.codeReader.decodeOnceFromVideoDevice(
-        undefined,
+    undefined,
         this.video.nativeElement
       );
-      const scannedText = result.getText();
-      this.planid = scannedText;
+        const scannedText = result.getText();
+        this.planid = scannedText;
 
       if (scannedText) {
         const loading = await this.loadingController.create({
@@ -131,16 +138,17 @@ codeReader = new BrowserMultiFormatReader();
       this.toastfunction("Camera access denied or scanning cancelled.", "danger");
       this.stopScan();
     }
-  }
+}
 
-  stopScan() {
+stopScan() {
     const stream = this.video?.nativeElement?.srcObject as MediaStream;
-    if (stream) {
-      stream.getTracks().forEach(track => track.stop());
+  if (stream) {
+    stream.getTracks().forEach(track => track.stop());
       this.video.nativeElement.srcObject = null;
-    }
-    this.isScanModalOpen = false;
   }
+  this.isScanModalOpen = false;
+  this.isVideoReady = false;
+}
 
   closeScanModal() {
     this.stopScan();

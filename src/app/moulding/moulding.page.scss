@@ -71,3 +71,62 @@
   // height: 200px;
   width: 80px;
 }
+
+
+.scanner-content {
+  --background: #442d2d;
+}
+
+.scanner-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.scanner-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.scanner-box {
+  width: 250px;
+  height: 250px;
+  border: 4px solid cyan;
+  border-radius: 10px;
+  position: relative;
+}
+
+.scan-line {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: red;
+  animation: scan 2s infinite linear;
+}
+
+@keyframes scan {
+  0% {
+    top: 0%;
+  }
+  50% {
+    top: 50%;
+  }
+  100% {
+    top: 100%;
+  }
+}

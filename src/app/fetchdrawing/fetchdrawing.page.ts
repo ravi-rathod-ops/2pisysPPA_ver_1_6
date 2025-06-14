@@ -7,7 +7,7 @@ import { Router } from '@angular/router';
 import { IonInput } from '@ionic/angular';
 
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { BrowserMultiFormatReader, Result } from '@zxing/library';
+import { BrowserMultiFormatReader, NotFoundException, Result } from '@zxing/library';
 
 @Component({
   selector: 'app-fetchdrawing',
@@ -19,6 +19,9 @@ export class FetchdrawingPage implements OnInit, AfterViewInit {
   planid: any = '';
   datapass: any = {};
   dataUrl = localStorage.getItem('url');
+  isMobile: boolean = false;
+  isVideoReady = false;
+  private isScanning = false;
 //  @ViewChild('video', { static: false }) video: ElementRef<HTMLVideoElement>;
  @ViewChild('video', { static: false }) video: ElementRef;
   isScanModalOpen = false;
@@ -33,6 +36,7 @@ export class FetchdrawingPage implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.brandImage = localStorage.getItem('brandImage');
+    this.isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
     this.scan();
   }
 
@@ -48,7 +52,6 @@ export class FetchdrawingPage implements OnInit, AfterViewInit {
 
 async startScanning() {
   try {
-    // Make sure you initialize the reader if not already
     if (!this.codeReader) {
       this.codeReader = new BrowserMultiFormatReader();
     }
@@ -63,49 +66,33 @@ async startScanning() {
 
     const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
-    let selectedDevice;
-
-    if (isMobile) {
-      selectedDevice = devices.find(device =>
-        device.label.toLowerCase().includes('back') ||
-        device.label.toLowerCase().includes('environment')
-      );
-    } else {
-      selectedDevice = devices.find(device =>
-        device.label.toLowerCase().includes('front') ||
-        device.label.toLowerCase().includes('user')
-      );
-    }
-
-    if (!selectedDevice) {
-      selectedDevice = devices[0];
-    }
-
-    const result: Result = await this.codeReader.decodeOnceFromVideoDevice(
-      selectedDevice.deviceId,
-      this.video.nativeElement
-    );
-
-    const scannedText = result?.getText();
-    this.planid = scannedText;
-    
-
-    if (scannedText) {
-      this.fetchDrawingData(scannedText);
-    } else {
-      this.toastfunction('No QR code detected.', 'warning');
-      this.closeScanModal();
-    }
+    let selectedDevice = devices.find(device =>
+      (isMobile
+        ? device.label.toLowerCase().includes('back') ||
+          device.label.toLowerCase().includes('environment')
+        : device.label.toLowerCase().includes('front') ||
+          device.label.toLowerCase().includes('user'))
+    ) || devices[0];
+    const videoElement = this.video.nativeElement;
+    this.codeReader.decodeFromVideoDevice(selectedDevice.deviceId, videoElement, (result, err) => {
+      if (result) {
+        const scannedText = result.getText();
+        this.planid = scannedText;
+        this.fetchDrawingData(scannedText);
+        this.closeScanModal();
+      } else if (err && !(err instanceof NotFoundException)) {
+        this.toastfunction('Scan error or camera not accessible.', 'danger');
+        this.closeScanModal();
+      }
+    });
+    videoElement.onloadedmetadata = () => {
+      videoElement.play();
+      this.isVideoReady = true;
+    };
 
   } catch (err: any) {
     console.error('Scan error:', err);
-
-    if (err.name === 'NotFoundException') {
-      this.toastfunction('No QR code found before video stream ended.', 'warning');
-    } else {
-      this.toastfunction('Scan error or camera not accessible.', 'danger');
-    }
-
+    this.toastfunction('Scan error or camera not accessible.', 'danger');
     this.closeScanModal();
   }
 }
@@ -169,11 +156,16 @@ async startScanning() {
   this.stopScan();
 }
 
-   private isScanning = false;
 
 async scan() {
-  if (this.isScanning) return; // Prevent multiple scan calls
+  if (!this.isMobile) {
+    this.toastfunction('Camera is available only on mobile devices.', 'warning');
+    return;
+  }
+  if (this.isScanning) return;
+
   this.isScanning = true;
+  this.isVideoReady = false;
 
   try {
     const devices = await navigator.mediaDevices.enumerateDevices();
@@ -181,6 +173,7 @@ async scan() {
 
     if (!hasVideoInput) {
       this.toastfunction('No camera device found. Please connect a camera.', 'danger');
+      this.isScanning = false;
       return;
     }
     this.isScanModalOpen = true;

@@ -38,8 +38,12 @@ export class DimensionentryPage implements OnInit , AfterViewInit {
 @ViewChild('video', { static: false }) video!: ElementRef<HTMLVideoElement>;
   isScanModalOpen = false;
   codeReader = new BrowserMultiFormatReader();
+  isMobile: boolean = false;
+  isVideoReady = false;
+  private isScanning = false;
 
   ngOnInit() {
+    this.isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
     this.brandImage = localStorage.getItem('brandImage');
     this.scan();
     this.registerForm = this.formBuilder.group({
@@ -60,11 +64,20 @@ export class DimensionentryPage implements OnInit , AfterViewInit {
 
    // ================
     async scan() {
+    if (!this.isMobile) {
+      this.toastfunction('Camera is available only on mobile devices.', 'warning');
+      return;
+    }
+    if (this.isScanning) return;
+
+    this.isScanning = true;
+    this.isVideoReady = false;
     const devices = await navigator.mediaDevices.enumerateDevices();
     const hasVideoInput = devices.some(device => device.kind === 'videoinput');
 
     if (!hasVideoInput) {
       this.toastfunction('No camera device found. Please connect a camera.', 'danger');
+       this.isScanning = false;
       return;
     }
 
@@ -98,38 +111,29 @@ async startScanning() {
 
     const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
-    let selectedDevice;
-
-    if (isMobile) {
-      selectedDevice = devices.find(device =>
-        device.label.toLowerCase().includes('back') ||
-        device.label.toLowerCase().includes('environment')
-      );
-    } else {
-      selectedDevice = devices.find(device =>
-        device.label.toLowerCase().includes('front') ||
-        device.label.toLowerCase().includes('user')
-      );
-    }
-
-    if (!selectedDevice) {
-      selectedDevice = devices[0];
-    }
-
-    const result: Result = await this.codeReader.decodeOnceFromVideoDevice(
-      selectedDevice.deviceId,
-      this.video.nativeElement
-    );
-
-    const scannedText = result?.getText();
-    this.planid = scannedText;
-
-    if (scannedText) {
-      this.fetchDrawingData(scannedText);
-    } else {
-      this.toastfunction('No QR code detected.', 'warning');
-      this.closeScanModal();
-    }
+    let selectedDevice = devices.find(device =>
+      (isMobile
+        ? device.label.toLowerCase().includes('back') ||
+          device.label.toLowerCase().includes('environment')
+        : device.label.toLowerCase().includes('front') ||
+          device.label.toLowerCase().includes('user'))
+    ) || devices[0];
+    const videoElement = this.video.nativeElement;
+    this.codeReader.decodeFromVideoDevice(selectedDevice.deviceId, videoElement, (result, err) => {
+      if (result) {
+        const scannedText = result.getText();
+        this.planid = scannedText;
+        this.fetchDrawingData(scannedText);
+        this.closeScanModal();
+      } else if (err && !(err instanceof NotFoundException)) {
+        this.toastfunction('Scan error or camera not accessible.', 'danger');
+        this.closeScanModal();
+      }
+    });
+    videoElement.onloadedmetadata = () => {
+      videoElement.play();
+      this.isVideoReady = true;
+    };
 
   } catch (err: any) {
     console.error('Scan error:', err);
@@ -195,6 +199,7 @@ async startScanning() {
       this.video.nativeElement.srcObject = null;
     }
     this.isScanModalOpen = false;
+    this.isScanning = false;
   }
 
   closeScanModal() {

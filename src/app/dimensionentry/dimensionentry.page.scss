@@ -37,7 +37,7 @@
   }
 
 
-  .custom-modal {
+ .custom-modal {
   position: fixed;
   top: 0;
   left: 0;
@@ -54,15 +54,74 @@
   align-items: center;
   height: 100%;
 }
-video {
-  width: 100%;
-  max-width: 400px;
-  border-radius: 10px;
-}
+// video {
+//   width: 100%;
+//   max-width: 400px;
+//   border-radius: 10px;
+// }
 
 .qr-icon {
   width: 50px;
   height: 50px;
   cursor: pointer;
   margin-bottom: 0.5rem;
+}
+
+.scanner-content {
+  --background: transparent;
+}
+
+.video-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.focus-box {
+  position: relative;
+  width: 60vw;
+  max-width: 300px;
+  aspect-ratio: 1 / 1;
+  border: 3px solid #00ffcc;
+  border-radius: 16px;
+  box-shadow: 0 0 20px rgba(0, 255, 204, 0.8);
+  background: transparent;
+  z-index: 2;
+  overflow: hidden;
+}
+
+/* Scan line inside the focus-box */
+.scan-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background-color: red;
+  animation: scanAnim 2s linear infinite;
+}
+
+@keyframes scanAnim {
+  0% { top: 0%; }
+  100% { top: 100%; }
 }

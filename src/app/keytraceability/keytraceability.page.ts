@@ -13,7 +13,7 @@ import {
   InAppBrowserOptions,
 } from '@ionic-native/in-app-browser/ngx';
 import { Printer, PrintOptions } from '@ionic-native/printer/ngx/index';
-import { BrowserMultiFormatReader, Result } from '@zxing/library';
+import { BrowserMultiFormatReader, NotFoundException, Result } from '@zxing/library';
 
 @Component({
   selector: 'app-keytraceability',
@@ -29,6 +29,9 @@ export class KeytraceabilityPage implements OnInit,AfterViewInit {
 @ViewChild('video', { static: false }) video: ElementRef<HTMLVideoElement>;
   isScanModalOpen = false;
   private isScanning = false; 
+  isMobile: boolean = false;
+  isVideoReady = false;
+
 
   codeReader = new BrowserMultiFormatReader();
   constructor(
@@ -43,6 +46,7 @@ export class KeytraceabilityPage implements OnInit,AfterViewInit {
 
   ngOnInit() {
     this.brandImage = localStorage.getItem('brandImage');
+    this.isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
     this.getlink();
   }
 
@@ -149,9 +153,13 @@ export class KeytraceabilityPage implements OnInit,AfterViewInit {
   }
 
 async scan() {
+  if (!this.isMobile) {
+    this.toastfunction('Camera is available only on mobile devices.', 'warning');
+    return;
+  }
   if (this.isScanning) return; 
   this.isScanning = true;
-
+this.isVideoReady = false;
  
   try {
     const stream = await navigator.mediaDevices.getUserMedia({ video: true });
@@ -171,20 +179,57 @@ async scan() {
 
  async startScanning() {
   try {
-    const result: Result = await this.codeReader.decodeOnceFromVideoDevice(
-      undefined,
-      this.video.nativeElement
-    );
+    // const result: Result = await this.codeReader.decodeOnceFromVideoDevice(
+    //   undefined,
+    //   this.video.nativeElement
+    // );
 
-    const scannedText = result.getText();
-    console.log({scannedText});
+    // const scannedText = result.getText();
+    // console.log({scannedText});
     
-    if (scannedText) {
-      this.fetchDrawingData(scannedText);
-    } else {
-      this.toastfunction('No QR code detected.', 'warning');
-      this.closeScanModal();
-    }
+    // if (scannedText) {
+    //   this.fetchDrawingData(scannedText);
+    // } else {
+    //   this.toastfunction('No QR code detected.', 'warning');
+    //   this.closeScanModal();
+    // }
+     if (!this.codeReader) {
+          this.codeReader = new BrowserMultiFormatReader();
+        }
+    
+        const devices = await this.codeReader.listVideoInputDevices();
+    
+        if (devices.length === 0) {
+          this.toastfunction('No camera devices found.', 'danger');
+          this.closeScanModal();
+          return;
+        }
+    
+        const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    
+        let selectedDevice = devices.find(device =>
+          (isMobile
+            ? device.label.toLowerCase().includes('back') ||
+              device.label.toLowerCase().includes('environment')
+            : device.label.toLowerCase().includes('front') ||
+              device.label.toLowerCase().includes('user'))
+        ) || devices[0];
+        const videoElement = this.video.nativeElement;
+        this.codeReader.decodeFromVideoDevice(selectedDevice.deviceId, videoElement, (result, err) => {
+          if (result) {
+            const scannedText = result.getText();
+            this.planid = scannedText;
+            this.fetchDrawingData(scannedText);
+            this.closeScanModal();
+          } else if (err && !(err instanceof NotFoundException)) {
+            this.toastfunction('Scan error or camera not accessible.', 'danger');
+            this.closeScanModal();
+          }
+        });
+        videoElement.onloadedmetadata = () => {
+          videoElement.play();
+          this.isVideoReady = true;
+        };
 
   } catch (err: any) {
     console.error('Scan error:', err);
