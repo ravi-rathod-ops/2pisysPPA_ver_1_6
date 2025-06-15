@@ -46,8 +46,14 @@
   padding: 6px 8px;
   background-color: #fff;
   transition: border-color 0.3s;
-  width: 12%;
+  width: auto;
 }
+@media (max-width: 768px) {
+  .custom-date-wrapper {
+    max-width: 100%;
+  }
+}
+
 
 .custom-date-wrapper.invalid {
   border-color: red;
