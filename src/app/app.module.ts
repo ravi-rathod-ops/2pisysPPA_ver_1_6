@@ -1,5 +1,5 @@
 // import { IonicSelectableModule } from 'ionic-selectable';
-import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule, isDevMode } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 
@@ -29,6 +29,7 @@ import { CalenderplanningPipe } from './calenderplanning.pipe';
 
 import {Chooser} from '@ionic-native/chooser/ngx';
 import { environment } from 'src/environments/environment';
+import { ServiceWorkerModule } from '@angular/service-worker';
 
 if(localStorage.getItem('IPAddr') != null)
 {
@@ -47,7 +48,12 @@ const config: SocketIoConfig = { url: localStorage.getItem("IPAddr"), options: {
 @NgModule({
   declarations: [AppComponent, CalenderplanningPipe],
   imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, FormsModule,ReactiveFormsModule,HttpClientModule,CommonModule,
-    SocketIoModule.forRoot(config),NgSelectModule],
+    SocketIoModule.forRoot(config),NgSelectModule, ServiceWorkerModule.register('ngsw-worker.js', {
+  enabled: !isDevMode(),
+  // Register the ServiceWorker as soon as the application is stable
+  // or after 30 seconds (whichever comes first).
+  registrationStrategy: 'registerWhenStable:30000'
+})],
   providers: [
     ScreenOrientation,Camera,FileTransfer,File,InAppBrowser,NetworkInterface,Printer,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },Chooser
