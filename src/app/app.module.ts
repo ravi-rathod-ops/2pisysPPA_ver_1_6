@@ -9,7 +9,7 @@ import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { FormsModule,ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 
 import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
 import { CommonModule } from '@angular/common';
@@ -30,6 +30,7 @@ import { CalenderplanningPipe } from './calenderplanning.pipe';
 import {Chooser} from '@ionic-native/chooser/ngx';
 import { environment } from 'src/environments/environment';
 import { ServiceWorkerModule } from '@angular/service-worker';
+import { HttpTimeoutInterceptor } from './http-timeout.interceptor';
 
 if(localStorage.getItem('IPAddr') != null)
 {
@@ -45,18 +46,23 @@ else
 const config: SocketIoConfig = { url: localStorage.getItem("IPAddr"), options: {} };
 
 
+
 @NgModule({
   declarations: [AppComponent, CalenderplanningPipe],
   imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, FormsModule,ReactiveFormsModule,HttpClientModule,CommonModule,
     SocketIoModule.forRoot(config),NgSelectModule, ServiceWorkerModule.register('ngsw-worker.js', {
-  enabled: !isDevMode(),
-  // Register the ServiceWorker as soon as the application is stable
-  // or after 30 seconds (whichever comes first).
-  registrationStrategy: 'registerWhenStable:30000'
-})],
+      enabled: environment.production,
+      // Add this registration strategy
+      registrationStrategy: 'registerWhenStable:30000'
+    })
+],
   providers: [
     ScreenOrientation,Camera,FileTransfer,File,InAppBrowser,NetworkInterface,Printer,
-    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },Chooser
+    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },Chooser,{
+      provide: HTTP_INTERCEPTORS,
+      useClass: HttpTimeoutInterceptor,
+      multi: true
+    }
   ],
   bootstrap: [AppComponent],
   schemas:[CUSTOM_ELEMENTS_SCHEMA],

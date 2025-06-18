@@ -12,11 +12,29 @@ import { AuthService } from './auth.service';
 })
 export class AppComponent {
 
+  private deferredPrompt: any;
 
    constructor(private platform: Platform, private router: Router, private authService: AuthService) {
     console.log("asddsad");
     
     this.authService.initializeApp();
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    this.deferredPrompt = e;
+  });
   }
+
+  showInstallPrompt() {
+  if (this.deferredPrompt) {
+    this.deferredPrompt.prompt();
+    this.deferredPrompt.userChoice.then((choiceResult) => {
+      if (choiceResult.outcome === 'accepted') {
+        console.log('User accepted install');
+      }
+      this.deferredPrompt = null;
+    });
+  }
+}
 
 }

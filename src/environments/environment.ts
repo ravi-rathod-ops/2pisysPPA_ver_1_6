@@ -3,7 +3,7 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false,
+  production: true,
   COMPANY_URL : [{'ppa':'ppa.2pisys.com'},{"mmpl":"mmpl.2pisys.in"}],
   AUTHENTICATE_ID :'PXpv2YWV41L223hGDuXY',
   CLIENT_ID:'ppa',
