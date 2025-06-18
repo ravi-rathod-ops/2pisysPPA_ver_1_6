@@ -8,6 +8,7 @@
         "files": [
           "/favicon.ico",
           "/index.html",
+          "/manifest.webmanifest",
           "/*.css",
           "/*.js"
         ]
@@ -19,9 +20,20 @@
       "updateMode": "prefetch",
       "resources": {
         "files": [
-          "/assets/**",
-          "/*.(png|jpg|jpeg|svg|webp)"
+          "/assets/**"
         ]
+      }
+    }
+  ],
+   "dataGroups": [
+    {
+      "name": "api-freshness",
+      "urls": ["/api/**"],
+      "cacheConfig": {
+        "strategy": "freshness",
+        "maxSize": 20,
+        "maxAge": "1h",
+        "timeout": "10s"
       }
     }
   ]

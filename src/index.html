@@ -25,7 +25,23 @@
 
 <body>
   <app-root></app-root>
-  <noscript>Please enable JavaScript to continue using this application.</noscript>
+ <noscript>
+    <h1>JavaScript Required</h1>
+    <p>Please enable JavaScript to use this application</p>
+    <meta http-equiv="refresh" content="0;url=?bypass-sw=true">
+  </noscript>
+  <app-root></app-root>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then(registrations => {
+        if (registrations.length > 0 && !location.search.includes('bypass-sw')) {
+          registrations.forEach(r => r.unregister());
+          caches.keys().then(keys => keys.forEach(k => caches.delete(k)));
+          // setTimeout(() => location.reload(), 1000);
+        }
+      });
+    }
+  </script>
 </body>
 
 </html>
