@@ -3,10 +3,21 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  
+  position: relative;
+  z-index: 1;
+  background-position: bottom;
+  background-size: 50%;
+  &:before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url(../../assets/image/login-page-bg.png);
+    z-index: -1;
+  }
 }
-
-
 .login-wrapper {
   width: 90%;
   max-width: 400px;
@@ -16,7 +27,8 @@
   border-radius: 15px;
   box-shadow: 0 4px 12px rgba(0, 112, 156, 0.2);
   position: relative;
-  top: 25%;
+  top: 50%;
+  transform: translateY(-50%);
   box-sizing: border-box;
   justify-content: center;
   align-items: center;
@@ -25,14 +37,12 @@
 .logo-container {
   display: flex;
   justify-content: center;
-  margin-bottom: 20px;
+  margin-bottom: 8px;
 }
 
 .logo-img {
   height: 100px;
   width: 100px;
-  border-radius: 50%;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .welcome-text {
@@ -43,7 +53,7 @@
 
 .welcome-text h1 {
   font-size: 24px;
-  margin: 5px 0;
+  margin: 20px 0 10px;
 }
 
 .welcome-text p {
@@ -53,7 +63,7 @@
 
 .version {
   font-size: 12px;
-  color: #00709c;
+  margin: 0;
 }
 
 .input-item {
@@ -61,11 +71,13 @@
   border-radius: 10px;
   box-shadow: 0 1px 4px rgba(0, 112, 156, 0.15);
   margin-bottom: 10px;
-  padding-left: 10px;
+  padding-left: 0;
+  border: 1px solid #ddd;
 }
 
 ion-icon {
   color: #00709c;
+  margin-right: 16px;
 }
 
 .error-text {
@@ -74,21 +86,6 @@ ion-icon {
   margin: 0 10px 10px auto;
   display: block;
   text-align: right;
-}
-
-ion-button {
-  margin-top: 15px;
-  --background: #00709c;
-  --border-radius: 20px;
-  font-size: 16px;
-  font-weight: 600;
-}
-
-.icon-btn {
-  width: 40px;
-  height: 40px;
-  position: absolute;
-  z-index: 10;
 }
 
 .refresh-icon {
@@ -101,7 +98,7 @@ ion-button {
   right: 10px;
 }
 
-.logo-icon{
+.logo-icon {
   top: 10px;
   left: 10px;
 }
@@ -120,7 +117,6 @@ ion-button {
 .login-form {
   animation: fadeInUp 0.6s ease-in-out;
 }
-
 
 @media (max-width: 480px) {
   .login-wrapper {

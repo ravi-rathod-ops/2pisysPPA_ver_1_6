@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
 /*
  * App Global CSS
  * ----------------------------------------------------------------------------
@@ -16,7 +17,7 @@
 @import "~@ionic/angular/css/normalize.css";
 @import "~@ionic/angular/css/structure.css";
 @import "~@ionic/angular/css/typography.css";
-@import '~@ionic/angular/css/display.css';
+@import "~@ionic/angular/css/display.css";
 
 /* Optional CSS utils that can be commented out */
 @import "~@ionic/angular/css/padding.css";
@@ -24,4 +25,78 @@
 @import "~@ionic/angular/css/text-alignment.css";
 @import "~@ionic/angular/css/text-transformation.css";
 @import "~@ionic/angular/css/flex-utils.css";
-@import '~@ng-select/ng-select/themes/material.theme.css';
+@import "~@ng-select/ng-select/themes/material.theme.css";
+*,
+::before,
+::after {
+  box-sizing: border-box;
+}
+:root {
+  --text-color: #111111;
+  --body-font: "Inter", sans-serif;
+  --heading-font: "Inter", sans-serif;
+  --primary-blue: #00719d;
+  --primary-gray: #808080;
+  --white: #ffffff;
+  --ion-font-family: "Inter", sans-serif;
+}
+body {
+  font-size: 16px;
+  line-height: 20px;
+  color: var(--text-color);
+}
+input,
+textarea,
+select {
+  font-family: var(--body-font);
+}
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  background-color: white !important;
+  color: black !important;
+  -webkit-box-shadow: 0 0 0px 1000px white inset !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--heading-font);
+  font-weight: 600;
+}
+.btn {
+  margin: 0;
+  --border-radius: 8px;
+  --padding-top: 12px;
+  --padding-bottom: 12px;
+  --padding-start: 20px;
+  --padding-end: 20px;
+  font-family: var(--ion-font-family);
+  text-transform: none;
+  font-size: 16px;
+  box-shadow: none;
+
+  &.btn-gray {
+    --background: var(--primary-gray);
+    --background-hover: var(--white);
+    --color: white;
+  }
+  &.btn-blue {
+    --background: var(--primary-blue);
+    --background-hover: var(--white);
+    --color: white;
+  }
+  &.button-disabled {
+    --background: #cccccc;
+    --color: #666666;
+    --opacity: 0.5;
+    pointer-events: none;
+  }
+}
+.menuImage {
+  width: 90px;
+  margin: auto;
+}
