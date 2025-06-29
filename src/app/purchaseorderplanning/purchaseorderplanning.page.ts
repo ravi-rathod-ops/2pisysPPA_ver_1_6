@@ -54,7 +54,21 @@ export class PurchaseorderplanningPage implements OnInit {
 
 
   datePipe: DatePipe = new DatePipe('en-US');
+  selectedRamClass = 'ALL';
+  ramClassDropdown = [
+    { key: 'ALL', value: 'All Materials' },
+    { key: 'RAM', value: 'Raw Material' },
+    { key: 'CPD', value: 'Compound' },
+    { key: 'CMPD', value: 'Component' },
+    { key: 'Other', value: 'Others' }
+  ];
+  ramClassMap: any = {
+    'RAM': 'Raw Material',
+    'CPD': 'Compound',
+    'CMPD': 'Component'
+  };
 
+ uniqueRamClasses = new Set<string>();
   constructor(private _elementRef : ElementRef,private router: Router,public toastController: ToastController,private http: HttpClient,public loadingController: LoadingController) { 
     if(localStorage.getItem('userid') == null && localStorage.getItem('password') == null)
     {
@@ -102,59 +116,49 @@ export class PurchaseorderplanningPage implements OnInit {
   }
 
   async scan() {
-    const loading = await this.loadingController.create({
-      cssClass: 'my-custom-class',
-      message: 'Please wait...',
-      spinner:'dots'
-    });
-    
-  const headers = { 
-    'auth-id': localStorage.getItem('authid'), 
+  const loading = await this.loadingController.create({
+    cssClass: 'my-custom-class',
+    message: 'Please wait...',
+    spinner: 'dots'
+  });
+  await loading.present();
+
+  const headers = {
+    'auth-id': localStorage.getItem('authid'),
     'client-id': localStorage.getItem('clientid'),
     'user': localStorage.getItem('userid'),
-    'password':localStorage.getItem('password') }
+    'password': localStorage.getItem('password')
+  };
 
-      this.http.get<any>(this.dataUrl+"/api/raisepo/all",{headers}).subscribe({
-        next: async data => { 
-          for (var key of Object.keys(data.message)) {
-            if(key != "forcurrs" && key != "locations"){  
-              data.message[key].indentno=parseInt(data.message[key].indentno)
-              data.message[key].minstock=parseFloat(data.message[key].minstock)
-              data.message[key].stock=parseFloat(data.message[key].stock)
+  this.http.get<any>(this.dataUrl + "/api/raisepo/all", { headers }).subscribe({
+      next: async data => {
+        this.tableData2 = [];
+        for (let key in data.message) {
+          if (key !== 'forcurrs' && key !== 'locations') {
+            const item = data.message[key];
 
-              this.tableDataTemp.push(data.message[key])
-              this.totalminstock+=data.message[key].minstock;
-            
-              console.log(data.message[key].stock)
+            item.indentno = parseInt(item.indentno);
+            item.minstock = parseFloat(item.minstock);
+            item.stock = parseFloat(item.stock);
 
-              if(data.message[key].indentno > 0 || data.message[key].minstock >  data.message[key].stock){
-               
-                this.tableData.push(data.message[key]) 
-                this.tableData2.push(data.message[key])                
-              }
-            } 
-            
-            if(key == "forcurrs"){
-              this.currencyList=data.message[key];
+            if (item.indentno > 0 || item.minstock > item.stock) {
+                  this.tableData.push(item); 
+                  this.tableData2.push(item);
             }
+          }
 
-            if(key == "locations"){
-              this.locations=data.message[key];                       
-            }
-
-          }                  
-          loading.dismiss();  
-        },
-        error: errordata => {
-          if(errordata.error.message){
-            loading.dismiss();         
-            this.toastfunction(errordata.error.message,"danger");  
-            }
-            else{
-              this.toastfunction("Invalid Company Url, Please Check in Home page","danger");
-            }
+          if (key === 'forcurrs') this.currencyList = data.message[key];
+          if (key === 'locations') this.locations = data.message[key];
         }
-      });
+
+        this.filterByRamClass();
+        loading.dismiss();
+      },
+      error: err => {
+        loading.dismiss();
+        this.toastfunction(err.error.message || "Invalid Company Url, Please Check in Home page", "danger");
+      }
+    });
   }
 
   async toastfunction(msg,colour)
@@ -684,5 +688,29 @@ export class PurchaseorderplanningPage implements OnInit {
       }
     
 }
+
+  filterByRamClass() {
+    const selected = this.selectedRamClass;
+    const standard = ['RAM', 'CPD', 'CMPD'];
+
+    if (selected === 'ALL') {
+      this.tableData = [...this.tableData2];
+    } else if (selected === 'Other') {
+      this.tableData = this.tableData2.filter(item =>
+        !standard.includes(item.ramclass)
+      );
+    } else if(selected != 'ALL' && selected != 'Other' ){
+
+      this.tableData = this.tableData2.filter(item =>
+        item.ramclass === selected
+      );
+    }
+  }
+
+  onRamClassChanged(event: any) {
+    this.selectedRamClass = event.key;
+    this.filterByRamClass();
+  }
+
 
 }

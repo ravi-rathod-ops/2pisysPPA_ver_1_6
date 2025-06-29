@@ -197,6 +197,7 @@ handleRoute = '';
       arr=this.datapass.message.filter((x)=>{
         return x.group == page;
       })
+      
      this.datapassTemp=arr;
      arr.length > 0 ?  this.showMenu=false : this.toastfunction("No Reports Found","danger");
   }
@@ -239,6 +240,38 @@ handleRoute = '';
     this.pageUrl=event.link;
     console.log(this.datalist);
     this.currentReport=event.name;
+    this.getReportData(event.name);
+  }
+
+ async getReportData(reportName){
+  console.log({reportName});
+  
+
+    const loading = await this.loadingController.create({
+    cssClass: 'my-custom-class',
+    message: 'Please wait...',
+    spinner: 'dots'
+  });
+  await loading.present();
+
+  const headers = {
+    'auth-id': localStorage.getItem('authid'),
+    'client-id': localStorage.getItem('clientid'),
+    'user': localStorage.getItem('userid'),
+    'password': localStorage.getItem('password')
+  };
+
+  this.http.get<any>(this.dataUrl + "/api/scrollreport/"+reportName, { headers }).subscribe({
+      next: async data => {
+        console.log({data});
+        loading.dismiss(); 
+        
+      },
+      error: err => {
+        loading.dismiss();
+        this.toastfunction(err.error.message || "Invalid Company Url, Please Check in Home page", "danger");
+      }
+    });
   }
 
 
@@ -296,7 +329,7 @@ handleRoute = '';
   
           const selectedDeviceId = selectedDevice.deviceId;
           this.codeReader.decodeFromVideoDevice(selectedDeviceId, 'video-preview', (result, error, controls) => {
-            if (result) {
+            if (result) {              
               this.scanData = result;
               this.controls = controls;
               controls.stop();
