@@ -11,14 +11,75 @@
 
 <ion-content>
 
-  <ion-grid>
-    <ion-row nowrap class="ion-align-items-center">
-        <ion-col size="9">        
-          <ion-input (keyup)="applyFilter($event.target.value)" placeholder="Search" [(ngModel)]="searchData"><ion-icon name="search"></ion-icon></ion-input>
-        </ion-col> 
-        <ion-col size="1"><ion-button color="danger" size="small" (click)="deleteList()">Delete</ion-button></ion-col>      
-    </ion-row>
-  </ion-grid>
+  
+
+
+
+
+ <ion-grid>
+  <ion-row class="ion-align-items-center">
+
+    <ion-col size="4">
+      <ion-input
+        [(ngModel)]="searchData"
+        (keyup)="applyFilter($event.target.value)"
+        placeholder="Search"
+        clearInput
+      >
+        <ion-icon name="search" slot="end"></ion-icon>
+      </ion-input>
+    </ion-col>
+
+    <ion-col size="4">
+      <!-- <ion-select
+        [(ngModel)]="selectedRamClass"
+        (ionChange)="filterByRamClass()"
+        placeholder="Select Ram Class"
+      >
+        <ion-select-option *ngFor="let option of ramClassDropdown" [value]="option.key">
+          {{ option.value }}
+        </ion-select-option>
+      </ion-select> -->
+
+      <ng-select
+  *ngIf="ramClassDropdown.length > 0"
+  [(ngModel)]="selectedRamClass"
+  [items]="ramClassDropdown"
+  bindLabel="value"
+  bindValue="key"
+  placeholder="📦 Select Ram Class"
+  searchable="true"
+  clearable="false"
+  (change)="onRamClassChanged($event)"
+  searchFailText="Ram class not found"
+>
+  <!-- Header -->
+  <ng-template ng-header>
+    <div class="dropdown-header">📑 Available Ram Classes</div>
+  </ng-template>
+
+  <!-- Selected value label -->
+  <ng-template ng-label-tmp let-item="item">
+    <span class="selected-item">{{ item.value }}</span>
+  </ng-template>
+
+  <!-- Option list -->
+  <ng-template ng-option-tmp let-item="item" let-index="index">
+    <div class="option-item">
+      <i class="fas fa-cubes"></i>
+      {{ item.value }}
+    </div>
+  </ng-template>
+</ng-select>
+
+    </ion-col>
+    <ion-col size="4" class="ion-text-left">
+      <ion-button color="danger" size="small" (click)="deleteList()">Delete</ion-button>
+    </ion-col>
+
+  </ion-row>
+</ion-grid>
+
 
   <div class="reports-table">
     <ion-grid>
