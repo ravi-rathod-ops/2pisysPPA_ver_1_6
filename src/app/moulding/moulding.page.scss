@@ -61,6 +61,75 @@
   overflow: visible !important;
 }
 
+.custom-grid {
+  margin: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  overflow-x: auto;
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 14px;
+}
+
+.header-row {
+  background-color: #3e8ef7;
+  color: #fff;
+  font-weight: bold;
+  border-bottom: 1px solid #ccc;
+}
+
+.header-cell {
+  padding: 10px;
+  font-size: 15px;
+}
+
+.data-row {
+  border-bottom: 1px solid #eee;
+}
+
+.data-cell {
+  padding: 8px;
+  white-space: nowrap;
+}
+
+.alt-row {
+  background-color: #f9f9f9;
+}
+
+.data-row:hover {
+  background-color: #f1faff;
+}
+
+.total-row {
+  background-color: #e0f7fa;
+  font-weight: bold;
+  border-top: 2px solid #00acc1;
+  color: #006064;
+  // background-color: #e0f7fa;
+  // font-weight: bold;
+  // border-top: 2px solid #00acc1;
+}
+
+ion-col.data-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center; // or flex-start for left-align
+  padding: 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Wrap long text for specific columns */
+ion-col.wrap-text {
+  white-space: normal !important;
+  word-wrap: break-word;
+  word-break: break-word;
+  text-align: left;
+  justify-content: flex-start;
+  max-width: 180px; // set a max-width to limit effect on layout
+}
+
+
 @media print {
   #header {
     display: none;

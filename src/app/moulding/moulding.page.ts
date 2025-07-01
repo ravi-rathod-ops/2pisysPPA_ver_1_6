@@ -67,6 +67,9 @@ controls: IScannerControls | null = null;
 isModalOpen = false;
 isback = false;
 handleRoute = '';
+columnFieldMap: { [header: string]: string } = {};
+reportData: any;
+sumValues: { [key: string]: number } = {};
 
   @ViewChild('selectComponent') selectComponent: IonicSelectableComponent;
   constructor(public inappbrowser:InAppBrowser,private printer: Printer,private http: HttpClient,public loadingController: LoadingController,private screenOrientation: ScreenOrientation,public toastController: ToastController,private router: Router,
@@ -209,6 +212,7 @@ handleRoute = '';
       this.showMenu = true;
       this.datapassTemp = [];
       this.handleRoute = '';
+      this.reportData = {}
       this.router.navigate(['Moulding']);
     }else{
       this.router.navigate(['Widgets']);
@@ -243,11 +247,8 @@ handleRoute = '';
     this.getReportData(event.name);
   }
 
- async getReportData(reportName){
-  console.log({reportName});
-  
-
-    const loading = await this.loadingController.create({
+ async getReportData(reportName: string) {
+  const loading = await this.loadingController.create({
     cssClass: 'my-custom-class',
     message: 'Please wait...',
     spinner: 'dots'
@@ -261,19 +262,77 @@ handleRoute = '';
     'password': localStorage.getItem('password')
   };
 
-  this.http.get<any>(this.dataUrl + "/api/scrollreport/"+reportName, { headers }).subscribe({
-      next: async data => {
-        console.log({data});
-        loading.dismiss(); 
-        
-      },
-      error: err => {
-        loading.dismiss();
-        this.toastfunction(err.error.message || "Invalid Company Url, Please Check in Home page", "danger");
-      }
-    });
-  }
+  this.http.get<any>(`${this.dataUrl}/api/scrollreport/${reportName}`, { headers }).subscribe({
+  next: async res => {
+    console.log({res});
+    
+    loading.dismiss();
+    if (res.status === "success") {
+      
+      const message = res.message;
+      console.log({message});
+      const originalHeaders = message.colheaders;
+      const sumcols = message.sumcols;
+      const sumMap: { [key: string]: number } = {};
 
+      const colheaders = ["S.No.", ...originalHeaders];
+
+      const tableData = message.data.map((row: any, index: number) => {
+        const values = Object.values(row);
+        const keys = Object.keys(row);
+        const limitedRow: any = {};
+
+        limitedRow["S.No."] = (index + 1).toString();
+
+        for (let i = 0; i < originalHeaders.length && i < keys.length; i++) {
+          let val: any = values[i];
+          const colName = originalHeaders[i];
+
+          if (typeof val === 'string' && val.includes('.') && !val.includes('-')) {
+            val = val.split('.')[0]; 
+          }
+
+          if (sumcols.includes(colName)) {
+            const num = parseFloat(val);
+            const intPart = isNaN(num) ? 0 : parseInt(val); 
+            sumMap[colName] = (sumMap[colName] || 0) + intPart;
+            val = intPart.toString();
+          }
+
+          limitedRow[colName] = val ?? "";
+        }
+
+        return limitedRow;
+      });
+
+      const totalRow: any = {};
+      colheaders.forEach(col => {
+        if (col === "S.No.") {
+          totalRow[col] = "";
+        } else if (sumMap[col] !== undefined) {
+          totalRow[col] = `Total: ${sumMap[col]}`;
+        } else {
+          totalRow[col] = "";
+        }
+      });
+
+      tableData.push(totalRow);
+
+      this.reportData = {
+        colheaders,
+        data: tableData,
+        sumcols
+      };
+    }
+  },
+  error: err => {
+    console.log("into error");
+     
+    loading.dismiss();
+    this.toastfunction(err.error.message || "Invalid Company URL", "danger");
+  }
+});
+}
 
   
   async castData(type: 'open' | 'close') {
