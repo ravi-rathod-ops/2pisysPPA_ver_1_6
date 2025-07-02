@@ -70,6 +70,9 @@ handleRoute = '';
 columnFieldMap: { [header: string]: string } = {};
 reportData: any;
 sumValues: { [key: string]: number } = {};
+sortColumn: string = '';
+sortDirection: 'asc' | 'desc' = 'asc';
+
 
   @ViewChild('selectComponent') selectComponent: IonicSelectableComponent;
   constructor(public inappbrowser:InAppBrowser,private printer: Printer,private http: HttpClient,public loadingController: LoadingController,private screenOrientation: ScreenOrientation,public toastController: ToastController,private router: Router,
@@ -538,5 +541,41 @@ sumValues: { [key: string]: number } = {};
 
       // );
     }
+
+    sortByColumn(col: string) {
+      if (this.sortColumn === col) {
+        this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+      } else {
+        this.sortColumn = col;
+        this.sortDirection = 'asc';
+      }
+
+      const data = [...this.reportData.data];
+
+      const totalRowIndex = data.findIndex(row => row["S.No."] === "");
+      let totalRow: any = {};
+      if (totalRowIndex !== -1) {
+        totalRow = data.splice(totalRowIndex, 1)[0];
+      }
+
+      data.sort((a, b) => {
+        const valA = a[col] ?? '';
+        const valB = b[col] ?? '';
+        if (!isNaN(Number(valA)) && !isNaN(Number(valB))) {
+          return this.sortDirection === 'asc'
+            ? Number(valA) - Number(valB)
+            : Number(valB) - Number(valA);
+        }
+        return this.sortDirection === 'asc'
+          ? valA.toString().localeCompare(valB.toString())
+          : valB.toString().localeCompare(valA.toString());
+      });
+      if (Object.keys(totalRow).length > 0) {
+        data.push(totalRow);
+      }
+      this.reportData.data = data;
+    }
+
+
 
 }

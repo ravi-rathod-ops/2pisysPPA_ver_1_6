@@ -80,6 +80,8 @@
 .header-cell {
   padding: 10px;
   font-size: 15px;
+  font-weight: bold;
+  user-select: none;
 }
 
 .data-row {
@@ -198,4 +200,9 @@ video {
   100% {
     top: 100%;
   }
+}
+
+ion-icon {
+  font-size: 12px;
+  margin-left: 5px;
 }

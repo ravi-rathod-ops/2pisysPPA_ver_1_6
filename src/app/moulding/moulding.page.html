@@ -80,27 +80,27 @@
 <ion-content>
   <!-- <iframe style="width:100%;height:100%;" [src]="datalist | renderUrl" frameborder="0"
     *ngIf="dropdownObject != '' && isback" id="ReportPanel"></iframe> -->
-    <div  *ngIf="dropdownObject != '' && isback">
-<ion-grid *ngIf="reportData" class="custom-grid">
-  <!-- Header -->
-  <ion-row class="header-row">
-    <ion-col *ngFor="let col of reportData.colheaders" class="header-cell">
-      {{ col }}
-    </ion-col>
-  </ion-row>
+  <div *ngIf="dropdownObject != '' && isback">
+    <ion-grid *ngIf="reportData" class="custom-grid">
+      <!-- Header -->
+      <ion-row class="header-row">
+        <ion-col *ngFor="let col of reportData.colheaders" class="header-cell" (click)="sortByColumn(col)" style="cursor: pointer;">
+          {{ col }}
+          <ng-container *ngIf="sortColumn === col">
+            <ion-icon [name]="sortDirection === 'asc' ? 'arrow-up' : 'arrow-down'"></ion-icon>
+          </ng-container>
+        </ion-col>
+      </ion-row>
 
-  <!-- Data -->
-  <ion-row *ngFor="let row of reportData.data; let i = index"
-           [class.total-row]="row['S.No.'] === ''"
-           [class.alt-row]="i % 2 === 1"
-           class="data-row">
-    <ion-col *ngFor="let col of reportData.colheaders" class="data-cell">
-      {{ row[col] }}
-    </ion-col>
-  </ion-row>
-</ion-grid>
-
-</div>
+      <!-- Data -->
+      <ion-row *ngFor="let row of reportData.data; let i = index" [class.total-row]="row['S.No.'] === ''"
+        [class.alt-row]="i % 2 === 1" class="data-row">
+        <ion-col *ngFor="let col of reportData.colheaders" class="data-cell">
+          {{ row[col] }}
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
 
   <ion-img src="./assets/image/nodata.png" style="width:100%;height:100%;"
     *ngIf="!showMenu && dropdownObject == '' && !isback"></ion-img>
