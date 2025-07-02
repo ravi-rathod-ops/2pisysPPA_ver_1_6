@@ -102,67 +102,219 @@
 
 <ion-header>
   <ion-toolbar>
-    <ion-img src="{{brandImage}}" style="height: 50px;width:50px" slot="start"></ion-img>
-    
-    <div style="display: flex;justify-content: center;align-items: center; flex: 1;">
-      <img src="./assets/image/planning.png" height="25" width="25" />
-      <b style="font-size: 20px;">&nbsp;&nbsp;Process</b>
-    </div>
-
-    <ion-buttons slot="end">
+    <ion-buttons si slot="start">
       <ion-back-button defaultHref="Widgets"></ion-back-button>
     </ion-buttons>
+    <h3></h3>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="ion-padding">
   <ion-grid>
-    
     <ion-row class="auto-wrap">
-      <ion-col size="6" size-sm="4" size-md="3" class="grid-item"   (click)="routePage('Purchaseorderplanning')">
-        <img src="./assets/image/receipt.png" class="icon-img" />
-        <h4 class="ion-text-center">Purchase</h4>
+      <ion-col
+        size="6"
+        size-sm="4"
+        size-md="3"
+        class="grid-item"
+        (click)="routePage('Purchaseorderplanning')"
+      >
+        <ion-card style="border-color: #233d78">
+          <div class="image" style="background: #233d78; border-color: #233d78">
+            <img src="./assets/image/purchase.png" />
+          </div>
+          <div class="card-content">
+            <div>
+              <h2>Purchase</h2>
+            </div>
+            <div
+              class="go-btn"
+              style="background: #233d78; border-color: #233d78"
+            >
+              <ion-icon name="arrow-forward"></ion-icon>
+            </div>
+          </div>
+        </ion-card>
       </ion-col>
 
-      <ion-col size="6" size-sm="4" size-md="3" class="grid-item"  (click)="routePage('Mixingplanning')">
-        <img src="./assets/image/rgb.png" class="icon-img" />
-        <h4 class="ion-text-center">Mixing</h4>
+      <ion-col
+        size="6"
+        size-sm="4"
+        size-md="3"
+        class="grid-item"
+        (click)="routePage('Mixingplanning')"
+      >
+        <ion-card style="border-color: #f5bf17">
+          <div class="image" style="background: #f5bf17; border-color: #f5bf17">
+            <img src="./assets/image/mixing.png" />
+          </div>
+          <div class="card-content">
+            <div>
+              <h2>Mixing</h2>
+            </div>
+            <div
+              class="go-btn"
+              style="background: #f5bf17; border-color: #f5bf17"
+            >
+              <ion-icon name="arrow-forward"></ion-icon>
+            </div>
+          </div>
+        </ion-card>
       </ion-col>
 
-      <ion-col size="6" size-sm="4" size-md="3" class="grid-item"  (click)="routePage('Finalplanning')">
-        <img src="./assets/image/route.png" class="icon-img" />
-        <h4 class="ion-text-center">Final</h4>
+      <ion-col
+        size="6"
+        size-sm="4"
+        size-md="3"
+        class="grid-item"
+        (click)="routePage('Finalplanning')"
+      >
+        <ion-card style="border-color: #14a9bf">
+          <div class="image" style="background: #14a9bf; border-color: #14a9bf">
+            <img src="./assets/image/planning.png" />
+          </div>
+          <div class="card-content">
+            <div>
+              <h2>Final Planning</h2>
+            </div>
+            <div
+              class="go-btn"
+              style="background: #14a9bf; border-color: #14a9bf"
+            >
+              <ion-icon name="arrow-forward"></ion-icon>
+            </div>
+          </div>
+        </ion-card>
       </ion-col>
-    <!-- </ion-row>
+      <!-- </ion-row>
 
     <ion-row> -->
-      <ion-col size="6" size-sm="4" size-md="3" class="grid-item"  (click)="routePage('Calenderingplanning')">
-        <img src="./assets/image/paper-roll.png" class="icon-img" />
-        <h4 class="ion-text-center">Calendering</h4>
+      <ion-col
+        size="6"
+        size-sm="4"
+        size-md="3"
+        class="grid-item"
+        (click)="routePage('Calenderingplanning')"
+      >
+        <ion-card style="border-color: #ea4f93">
+          <div class="image" style="background: #ea4f93; border-color: #ea4f93">
+            <img src="./assets/image/calendering-plan.png" />
+          </div>
+          <div class="card-content">
+            <div>
+              <h2>Calendering Plan</h2>
+            </div>
+            <div
+              class="go-btn"
+              style="background: #ea4f93; border-color: #ea4f93"
+            >
+              <ion-icon name="arrow-forward"></ion-icon>
+            </div>
+          </div>
+        </ion-card>
       </ion-col>
 
-      <ion-col size="6" size-sm="4" size-md="3" class="grid-item"  (click)="routePage('Mouldingplanning')">
-        <img src="./assets/image/machine-press.png" class="icon-img" />
-        <h4 class="ion-text-center">Production</h4>
+      <ion-col
+        size="6"
+        size-sm="4"
+        size-md="3"
+        class="grid-item"
+        (click)="routePage('Mouldingplanning')"
+      >
+        <ion-card style="border-color: #7d8cc3">
+          <div class="image" style="background: #7d8cc3; border-color: #7d8cc3">
+            <img src="./assets/image/production.png" />
+          </div>
+          <div class="card-content">
+            <div>
+              <h2>Production</h2>
+            </div>
+            <div
+              class="go-btn"
+              style="background: #7d8cc3; border-color: #7d8cc3"
+            >
+              <ion-icon name="arrow-forward"></ion-icon>
+            </div>
+          </div>
+        </ion-card>
       </ion-col>
 
-      <ion-col size="6" size-sm="4" size-md="3" class="grid-item"  (click)="routePage('Deflashplanning')">
-        <img src="./assets/image/layer.png" class="icon-img" />
-        <h4 class="ion-text-center">Deflashing</h4>
+      <ion-col
+        size="6"
+        size-sm="4"
+        size-md="3"
+        class="grid-item"
+        (click)="routePage('Deflashplanning')"
+      >
+        <ion-card style="border-color: #8b54ef">
+          <div class="image" style="background: #8b54ef; border-color: #8b54ef">
+            <img src="./assets/image/deflashing.png" />
+          </div>
+          <div class="card-content">
+            <div>
+              <h2>Deflashing</h2>
+            </div>
+            <div
+              class="go-btn"
+              style="background: #8b54ef; border-color: #8b54ef"
+            >
+              <ion-icon name="arrow-forward"></ion-icon>
+            </div>
+          </div>
+        </ion-card>
       </ion-col>
-    <!-- </ion-row>
+      <!-- </ion-row>
 
     <ion-row> -->
-      <ion-col size="6" size-sm="4" size-md="3" class="grid-item"  (click)="routePage('Inspectionplanning')">
-        <img src="./assets/image/statistics.png" class="icon-img" />
-        <h4 class="ion-text-center">Inspection</h4>
+      <ion-col
+        size="6"
+        size-sm="4"
+        size-md="3"
+        class="grid-item"
+        (click)="routePage('Inspectionplanning')"
+      >
+        <ion-card style="border-color: #fe4e67">
+          <div class="image" style="background: #fe4e67; border-color: #fe4e67">
+            <img src="./assets/image/inspection.png" />
+          </div>
+          <div class="card-content">
+            <div>
+              <h2>Inspection</h2>
+            </div>
+            <div
+              class="go-btn"
+              style="background: #fe4e67; border-color: #fe4e67"
+            >
+              <ion-icon name="arrow-forward"></ion-icon>
+            </div>
+          </div>
+        </ion-card>
       </ion-col>
 
-      <ion-col size="6" size-sm="4" size-md="3" class="grid-item"  (click)="routePage('Dispatchplanning')">
-        <img src="./assets/image/delivery.png" class="icon-img" />
-        <h4 class="ion-text-center">Despatch</h4>
+      <ion-col
+        size="6"
+        size-sm="4"
+        size-md="3"
+        class="grid-item"
+        (click)="routePage('Dispatchplanning')"
+      >
+        <ion-card style="border-color: #233d78">
+          <div class="image" style="background: #233d78; border-color: #233d78">
+            <img src="./assets/image/dispatch.png" />
+          </div>
+          <div class="card-content">
+            <div>
+              <h2>Despatch</h2>
+            </div>
+            <div
+              class="go-btn"
+              style="background: #233d78; border-color: #233d78"
+            >
+              <ion-icon name="arrow-forward"></ion-icon>
+            </div>
+          </div>
+        </ion-card>
       </ion-col>
     </ion-row>
-
   </ion-grid>
 </ion-content>

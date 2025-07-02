@@ -4,32 +4,56 @@
 
 <ion-app>
   <ion-menu contentId="main-content" side="start" menuId="main" type="overlay">
-    <ion-header>
-      <ion-toolbar color="primary">
-        <ion-title>Menu</ion-title>
+    <ion-header class="sidebar-header">
+      <ion-toolbar>
+        <ion-img src="./assets/icon/logo1.png" class="logo-img"></ion-img>
       </ion-toolbar>
     </ion-header>
 
     <ion-content>
-      <ion-list>
-        <ion-item routerLink="/home" routerDirection="root">Dashboard</ion-item>
-        <ion-item routerLink="/settings" routerDirection="root">Settings</ion-item>
+      <ion-list class="sidebar-list">
+        <ion-item routerLink="/Widgets" routerDirection="root"
+          ><ion-icon name="grid"></ion-icon><span>Dashboard</span></ion-item
+        >
+        <ion-item routerLink="/Planhome" routerDirection="root"
+          ><ion-icon name="aperture"></ion-icon><span>Process</span></ion-item
+        >
+        <ion-item routerLink="/Moulding" routerDirection="root"
+          ><ion-icon name="eye"></ion-icon><span>View</span></ion-item
+        >
+        <ion-item routerLink="/Reports" routerDirection="root"
+          ><ion-icon name="analytics"></ion-icon><span>Reports</span></ion-item
+        >
+        <ion-item routerLink="/approvals" routerDirection="root"
+          ><ion-icon name="checkmark-circle"></ion-icon>Approval</ion-item
+        >
         <!-- Add more links as needed -->
       </ion-list>
     </ion-content>
   </ion-menu>
 
   <div class="ion-page" id="main-content">
-    <ion-header>
-      <ion-toolbar color="primary">
+    <ion-header class="top-header">
+      <ion-toolbar>
         <ion-buttons slot="start">
           <ion-menu-button></ion-menu-button>
         </ion-buttons>
-        <ion-title>My App</ion-title>
+        <div class="top-page-heading">
+          <ion-img src="./assets/icon/logo1.png" class="logo-img"></ion-img>
+          <h2>Dashboard</h2>
+        </div>
+        <ion-buttons slot="end">
+          <ion-button
+            class="btn outlined-btn-black"
+            expand="full"
+            (click)="logout()"
+            ><ion-icon name="exit"></ion-icon> Logout</ion-button
+          >
+        </ion-buttons>
       </ion-toolbar>
     </ion-header>
 
-    <ion-content>
+    <ion-content class="main-app-content">
       <ion-router-outlet></ion-router-outlet>
     </ion-content>
   </div>

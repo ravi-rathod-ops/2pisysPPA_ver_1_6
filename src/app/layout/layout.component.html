@@ -2,14 +2,18 @@
   <ion-menu contentId="main-content" side="start" menuId="main" type="overlay">
     <ion-header>
       <ion-toolbar color="primary">
-        <ion-title>Menu</ion-title>
+        <ion-img src="./assets/icon/logo1.png" class="logo-img"></ion-img>
       </ion-toolbar>
     </ion-header>
 
     <ion-content>
       <ion-list>
-        <ion-item routerLink="/dashboard" routerDirection="root">Dashboard</ion-item>
-        <ion-item routerLink="/settings" routerDirection="root">Settings</ion-item>
+        <ion-item routerLink="/dashboard" routerDirection="root"
+          >Dashboard</ion-item
+        >
+        <ion-item routerLink="/settings" routerDirection="root"
+          >Settings</ion-item
+        >
         <!-- Add more items here -->
       </ion-list>
     </ion-content>
@@ -17,11 +21,23 @@
 
   <div class="ion-page" id="main-content">
     <ion-header>
-      <ion-toolbar color="primary">
-        <ion-buttons slot="start">
-          <ion-menu-button></ion-menu-button>
+      <ion-toolbar>
+        <ion-img
+          src="{{ brandImage }}"
+          style="height: 50px; width: 50px"
+          slot="start"
+        ></ion-img>
+
+        <!-- Custom logout icon button -->
+        <ion-buttons slot="end">
+          <ion-button
+            class="btn theme-btn"
+            expand="full"
+            shape="round"
+            (click)="logout()"
+            ><ion-icon name="exit"></ion-icon> Logout</ion-button
+          >
         </ion-buttons>
-        <ion-title>My App</ion-title>
       </ion-toolbar>
     </ion-header>
 

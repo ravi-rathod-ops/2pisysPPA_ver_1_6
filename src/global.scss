@@ -78,6 +78,7 @@ h6 {
   text-transform: none;
   font-size: 16px;
   box-shadow: none;
+  letter-spacing: 0.3px;
 
   &.btn-gray {
     --background: var(--primary-gray);
@@ -94,6 +95,10 @@ h6 {
     --color: #666666;
     --opacity: 0.5;
     pointer-events: none;
+  }
+  &.outlined-btn-black {
+    border: 1px solid var(--primary-gray);
+    color: #000000;
   }
 }
 .menuImage {

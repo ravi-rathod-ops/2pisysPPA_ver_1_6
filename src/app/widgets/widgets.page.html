@@ -1,82 +1,74 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-img
-      src="{{brandImage}}"
-      style="height: 50px; width: 50px"
-      slot="start"
-    ></ion-img>
-
-    <!-- Custom logout icon button -->
-    <ion-buttons slot="end">
-      <ion-button
-        class="btn theme-btn"
-        expand="full"
-        shape="round"
-        (click)="logout()"
-        ><ion-icon name="exit"></ion-icon> Logout</ion-button
-      >
-    </ion-buttons>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content>
   <ion-grid>
     <ion-row>
-      <ion-col size="12" (click)="routePage('Planhome')">
+      <ion-col size="3" (click)="routePage('Planhome')">
         <ion-card>
-          <ion-row class="ion-align-items-center">
-            <ion-col size="6">
-              <img src="./assets/image/planning.png" class="image" />
-            </ion-col>
-            <ion-col size="6" class="text-center-column">
-              <h2>PROCESS</h2>
-            </ion-col>
-          </ion-row>
+          <div class="image">
+            <img src="./assets/image/dashboard-process.png" />
+          </div>
+          <div class="card-content">
+            <div>
+              <h2>Process</h2>
+              <span>View Details</span>
+            </div>
+            <div class="go-btn">
+              <ion-icon name="arrow-forward"></ion-icon>
+            </div>
+          </div>
         </ion-card>
       </ion-col>
-    </ion-row>
-
-    <ion-row>
-      <ion-col size="12" (click)="routePage('Moulding')">
+      <ion-col size="3" (click)="routePage('Moulding')">
         <ion-card>
-          <ion-row class="ion-align-items-center">
-            <ion-col size="6">
-              <img src="./assets/image/status.png" class="image" />
-            </ion-col>
-            <ion-col size="6" class="text-center-column">
-              <h2>VIEW</h2>
-            </ion-col>
-          </ion-row>
+          <div class="image">
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/1666/1666578.png"
+            />
+          </div>
+          <div class="card-content">
+            <div>
+              <h2>View</h2>
+              <span>View Details</span>
+            </div>
+            <div class="go-btn">
+              <ion-icon name="arrow-forward"></ion-icon>
+            </div>
+          </div>
         </ion-card>
       </ion-col>
-    </ion-row>
-
-    <ion-row>
-      <ion-col size="12" (click)="routePage('Reports')">
+      <ion-col size="3" (click)="routePage('Reports')">
         <ion-card>
-          <ion-row class="ion-align-items-center">
-            <ion-col size="6">
-              <img src="./assets/image/report.png" class="image" />
-            </ion-col>
-            <ion-col size="6" class="text-center-column">
-              <h2>REPORTS</h2>
-            </ion-col>
-          </ion-row>
+          <div class="image">
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/1666/1666578.png"
+            />
+          </div>
+          <div class="card-content">
+            <div>
+              <h2>Report</h2>
+              <span>View Details</span>
+            </div>
+            <div class="go-btn">
+              <ion-icon name="arrow-forward"></ion-icon>
+            </div>
+          </div>
         </ion-card>
       </ion-col>
-    </ion-row>
-
-    <ion-row>
-      <ion-col size="12" (click)="routePage('approvals')">
+      <ion-col size="3" (click)="routePage('approvals')">
         <ion-card>
-          <ion-row class="ion-align-items-center">
-            <ion-col size="6">
-              <img src="./assets/image/approve.png" class="image" />
-            </ion-col>
-            <ion-col size="6" class="text-center-column">
-              <h2>APPROVAL</h2>
-            </ion-col>
-          </ion-row>
+          <div class="image">
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/1666/1666578.png"
+            />
+          </div>
+          <div class="card-content">
+            <div>
+              <h2>Approval</h2>
+              <span>View Details</span>
+            </div>
+            <div class="go-btn">
+              <ion-icon name="arrow-forward"></ion-icon>
+            </div>
+          </div>
         </ion-card>
       </ion-col>
     </ion-row>
