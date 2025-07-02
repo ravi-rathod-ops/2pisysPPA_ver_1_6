@@ -309,8 +309,16 @@ export class MouldingplanningPage implements OnInit {
               x["machineArray"]=this.machineArray;
               x["mcid"]=x["machineArray"][0].value;
               this.machineArray=[];
-              let samp=this.componentArray.filter((d)=>{ return d.name === x.cmpdname})
-              x["bind"]=samp[0];
+            const matchedComponent = this.componentArray.find(d => d.name === x.cmpdname);
+            x["bind"] = matchedComponent ? matchedComponent.value : null;
+            x["shiftArray"] = [];
+            for (let i = 1; i <= x.numshifts; i++) {
+              x["shiftArray"].push(i);
+            }
+
+            if (!x.shiftArray.includes(x.numshifts)) {
+              x.numshifts = x.shiftArray[0]; 
+            }
 
             })
           }
@@ -354,7 +362,7 @@ export class MouldingplanningPage implements OnInit {
       'user': localStorage.getItem('userid'),
       'password':localStorage.getItem('password') }
 
-
+      
       this.http.get<any>(this.dataUrl+"/api/mouldplan/toollist/"+this.selectedLocation+"/"+this.selectedComponent,{headers}).subscribe({
         next: async data => {
 
