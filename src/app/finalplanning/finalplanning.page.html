@@ -1,122 +1,167 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-img src="{{brandImage}}" style="height: 50px;width:50px" slot="start"></ion-img>               
-    <div style="display: flex;justify-content: center;">
-      <img src="./assets/image/route.png" height="25" width="25">
-      <b style="font-size: 20px;">&nbsp;&nbsp;Final Plan</b>
+  <div class="inner-header-wrap">
+    <div class="left-menu">
+      <ion-toolbar>
+        <ion-buttons si slot="start">
+          <ion-back-button
+            defaultHref="Planhome"
+            (click)="displaymode()"
+          ></ion-back-button>
+        </ion-buttons>
+        <h3 class="main-sub-heading">Final Plan</h3>
+      </ion-toolbar>
+      <ion-input
+        class="search-box"
+        (keyup)="applyFilter($event.target.value)"
+        placeholder="Search"
+        [(ngModel)]="searchData"
+        ><ion-icon name="search" slot="end"></ion-icon
+      ></ion-input>
+      <!-- <ion-input
+        class="search-box"
+        [(ngModel)]="searchData"
+        (keyup)="applyFilter($event.target.value)"
+        placeholder="Search"
+        clearInput
+      >
+        <ion-icon name="search" slot="end"></ion-icon>
+      </ion-input> -->
+      <ng-select
+        class="pi-dropdown"
+        *ngIf="locationArray.length > 0"
+        [(ngModel)]="selected"
+        [items]="locationArray"
+        bindLabel="name"
+        bindValue="value"
+        (change)="OperatorChanged($event)"
+        placeholder="📊 Select Location"
+        [searchable]="true"
+        [clearable]="false"
+        searchFailText="Location not found"
+      >
+        <ng-template ng-header>
+          <div class="dropdown-header">📑 Available Location</div>
+        </ng-template>
+        <ng-template ng-label-tmp let-item="item">
+          <span class="selected-item">{{ item.name }}</span>
+        </ng-template>
+        <ng-template ng-option-tmp let-item="item" let-index="index">
+          <div class="option-item">
+            <i class="fas fa-file-alt"></i>
+            {{ item.name }}
+          </div>
+        </ng-template>
+      </ng-select>
     </div>
-    <ion-back-button defaultHref="Planhome" slot="end" (click)="displaymode()"></ion-back-button>   
-  </ion-toolbar>
+    <div class="right-menu">
+      <ion-button color="success" size="small" (click)="callPlan()"
+        >Create</ion-button
+      >
+    </div>
+  </div>
 </ion-header>
 
 <ion-content class="inventory-content">
-
-  <ion-grid>
-    <ion-row nowrap class="ion-align-items-center">
-      <ion-col size="4">       
-        <ion-input (keyup)="applyFilter($event.target.value)" placeholder="Search" [(ngModel)]="searchData"><ion-icon name="search"></ion-icon></ion-input>
-      </ion-col> 
-      <ion-col size="5">
-          <ng-select *ngIf="locationArray.length > 0"
-          [(ngModel)]="selected"
-          [items]="locationArray"
-          bindLabel="name"
-          bindValue="value"
-          (change)="OperatorChanged($event)"
-          placeholder="📊 Select Location"
-          [searchable]="true"
-          [clearable]="false"
-          searchFailText= "Location not found"
-          >
-          <ng-template ng-header>
-            <div class="dropdown-header">📑 Available Location</div>
-          </ng-template>
-          <ng-template ng-label-tmp let-item="item">
-            <span class="selected-item">{{ item.name }}</span>
-          </ng-template>
-          <ng-template ng-option-tmp let-item="item" let-index="index">
-            <div class="option-item">
-              <i class="fas fa-file-alt"></i>
-              {{ item.name }}
-            </div>
-          </ng-template>
-        </ng-select>
-    </ion-col>     
-      <ion-col size="2"><ion-button color="success" size="small" (click)="callPlan()">Create</ion-button></ion-col>      
-  </ion-row>
-  </ion-grid>
-  <br>
-  <div class="reports-table" style="position: relative;top:-4%">
-   
+  <div class="reports-table">
     <ion-grid>
-      <ion-row nowrap class="headers">
-        <ion-col size="3" class="single-border" tappable (click)="sort('batid',true)">
-          BatchId ({{tableData.length}})
+      <ion-row class="table-header" nowrap>
+        <ion-col
+          size="3"
+          class="header-cell"
+          tappable
+          (click)="sort('batid', true)"
+        >
+          BatchId ({{ tableData.length }})
         </ion-col>
-        <ion-col size="3" class="single-border" tappable (click)="sort('cpdname',true)">
+        <ion-col
+          size="3"
+          class="header-cell"
+          tappable
+          (click)="sort('cpdname', true)"
+        >
           Compound
-        </ion-col>        
-        <ion-col size="2" class="single-border" (click)="sort('masterbatchwgt',true)" style="text-align:center">
-          MBWt ({{totalmasterbatchwgt.toFixed(1)}})
         </ion-col>
-        <ion-col size="2" class="single-border" (click)="sort('expbatchqty',true)" style="text-align:center">
-          ExpWt ({{totalexpectedbatchwgt.toFixed(1)}})
+        <ion-col
+          size="2"
+          class="header-cell text-center"
+          (click)="sort('masterbatchwgt', true)"
+        >
+          MBWt ({{ totalmasterbatchwgt.toFixed(1) }})
         </ion-col>
-        <ion-col size="2" class="single-border" style="text-align:center">  ({{dataArray.length}})       
-        </ion-col>                                
+        <ion-col
+          size="2"
+          class="header-cell text-center"
+          (click)="sort('expbatchqty', true)"
+        >
+          ExpWt ({{ totalexpectedbatchwgt.toFixed(1) }})
+        </ion-col>
+        <ion-col size="2" class="header-cell text-center">
+          ({{ dataArray.length }})
+        </ion-col>
       </ion-row>
-      <div style="height: 75vh; overflow: scroll;">
-        <ion-row nowrap class="content" *ngFor="let x of tableData;let i=index">
-          <ion-col size="3"> {{ x.dispbatid }}</ion-col>
-          <ion-col size="3"> {{ x.cpdname }}</ion-col>          
-          <ion-col size="2" style="text-align: right;font-size: medium;"> {{x.masterbatchwgt}}</ion-col>
-          <ion-col size="2" style="text-align: right;font-size: medium;"> {{ x.expbatchqty }} </ion-col>  
-          <ion-col size="2" style="text-align: center;"> <ion-checkbox color="primary" (ionChange)="selectRecord(x,$event,i)" [checked]="x.check"> </ion-checkbox></ion-col>                       
+
+      <div class="table-body scrollable">
+        <ion-row
+          class="table-row"
+          nowrap
+          *ngFor="let x of tableData; let i = index"
+        >
+          <ion-col size="3" class="cell"> {{ x.dispbatid }} </ion-col>
+          <ion-col size="3" class="cell"> {{ x.cpdname }} </ion-col>
+          <ion-col size="2" class="cell text-right">
+            {{ x.masterbatchwgt }}
+          </ion-col>
+          <ion-col size="2" class="cell text-right">
+            {{ x.expbatchqty }}
+          </ion-col>
+          <ion-col size="2" class="cell text-center">
+            <ion-checkbox
+              color="primary"
+              (ionChange)="selectRecord(x, $event, i)"
+              [checked]="x.check"
+            ></ion-checkbox>
+          </ion-col>
         </ion-row>
-        <ion-row *ngIf="tableData.length == 0">
-          <ion-col size="6" offset="4"> No Records Found</ion-col>
+
+        <ion-row *ngIf="tableData.length === 0">
+          <ion-col size="12" class="no-records">No Records Found</ion-col>
         </ion-row>
       </div>
-
     </ion-grid>
   </div>
 
-<div class="modal-content3" *ngIf="modalDeleteData3">
-  <div class="modal-header" style="padding: 2%;">
-    <!-- <span class="close" (click)="modalDeleteData3=!modalDeleteData3">&times;</span> -->
-    Final Plan
-  </div>
-  <div class="modal-body" style="text-align: center;">
-    <ion-row nowrap class="ion-align-items-center">
-      <ion-col size="3">            
+  <div class="modal-content sm" *ngIf="modalDeleteData3">
+    <div class="modal-header">Final Plan</div>
+    <div class="modal-body">
+      <ion-row nowrap class="ion-align-items-center">
+        <ion-col size="12">
           <ng-select
-          [(ngModel)]="selectedShift"
-          [items]="shiftArray"
-          bindLabel="name"
-          bindValue="value"
-          (change)="ShiftChanged($event)"
-          placeholder="📊 Select Shift"
-          [searchable]="true"
-          [clearable]="false"
-          searchFailText= "Shift not found"
+            [(ngModel)]="selectedShift"
+            [items]="shiftArray"
+            bindLabel="name"
+            bindValue="value"
+            (change)="ShiftChanged($event)"
+            placeholder="📊 Select Shift"
+            [searchable]="true"
+            [clearable]="false"
+            searchFailText="Shift not found"
           >
-          <!-- appendTo="body"  -->
-          <ng-template ng-header>
-            <div class="dropdown-header">📑 Available Shift</div>
-          </ng-template>
-          <ng-template ng-label-tmp let-item="item">
-            <span class="selected-item">{{ item.name }}</span>
-          </ng-template>
-          <ng-template ng-option-tmp let-item="item" let-index="index">
-            <div class="option-item">
-              <i class="fas fa-file-alt"></i>
-              {{ item.name }}
-            </div>
-          </ng-template>
-        </ng-select>
-          
-      </ion-col>
-      <ion-col size="3">
+            <!-- appendTo="body"  -->
+            <ng-template ng-header>
+              <div class="dropdown-header">📑 Available Shift</div>
+            </ng-template>
+            <ng-template ng-label-tmp let-item="item">
+              <span class="selected-item">{{ item.name }}</span>
+            </ng-template>
+            <ng-template ng-option-tmp let-item="item" let-index="index">
+              <div class="option-item">
+                <i class="fas fa-file-alt"></i>
+                {{ item.name }}
+              </div>
+            </ng-template>
+          </ng-select>
+        </ion-col>
+        <ion-col size="12">
           <!-- <ion-label style="font-size: small;color: grey;">Location</ion-label>               
           <ionic-selectable
                 #selectComponent
@@ -129,22 +174,35 @@
                 searchFailText= "Operator not found"
                 placeholder="Select Location">
             </ionic-selectable>         -->
-      </ion-col>
-      <ion-col size="4">              
-        <ion-col>
-          <ion-label style="font-size: small;color: grey;">Date</ion-label> 
-          <input type="date" class="selectdddate" [(ngModel)]="postData.plandate" id="datefield"/>
-        </ion-col>      
-      </ion-col>
-    </ion-row>
-    <ion-row>
-        <ion-col size="12">Are You Sure to Create the Plan?</ion-col>
-    </ion-row>
-  </div> 
-  <div class="modal-footer" style="float: right;">
-    <ion-button color="success" size="small" (click)="submitData()">Create</ion-button>
-    <ion-button color="danger" size="small" (click)="modalDeleteData3=!modalDeleteData3">Cancel</ion-button>   
+        </ion-col>
+        <ion-col size="7">
+          <ion-col>
+            <ion-label>Date</ion-label>
+            <input
+              type="date"
+              class="selectdddate"
+              [(ngModel)]="postData.plandate"
+              id="datefield"
+            />
+          </ion-col>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="12"
+          ><p class="confirm-msg">Are You Sure to Create the Plan?</p></ion-col
+        >
+      </ion-row>
+    </div>
+    <div class="modal-footer">
+      <ion-button color="success" size="small" (click)="submitData()"
+        >Create</ion-button
+      >
+      <ion-button
+        color="danger"
+        size="small"
+        (click)="modalDeleteData3=!modalDeleteData3"
+        >Cancel</ion-button
+      >
+    </div>
   </div>
-</div>
-
 </ion-content>

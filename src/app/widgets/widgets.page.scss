@@ -10,6 +10,9 @@ ion-card {
   &:hover {
     transform: translateY(-10px);
   }
+  @media (max-width: 767px) {
+    margin: 0;
+  }
   cursor: pointer;
   .image {
     width: 60px;
@@ -51,4 +54,8 @@ ion-card {
       border-radius: 100%;
     }
   }
+}
+
+ion-menu-button {
+  --color: #000000;
 }
