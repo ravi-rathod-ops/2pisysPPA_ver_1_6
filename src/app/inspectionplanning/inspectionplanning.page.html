@@ -13,11 +13,38 @@
   <div class="reports-table">    
     <ion-grid>
       <ion-row nowrap class="ion-align-items-center">      
-      <ion-col size="10">
+      <ion-col size="3">
         <!-- <label>Select Date:</label><input type="date" [(ngModel)]="currentDate" (click)="selectDate($event)" (focusout)="selectDate($event)" id="datePicker"> -->
         <ion-input (keyup)="applyFilter($event.target.value)" placeholder="Search" [(ngModel)]="searchData"></ion-input>
       </ion-col>
-      <ion-col size="2"><ion-button color="secondary" size="small" (click)="modalDeleteData3=true">Issue</ion-button></ion-col>
+      <ion-col size="4">
+      <ng-select *ngIf="operatorArray && operatorArray.length > 0"
+        [(ngModel)]="selected"
+        [items]="operatorArray"
+        bindLabel="name"
+        bindValue="value"
+        (change)="OperatorChanged($event)"
+        placeholder="📊 Operator"
+        [searchable]="true"
+        [clearable]="false"
+        searchFailText="Operator not found"
+      >
+        <ng-template ng-header>
+          <div class="dropdown-header">📑 Available Operator</div>
+        </ng-template>
+        <ng-template ng-label-tmp let-item="item">
+          <span class="selected-item">{{ item.name }}</span>
+        </ng-template>
+        <ng-template ng-option-tmp let-item="item" let-index="index">
+          <div class="option-item">
+            <i class="fas fa-file-alt"></i>
+            {{ item.name }}
+          </div>
+        </ng-template>
+      </ng-select>
+    </ion-col>
+      <ion-col size="3"><ion-button color="secondary" size="small" (click)="modalDeleteData3=true">Issue</ion-button></ion-col>
+      <ion-col size="2"><ion-button color="danger" size="small" (click)="deleteList()">Delete</ion-button></ion-col>
     </ion-row>
     </ion-grid>
 
@@ -73,5 +100,65 @@
       <ion-button color="danger" size="small" (click)="modalDeleteData3=!modalDeleteData3">No</ion-button>   
     </div>
   </div>
+
+  <!-- Modal content -->
+<div class="modal-content" *ngIf="modalDeleteData">
+  <div class="modal-header">
+    <span class="close" (click)="modalDeleteData=!modalDeleteData">&times;</span>
+    <p style="margin: 8px 5px;">Inspection Plan List</p>
+  </div>
+  <div class="modal-body">
+    <ion-grid>
+      <ion-row nowrap class="headers">
+        <ion-col size="3" class="single-border" (click)="sort('issref',true)">
+          Key Ref. ({{tableData.length}})
+        </ion-col>
+        <ion-col size="3" class="single-border" (click)="sort('cmpdrefno',true)">
+          Part No
+        </ion-col>
+        <ion-col size="3" class="single-border" (click)="sort('cmpdname',true)">
+          Part Desc.
+        </ion-col>
+        <ion-col size="2" class="single-border" (click)="sort('avlqty',true)">
+          Rec. Qty ({{totalreceivedqty.toFixed(1)}})
+        </ion-col>
+        <ion-col size="1" class="single-border">
+          ({{dataArray.length}})
+        </ion-col>
+      </ion-row>
+      <div style="height: 55vh; overflow: scroll;">
+        
+        <ion-row nowrap class="content" *ngFor="let x of deleteData">
+          <ion-col size="3"> {{ x.issref }} </ion-col>
+          <ion-col size="3"> {{ x.cmpdname}} </ion-col>
+          <ion-col size="3"> {{ x.sno }} </ion-col>
+          <ion-col size="2" style="font-size: medium;"> {{ x.issqty }} </ion-col>        
+          <ion-col size="1"> <ion-icon name="trash-outline" (click)="callInspection(x)" style="color:red"></ion-icon></ion-col>
+        </ion-row>
+
+        <ion-row *ngIf="deleteData.length == 0">
+          <ion-col size="6" offset="4"> No Records Found</ion-col>
+        </ion-row>
+      </div>
+    </ion-grid>
+  </div>
+</div>
+
+<div class="modal-content2" *ngIf="modalDeleteData2">
+  <div class="modal-header">
+    <span class="close" (click)="modalDeleteData2=!modalDeleteData2">&times;</span>
+    <p style="margin: 8px 5px;">Inspection Plan</p>
+  </div>
+  <div class="modal-body" style="text-align: center;">
+    <br>
+    Are You Sure Want to Delete?
+    <br>
+    <br>
+  </div>
+  <div class="modal-footer" style="float: right;">
+    <ion-button color="success" size="small" (click)="deleteInspection()">Yes</ion-button>
+    <ion-button color="danger" size="small" (click)="modalDeleteData2=!modalDeleteData2">No</ion-button>   
+  </div>
+</div>
   
 </ion-content>
