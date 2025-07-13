@@ -81,22 +81,53 @@
   <!-- <iframe style="width:100%;height:100%;" [src]="datalist | renderUrl" frameborder="0"
     *ngIf="dropdownObject != '' && isback" id="ReportPanel"></iframe> -->
   <div *ngIf="dropdownObject != '' && isback">
+    <ion-button size="small" (click)="toggleScroll()" style="margin: 10px">
+      {{ isAutoScroll ? 'Stop Scroll' : 'Start Scroll' }}
+    </ion-button>
+
     <ion-grid *ngIf="reportData" class="custom-grid">
-      <!-- Header -->
+      <!-- Header with Filter -->
       <ion-row class="header-row">
-        <ion-col *ngFor="let col of reportData.colheaders" class="header-cell" (click)="sortByColumn(col)" style="cursor: pointer;">
-          {{ col }}
-          <ng-container *ngIf="sortColumn === col">
-            <ion-icon [name]="sortDirection === 'asc' ? 'arrow-up' : 'arrow-down'"></ion-icon>
+        <ion-col *ngFor="let col of reportData.colheaders" class="header-cell">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <span (click)="sortByColumn(col)" style="cursor: pointer;">
+              {{ col }}
+              <ng-container *ngIf="sortColumn === col">
+                <ion-icon [name]="sortDirection === 'asc' ? 'arrow-up' : 'arrow-down'"></ion-icon>
+              </ng-container>
+            </span>
+            <!-- Filter Icon -->
+            <ion-icon name="funnel-outline" (click)="toggleFilterInput(col)"
+              style="margin-left: 5px; cursor: pointer;"></ion-icon>
+          </div>
+
+          <!-- Filter Input -->
+          <ng-container *ngIf="activeFilterCol === col">
+            <input *ngIf="activeFilters[col]" [(ngModel)]="filterInputs[col]" (ngModelChange)="applyFilters()"
+              placeholder="Filter..." style="width: 100%;margin-top: 4px;font-size: 13px;padding: 4px 6px;border: 1px solid #ccc;border-radius: 4px;background: white;
+              color: black;" />
           </ng-container>
         </ion-col>
       </ion-row>
 
-      <!-- Data -->
-      <ion-row *ngFor="let row of reportData.data; let i = index" [class.total-row]="row['S.No.'] === ''"
-        [class.alt-row]="i % 2 === 1" class="data-row">
-        <ion-col *ngFor="let col of reportData.colheaders" class="data-cell">
-          {{ row[col] }}
+      <!-- Scrollable Data Rows -->
+      <div class="scroll-container" #scrollArea>
+        <!-- <ion-row
+          *ngFor="let row of (filteredData.length ? filteredData : reportData.data.slice(0, reportData.data.length - 1)); let i = index"
+          [class.alt-row]="i % 2 === 1" class="data-row"> -->
+        <ion-row
+          *ngFor="let row of (isFiltering ? filteredData : reportData.data.slice(0, reportData.data.length - 1)); let i = index"
+          [class.alt-row]="i % 2 === 1" class="data-row">
+          <ion-col *ngFor="let col of reportData.colheaders" class="data-cell">
+            {{ row[col] }}
+          </ion-col>
+        </ion-row>
+      </div>
+
+      <!-- Sticky Total Row -->
+      <ion-row class="total-row sticky-footer">
+        <ion-col *ngFor="let col of reportData.colheaders" class="data-cell total-cell">
+          {{ getTotalValue(col) }}
         </ion-col>
       </ion-row>
     </ion-grid>

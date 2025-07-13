@@ -206,3 +206,8 @@ ion-icon {
   font-size: 12px;
   margin-left: 5px;
 }
+
+.scroll-container {
+  max-height: 300px;
+  overflow-y: auto;
+}
