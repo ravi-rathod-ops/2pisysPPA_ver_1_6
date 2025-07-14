@@ -1,108 +1,166 @@
 <ion-header>
-  <ion-toolbar>       
-        <ion-img src="{{brandImage}}" style="height: 50px;width:50px" slot="start"></ion-img>               
-        <div style="display: flex;justify-content: center;">
-          <img src="./assets/image/report.png" height="25" width="25">
-          <b style="font-size: 20px;">&nbsp;&nbsp;Reports</b>
-        </div>
-        <ion-back-button defaultHref="Widgets" slot="end"></ion-back-button>   
+  <ion-toolbar>
+    <ion-buttons si slot="start">
+      <ion-back-button defaultHref="Widgets"></ion-back-button>
+    </ion-buttons>
+    <h3></h3>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
   <ion-grid>
-
-
-    <ion-row>
-      <ion-col size="12"   (click)="routePage('Fetchdrawing')">
-        <ion-card>
-          <ion-row class="ion-align-items-center">
-            <ion-col size="6"> 
-              <img src="./assets/image/fetchdrawing.png" class="image"/>               
-            </ion-col>
-            <ion-col size="6"  class="text-center-column">  
-                <h2>Fetch Drawing</h2>
-            </ion-col>
-          </ion-row>
-        </ion-card>        
+    <ion-row class="auto-wrap">
+      <ion-col
+        size="6"
+        size-sm="4"
+        size-md="3"
+        class="grid-item"
+        (click)="routePage('Fetchdrawing')"
+      >
+        <ion-card style="border-color: #233d78">
+          <div class="image" style="background: #233d78; border-color: #233d78">
+            <img src="./assets/image/drawing.png" />
+          </div>
+          <div class="card-content">
+            <div>
+              <h2>Fetch Drawing</h2>
+            </div>
+            <div
+              class="go-btn"
+              style="background: #233d78; border-color: #233d78"
+            >
+              <ion-icon name="arrow-forward"></ion-icon>
+            </div>
+          </div>
+        </ion-card>
       </ion-col>
-    </ion-row>      
 
-    <ion-row>
-      <ion-col size="12"  (click)="routePage('keytraceability')">
-        <ion-card>
-          <ion-row class="ion-align-items-center">
-            <ion-col size="6"> 
-              <img src="./assets/image/track.png" class="image"/>               
-            </ion-col>
-            <ion-col size="6"  class="text-center-column">  
-                <h2>Traceability</h2>
-            </ion-col>
-          </ion-row>
-        </ion-card>        
+      <ion-col
+        size="6"
+        size-sm="4"
+        size-md="3"
+        class="grid-item"
+        (click)="routePage('keytraceability')"
+      >
+        <ion-card style="border-color: #f5bf17">
+          <div class="image" style="background: #f5bf17; border-color: #f5bf17">
+            <img src="./assets/image/trace.png" />
+          </div>
+          <div class="card-content">
+            <div>
+              <h2>Traceability</h2>
+            </div>
+            <div
+              class="go-btn"
+              style="background: #f5bf17; border-color: #f5bf17"
+            >
+              <ion-icon name="arrow-forward"></ion-icon>
+            </div>
+          </div>
+        </ion-card>
       </ion-col>
-    </ion-row>  
 
-    <ion-row>
-      <ion-col size="12"  (click)="routePage('rmstock')">
-        <ion-card>
-          <ion-row class="ion-align-items-center">
-            <ion-col size="6"> 
-              <img src="./assets/image/rawmaterials.png" class="image"/>               
-            </ion-col>
-            <ion-col size="6"  class="text-center-column">  
-                <h2>RM Stock</h2>
-            </ion-col>
-          </ion-row>
-        </ion-card>        
+      <ion-col
+        size="6"
+        size-sm="4"
+        size-md="3"
+        class="grid-item"
+        (click)="routePage('rmstock')"
+      >
+        <ion-card style="border-color: #14a9bf">
+          <div class="image" style="background: #14a9bf; border-color: #14a9bf">
+            <img src="./assets/image/rm-stock.png" />
+          </div>
+          <div class="card-content">
+            <div>
+              <h2>RM Stock</h2>
+            </div>
+            <div
+              class="go-btn"
+              style="background: #14a9bf; border-color: #14a9bf"
+            >
+              <ion-icon name="arrow-forward"></ion-icon>
+            </div>
+          </div>
+        </ion-card>
       </ion-col>
-    </ion-row>  
+      <!-- </ion-row>
 
-    <ion-row>
-      <ion-col size="12"  (click)="routePage('componentstock')">
-        <ion-card>
-          <ion-row class="ion-align-items-center">
-            <ion-col size="6"> 
-              <img src="./assets/image/toolbox.png" class="image"/>               
-            </ion-col>
-            <ion-col size="6"  class="text-center-column">  
-                <h2>Component Stock</h2>
-            </ion-col>
-          </ion-row>
-        </ion-card>        
+    <ion-row> -->
+      <ion-col
+        size="6"
+        size-sm="4"
+        size-md="3"
+        class="grid-item"
+        (click)="routePage('componentstock')"
+      >
+        <ion-card style="border-color: #ea4f93">
+          <div class="image" style="background: #ea4f93; border-color: #ea4f93">
+            <img src="./assets/image/component.png" />
+          </div>
+          <div class="card-content">
+            <div>
+              <h2>Component Stock</h2>
+            </div>
+            <div
+              class="go-btn"
+              style="background: #ea4f93; border-color: #ea4f93"
+            >
+              <ion-icon name="arrow-forward"></ion-icon>
+            </div>
+          </div>
+        </ion-card>
       </ion-col>
-    </ion-row> 
-    
-    <ion-row>
-      <ion-col size="12"  (click)="routePage('compoundstock')">
-        <ion-card>
-          <ion-row class="ion-align-items-center">
-            <ion-col size="6"> 
-              <img src="./assets/image/trolley.png" class="image"/>               
-            </ion-col>
-            <ion-col size="6"  class="text-center-column">  
-                <h2>Compound Stock</h2>
-            </ion-col>
-          </ion-row>
-        </ion-card>        
-      </ion-col>
-    </ion-row>  
 
-    <ion-row>
-      <ion-col size="12"  (click)="routePage('rollstock')">
-        <ion-card>
-          <ion-row class="ion-align-items-center">
-            <ion-col size="6"> 
-              <img src="./assets/image/paper-roll.png" class="image"/>               
-            </ion-col>
-            <ion-col size="6"  class="text-center-column">  
-                <h2>Roll Stock</h2>
-            </ion-col>
-          </ion-row>
-        </ion-card>        
+      <ion-col
+        size="6"
+        size-sm="4"
+        size-md="3"
+        class="grid-item"
+        (click)="routePage('compoundstock')"
+      >
+        <ion-card style="border-color: #7d8cc3">
+          <div class="image" style="background: #7d8cc3; border-color: #7d8cc3">
+            <img src="./assets/image/compound.png" />
+          </div>
+          <div class="card-content">
+            <div>
+              <h2>Compound Stock</h2>
+            </div>
+            <div
+              class="go-btn"
+              style="background: #7d8cc3; border-color: #7d8cc3"
+            >
+              <ion-icon name="arrow-forward"></ion-icon>
+            </div>
+          </div>
+        </ion-card>
       </ion-col>
-    </ion-row>  
-   
+
+      <ion-col
+        size="6"
+        size-sm="4"
+        size-md="3"
+        class="grid-item"
+        (click)="routePage('rollstock')"
+      >
+        <ion-card style="border-color: #8b54ef">
+          <div class="image" style="background: #8b54ef; border-color: #8b54ef">
+            <img src="./assets/image/roll.png" />
+          </div>
+          <div class="card-content">
+            <div>
+              <h2>Roll Stock</h2>
+            </div>
+            <div
+              class="go-btn"
+              style="background: #8b54ef; border-color: #8b54ef"
+            >
+              <ion-icon name="arrow-forward"></ion-icon>
+            </div>
+          </div>
+        </ion-card>
+      </ion-col>
+    </ion-row>
   </ion-grid>
-  
 </ion-content>

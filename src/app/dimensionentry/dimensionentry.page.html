@@ -1,100 +1,220 @@
 <ion-header>
-  <ion-toolbar>
-        <ion-buttons slot="start">
-          <!-- <ion-menu-button menu="main-menu"></ion-menu-button> -->
-          <ion-img src="{{brandImage}}" style="height: 50px;width:50px"></ion-img>
+  <div class="inner-header-wrap">
+    <div class="left-menu">
+      <ion-toolbar>
+        <ion-buttons si slot="start">
+          <ion-back-button defaultHref="approvals"></ion-back-button>
         </ion-buttons>
-        <div style="display: flex;justify-content: center;">
-        <img src="./assets/image/cube.png" height="25" width="25">
-        <b style="font-size: 20px;">&nbsp;&nbsp;Dimension Entry</b>
-        </div>
-        <!-- <ion-text (click)="navBack()" slot="end" style="margin-right:4%">Back</ion-text>  -->
-        <ion-back-button defaultHref="approvals" slot="end"></ion-back-button>   
-  </ion-toolbar>
+        <h3 class="main-sub-heading">Dimension Entry</h3>
+      </ion-toolbar>
+      <div class="scan-icon">
+        <img src="./assets/image/qr-scan.png" alt="Scanner" (click)="scan()" />
+      </div>
+      <div class="planid-wrapper">
+        <ion-input
+          [(ngModel)]="planid"
+          placeholder="Enter Planid"
+          class="search-box"
+        ></ion-input>
+        <ion-button
+          expand="block"
+          color="primary"
+          (click)="sendData()"
+          [disabled]="!planid?.length"
+          >Send</ion-button
+        >
+      </div>
+    </div>
+  </div>
 </ion-header>
-
 <ion-content>
-  <ion-card>
-    <ion-footer>
-      <ion-grid>
-        <ion-row class="ion-align-items-center input-scan-row">
-          <ion-col size="12" size-md="2" class="ion-text-center">
-            <img src="./assets/image/qr-scan.png" alt="Scanner" (click)="scan()" class="qr-icon" />
-          </ion-col>          
-          <ion-col size="12" size-md="7">
-            <ion-item>
-              <ion-input [(ngModel)]="planid" placeholder="Enter Planid"></ion-input>
-            </ion-item>
-          </ion-col>
-          <ion-col size="12" size-md="3" class="ion-text-right">
-            <ion-button expand="block" color="primary" (click)="sendData()" [disabled]="!planid?.length">Send</ion-button>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
-    </ion-footer>
-  </ion-card> 
-
   <ion-card *ngIf="showEntryCard">
-    <ion-card-header style="border-bottom: 1px solid grey;">    
-      <ion-card-title>Dimension Entry</ion-card-title>              
+    <ion-card-header style="border-bottom: 1px solid grey">
+      <ion-card-title>Dimension Entry</ion-card-title>
     </ion-card-header>
     <ion-grid id="grid" class="appfont">
-        <ion-row>
-          <ion-col size="4">
-            <ion-label>Plan Reference : </ion-label>
-          </ion-col>
-          <ion-col size="8">
-            {{datapass[0].planid}}
-          </ion-col>
-        </ion-row>
-        <br/>
-       <div style="overflow: auto;">
-            <div style="width: 350%;">
-              <ion-row style="text-align: center;border-bottom: 1px solid grey;">
-                <ion-col size="1">No.</ion-col>
-                <ion-col size="1">Parameter</ion-col>
-                <ion-col size="2">Range</ion-col>
-                <ion-col size="8">Samples</ion-col>
+      <ion-row>
+        <ion-col size="4">
+          <ion-label>Plan Reference : </ion-label>
+        </ion-col>
+        <ion-col size="8"> {{datapass[0].planid}} </ion-col>
+      </ion-row>
+      <br />
+      <div style="overflow: auto">
+        <div style="width: 350%">
+          <ion-row style="text-align: center; border-bottom: 1px solid grey">
+            <ion-col size="1">No.</ion-col>
+            <ion-col size="1">Parameter</ion-col>
+            <ion-col size="2">Range</ion-col>
+            <ion-col size="8">Samples</ion-col>
+          </ion-row>
+          <ion-row
+            *ngFor="let y of rmDetails; index as i"
+            style="
+              font-weight: bold;
+              text-align: center;
+              border-bottom: 1px solid grey;
+            "
+          >
+            <ion-col size="1" style="color: blue">{{i+1}}</ion-col>
+            <ion-col size="1">{{y.dimname}}</ion-col>
+            <ion-col size="2">{{y.dimllimit}} - {{y.dimulimit}} (mm)</ion-col>
+            <ion-col size="8">
+              <ion-row>
+                <ion-col
+                  ><ion-input
+                    type="number"
+                    min="0.001"
+                    class="inputStyle"
+                    id="alert0{{i}}"
+                    value="{{y.dimval1}}"
+                    (ionChange)='onChangeOnservation(i,$event.target.value,"dimval1")'
+                    (click)="prefill(i,$event.target.value,'dimval1')"
+                    (focusout)="blured(i,$event.target.value,'dimval1','0')"
+                    #inputId
+                  ></ion-input
+                ></ion-col>
+                <ion-col
+                  ><ion-input
+                    type="number"
+                    min="0.001"
+                    class="inputStyle"
+                    id="alert1{{i}}"
+                    value="{{y.dimval2}}"
+                    (ionChange)='onChangeOnservation(i,$event.target.value,"dimval2")'
+                    (click)="prefill(i,$event.target.value,'dimval2')"
+                    (focusout)="blured(i,$event.target.value,'dimval2','1')"
+                  ></ion-input
+                ></ion-col>
+                <ion-col
+                  ><ion-input
+                    type="number"
+                    min="0.001"
+                    class="inputStyle"
+                    id="alert2{{i}}"
+                    value="{{y.dimval3}}"
+                    (ionChange)='onChangeOnservation(i,$event.target.value,"dimval3")'
+                    (click)="prefill(i,$event.target.value,'dimval3')"
+                    (focusout)="blured(i,$event.target.value,'dimval3','2')"
+                  ></ion-input
+                ></ion-col>
+                <ion-col
+                  ><ion-input
+                    type="number"
+                    min="0.001"
+                    class="inputStyle"
+                    id="alert3{{i}}"
+                    value="{{y.dimval4}}"
+                    (ionChange)='onChangeOnservation(i,$event.target.value,"dimval4")'
+                    (click)="prefill(i,$event.target.value,'dimval4')"
+                    (focusout)="blured(i,$event.target.value,'dimval4','3')"
+                  ></ion-input
+                ></ion-col>
+                <ion-col
+                  ><ion-input
+                    type="number"
+                    min="0.001"
+                    class="inputStyle"
+                    id="alert4{{i}}"
+                    value="{{y.dimval5}}"
+                    (ionChange)='onChangeOnservation(i,$event.target.value,"dimval5")'
+                    (click)="prefill(i,$event.target.value,'dimval5')"
+                    (focusout)="blured(i,$event.target.value,'dimval5','4')"
+                  ></ion-input
+                ></ion-col>
+                <ion-col
+                  ><ion-input
+                    type="number"
+                    min="0.001"
+                    class="inputStyle"
+                    id="alert5{{i}}"
+                    value="{{y.dimval6}}"
+                    (ionChange)='onChangeOnservation(i,$event.target.value,"dimval6")'
+                    (click)="prefill(i,$event.target.value,'dimval6')"
+                    (focusout)="blured(i,$event.target.value,'dimval6','5')"
+                  ></ion-input
+                ></ion-col>
+                <ion-col
+                  ><ion-input
+                    type="number"
+                    min="0.001"
+                    class="inputStyle"
+                    id="alert6{{i}}"
+                    value="{{y.dimval7}}"
+                    (ionChange)='onChangeOnservation(i,$event.target.value,"dimval7")'
+                    (click)="prefill(i,$event.target.value,'dimval7')"
+                    (focusout)="blured(i,$event.target.value,'dimval7','6')"
+                  ></ion-input
+                ></ion-col>
+                <ion-col
+                  ><ion-input
+                    type="number"
+                    min="0.001"
+                    class="inputStyle"
+                    id="alert7{{i}}"
+                    value="{{y.dimval8}}"
+                    (ionChange)='onChangeOnservation(i,$event.target.value,"dimval8")'
+                    (click)="prefill(i,$event.target.value,'dimval8')"
+                    (focusout)="blured(i,$event.target.value,'dimval8','7')"
+                  ></ion-input
+                ></ion-col>
+                <ion-col
+                  ><ion-input
+                    type="number"
+                    min="0.001"
+                    class="inputStyle"
+                    id="alert8{{i}}"
+                    value="{{y.dimval9}}"
+                    (ionChange)='onChangeOnservation(i,$event.target.value,"dimval9")'
+                    (click)="prefill(i,$event.target.value,'dimval9')"
+                    (focusout)="blured(i,$event.target.value,'dimval9','8')"
+                  ></ion-input
+                ></ion-col>
+                <ion-col
+                  ><ion-input
+                    type="number"
+                    min="0.001"
+                    class="inputStyle"
+                    id="alert9{{i}}"
+                    value="{{y.dimval10}}"
+                    (ionChange)='onChangeOnservation(i,$event.target.value,"dimval10")'
+                    (click)="prefill(i,$event.target.value,'dimval10')"
+                    (focusout)="blured(i,$event.target.value,'dimval10','9')"
+                  ></ion-input
+                ></ion-col>
               </ion-row>
-              <ion-row *ngFor="let y of rmDetails; index as i" style="font-weight: bold;text-align: center;border-bottom: 1px solid grey;">
-                <ion-col size="1" style="color:blue;">{{i+1}}</ion-col>
-                <ion-col size="1">{{y.dimname}}</ion-col>
-                <ion-col size="2" >{{y.dimllimit}} - {{y.dimulimit}} (mm)</ion-col> 
-                <ion-col size="8">
-                  <ion-row>
-                    <ion-col><ion-input type="number" min="0.001" class="inputStyle" id="alert0{{i}}" value="{{y.dimval1}}" (ionChange)='onChangeOnservation(i,$event.target.value,"dimval1")' (click)="prefill(i,$event.target.value,'dimval1')" (focusout)="blured(i,$event.target.value,'dimval1','0')" #inputId></ion-input></ion-col>
-                    <ion-col><ion-input type="number" min="0.001" class="inputStyle" id="alert1{{i}}" value="{{y.dimval2}}" (ionChange)='onChangeOnservation(i,$event.target.value,"dimval2")' (click)="prefill(i,$event.target.value,'dimval2')" (focusout)="blured(i,$event.target.value,'dimval2','1')"></ion-input></ion-col>
-                    <ion-col><ion-input type="number" min="0.001" class="inputStyle" id="alert2{{i}}" value="{{y.dimval3}}" (ionChange)='onChangeOnservation(i,$event.target.value,"dimval3")' (click)="prefill(i,$event.target.value,'dimval3')" (focusout)="blured(i,$event.target.value,'dimval3','2')"></ion-input></ion-col>
-                    <ion-col><ion-input type="number" min="0.001" class="inputStyle" id="alert3{{i}}" value="{{y.dimval4}}" (ionChange)='onChangeOnservation(i,$event.target.value,"dimval4")' (click)="prefill(i,$event.target.value,'dimval4')" (focusout)="blured(i,$event.target.value,'dimval4','3')"></ion-input></ion-col>
-                    <ion-col><ion-input type="number" min="0.001" class="inputStyle" id="alert4{{i}}" value="{{y.dimval5}}" (ionChange)='onChangeOnservation(i,$event.target.value,"dimval5")' (click)="prefill(i,$event.target.value,'dimval5')" (focusout)="blured(i,$event.target.value,'dimval5','4')"></ion-input></ion-col>
-                    <ion-col><ion-input type="number" min="0.001" class="inputStyle" id="alert5{{i}}" value="{{y.dimval6}}" (ionChange)='onChangeOnservation(i,$event.target.value,"dimval6")' (click)="prefill(i,$event.target.value,'dimval6')" (focusout)="blured(i,$event.target.value,'dimval6','5')"></ion-input></ion-col>
-                    <ion-col><ion-input type="number" min="0.001" class="inputStyle" id="alert6{{i}}" value="{{y.dimval7}}" (ionChange)='onChangeOnservation(i,$event.target.value,"dimval7")' (click)="prefill(i,$event.target.value,'dimval7')" (focusout)="blured(i,$event.target.value,'dimval7','6')"></ion-input></ion-col>
-                    <ion-col><ion-input type="number" min="0.001" class="inputStyle" id="alert7{{i}}" value="{{y.dimval8}}" (ionChange)='onChangeOnservation(i,$event.target.value,"dimval8")' (click)="prefill(i,$event.target.value,'dimval8')" (focusout)="blured(i,$event.target.value,'dimval8','7')"></ion-input></ion-col>
-                    <ion-col><ion-input type="number" min="0.001" class="inputStyle" id="alert8{{i}}" value="{{y.dimval9}}" (ionChange)='onChangeOnservation(i,$event.target.value,"dimval9")' (click)="prefill(i,$event.target.value,'dimval9')" (focusout)="blured(i,$event.target.value,'dimval9','8')"></ion-input></ion-col>
-                    <ion-col><ion-input type="number" min="0.001" class="inputStyle" id="alert9{{i}}" value="{{y.dimval10}}" (ionChange)='onChangeOnservation(i,$event.target.value,"dimval10")' (click)="prefill(i,$event.target.value,'dimval10')" (focusout)="blured(i,$event.target.value,'dimval10','9')"></ion-input></ion-col>
-                  </ion-row>
-                </ion-col>
-              </ion-row>  
-            </div>
-       </div>
+            </ion-col>
+          </ion-row>
+        </div>
+      </div>
     </ion-grid>
     <ion-grid id="grid" class="appfont">
       <form [formGroup]="registerForm" (ngSubmit)="submitData()">
-       <ion-row>
+        <ion-row>
           <ion-col size="4">
             <ion-label>Compound : </ion-label>
           </ion-col>
           <ion-col size="8">
-            <ion-radio-group value="{{isApproved}}" (ionChange)="approval($event.detail.value)">
+            <ion-radio-group
+              value="{{isApproved}}"
+              (ionChange)="approval($event.detail.value)"
+            >
               <ion-radio value="1"></ion-radio>
               <ion-label class="marginleft">Approved</ion-label>
               <ion-radio value="0" class="marginleft"></ion-radio>
               <ion-label class="marginleft">Rejected</ion-label>
-            </ion-radio-group> 
+            </ion-radio-group>
           </ion-col>
         </ion-row>
         <br />
-          <ion-textarea label="Outline textarea" labelPlacement="floating" fill="outline" formControlName="remarks" placeholder="Remarks" style="border:1px solid #80808038"></ion-textarea>
+        <ion-textarea
+          label="Outline textarea"
+          labelPlacement="floating"
+          fill="outline"
+          formControlName="remarks"
+          placeholder="Remarks"
+          style="border: 1px solid #80808038"
+        ></ion-textarea>
         <!-- <br>
         <ion-row>
           <ion-col size="12">
@@ -107,21 +227,25 @@
             </ion-text>        
           </ion-col>
         </ion-row> -->
-        <br>
+        <br />
         <ion-row>
           <ion-col size="6" push="2">
-            <ion-button color="success"  type="submit" [disabled]="!registerForm.valid || flag">Submit</ion-button>
+            <ion-button
+              color="success"
+              type="submit"
+              [disabled]="!registerForm.valid || flag"
+              >Submit</ion-button
+            >
           </ion-col>
           <ion-col size="6">
-            <ion-button color="danger" (click)='modaldismiss()'>Cancel</ion-button>
+            <ion-button color="danger" (click)="modaldismiss()"
+              >Cancel</ion-button
+            >
           </ion-col>
         </ion-row>
-        
       </form>
     </ion-grid>
   </ion-card>
-  
-
 </ion-content>
 
 <!-- Modal (shown only if scanning is active) -->

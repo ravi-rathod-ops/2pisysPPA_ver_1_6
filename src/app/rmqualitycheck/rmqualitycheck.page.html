@@ -1,252 +1,241 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-img src="{{brandImage}}" style="height: 50px;width:50px"></ion-img>
-    </ion-buttons>
-    <div style="display: flex;justify-content: center;">
-      <img src="./assets/image/quality-control.png" height="25" width="25">
-      <b style="font-size: 20px;">&nbsp;&nbsp;RM Quality Check</b>
+  <div class="inner-header-wrap">
+    <div class="left-menu">
+      <ion-toolbar>
+        <ion-buttons si slot="start">
+          <ion-back-button defaultHref="approvals"></ion-back-button>
+        </ion-buttons>
+        <h3 class="main-sub-heading">RM Quality Check</h3>
+      </ion-toolbar>
+      <div class="planid-wrapper">
+        <ion-input
+          (keyup)="applyFilter($event.target.value)"
+          placeholder="Search"
+          [(ngModel)]="searchData"
+          class="search-box"
+          ><ion-icon name="search" slot="end"></ion-icon
+        ></ion-input>
+      </div>
     </div>
-    <ion-back-button defaultHref="approvals" slot="end"></ion-back-button>
-  </ion-toolbar>
+  </div>
 </ion-header>
 
 <ion-content>
-
-  <ion-grid>
-    <ion-row nowrap class="ion-align-items-center">
-      <ion-col size="12">
-        <ion-input (keyup)="applyFilter($event.target.value)" placeholder="Search" [(ngModel)]="searchData"><ion-icon
-            name="search"></ion-icon></ion-input>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
-
-  <ion-grid id="grid" class="appfont" style="overflow: auto;">
-    <div style="min-width: 200px; overflow-x: auto;">
-      <ion-row style="border-bottom: 1px solid grey;">
-        <ion-col size="2" (click)="sort('grnid',false)">GRN Id ({{rmArray.length}})</ion-col>
-        <ion-col size="2" (click)="sort('grndate',false)">GRN Date</ion-col>
-        <ion-col size="2" (click)="sort('invSupName',false)">Sup Name</ion-col>
-        <ion-col size="4" (click)="sort('ramname',false)">RM Name(Grade)</ion-col>
-        <ion-col size="2" (click)="sort('recvqty',false)">GRN Qty</ion-col>
+  <div class="reports-table">
+    <ion-grid class="appfont">
+      <!-- Table Header -->
+      <ion-row class="table-header" nowrap>
+        <ion-col size="2" class="header-cell" (click)="sort('grnid', false)">
+          GRN Id ({{ rmArray.length }})
+        </ion-col>
+        <ion-col size="2" class="header-cell" (click)="sort('grndate', false)">
+          GRN Date
+        </ion-col>
+        <ion-col
+          size="2"
+          class="header-cell"
+          (click)="sort('invSupName', false)"
+        >
+          Sup Name
+        </ion-col>
+        <ion-col size="4" class="header-cell" (click)="sort('ramname', false)">
+          RM Name (Grade)
+        </ion-col>
+        <ion-col size="2" class="header-cell" (click)="sort('recvqty', false)">
+          GRN Qty
+        </ion-col>
       </ion-row>
 
-      <ion-row *ngFor="let x of rmArray; index as i" style="font-weight: bold;border-bottom: 1px solid grey;"
-        (click)="itemDetail(x)">
-        <ion-col size="2">{{x.grnid}}</ion-col>
-        <ion-col size="2" style="color:blue;">{{x.grndate}}</ion-col>
-        <ion-col size="2">{{x.invSupName | slice:0:24}}</ion-col>
-        <ion-col size="4">{{x.ramname}}</ion-col>
-        <ion-col size="2" style="color:blue;">{{x.recvqty}}</ion-col>
-      </ion-row>
+      <!-- Table Body -->
+      <div
+        class="table-body"
+        style="
+          min-width: 200px;
+          height: 60vh;
+          overflow-x: auto;
+          overflow-y: auto;
+        "
+      >
+        <ion-row
+          class="table-row"
+          nowrap
+          *ngFor="let x of rmArray; index as i"
+          (click)="itemDetail(x)"
+        >
+          <ion-col size="2" class="cell"> {{ x.grnid }} </ion-col>
+          <ion-col size="2" class="cell" style="color: blue">
+            {{ x.grndate }}
+          </ion-col>
+          <ion-col size="2" class="cell">
+            {{ x.invSupName | slice: 0:24 }}
+          </ion-col>
+          <ion-col size="4" class="cell"> {{ x.ramname }} </ion-col>
+          <ion-col size="2" class="cell" style="color: blue">
+            {{ x.recvqty }}
+          </ion-col>
+        </ion-row>
+
+        <ion-row *ngIf="rmArray.length === 0">
+          <ion-col size="12" class="no-records">No Records Found</ion-col>
+        </ion-row>
+      </div>
+    </ion-grid>
+  </div>
+
+  <div class="modal-content" *ngIf="showEntryCard">
+    <div class="modal-header flex-header">
+      <p style="margin: 8px 5px">GRN ID : {{currentRecord.grnid}}</p>
+      <span class="close" (click)="showEntryCard=!showEntryCard"
+        ><ion-icon name="close-outline"></ion-icon
+      ></span>
     </div>
-    <br>
-  </ion-grid>
-
-  <form [formGroup]="registerForm" (ngSubmit)="submitData()" *ngIf="showEntryCard">
-    <ion-card style="position: fixed;top:12%;left:3%;width:90%;overflow: auto;height: 80%;z-index: 12;">
-      <ion-card-header style="border-bottom: 1px solid grey;">
-        <ion-card-title>GRN ID : {{currentRecord.grnid}}</ion-card-title>
-      </ion-card-header>
-
-      <ion-grid id="grid" class="appfont">
-        <div style="overflow: auto;">
-          <div style="width: 130%;">
-            <ion-row style="border-bottom: 1px solid grey;text-align: center;" class="bold">
-              <ion-col size="4">Paramater</ion-col>
-              <ion-col size="2">Spec</ion-col>
-              <ion-col size="2">Lower Limit</ion-col>
-              <ion-col size="2">Upper Limit</ion-col>
-              <ion-col size="2">Observation</ion-col>
+    <div class="modal-body" style="font-size: smaller">
+      <form
+        [formGroup]="registerForm"
+        (ngSubmit)="submitData()"
+        *ngIf="showEntryCard"
+        class="qc-form"
+      >
+        <div class="reports-table">
+          <ion-grid>
+            <!-- Table Header -->
+            <ion-row class="table-header" nowrap>
+              <ion-col size="4" class="header-cell">Parameter</ion-col>
+              <ion-col size="2" class="header-cell">Spec</ion-col>
+              <ion-col size="2" class="header-cell">Lower Limit</ion-col>
+              <ion-col size="2" class="header-cell">Upper Limit</ion-col>
+              <ion-col size="2" class="header-cell">Observation</ion-col>
             </ion-row>
-            <ion-row *ngFor="let y of rmDetails; index as i"
-              style="font-weight: bold;text-align: center;border-bottom: 1px solid grey;">
-              <ion-col size="4" style="color:blue;">{{y.paramname}}</ion-col>
-              <ion-col size="2">{{y.paramspec}}</ion-col>
-              <ion-col size="2">{{y.paramllimit}}</ion-col>
-              <ion-col size="2">{{y.paramulimit}}</ion-col>
-              <ion-col size="2"><ion-input type="number" min="0" class="inputStyle" value="{{y.paramval}}"
-                  (ionChange)='onChangeOnservation(i,$event.target.value)' (click)="prefill(i,$event.target.value)"
-                  (focusout)="blured(i,$event.target.value)" #inputId></ion-input></ion-col>
-            </ion-row>
-          </div>
+
+            <!-- Table Body -->
+            <div class="table-body" style="max-height: 55vh; overflow-y: auto">
+              <ion-row
+                class="table-row"
+                nowrap
+                *ngFor="let y of rmDetails; index as i"
+              >
+                <ion-col size="4" class="cell param-name">
+                  {{ y.paramname }}
+                </ion-col>
+                <ion-col size="2" class="cell"> {{ y.paramspec }} </ion-col>
+                <ion-col size="2" class="cell"> {{ y.paramllimit }} </ion-col>
+                <ion-col size="2" class="cell"> {{ y.paramulimit }} </ion-col>
+                <ion-col size="2" class="cell">
+                  <ion-input
+                    type="number"
+                    min="0"
+                    class="observation-input"
+                    [value]="y.paramval"
+                    (ionChange)="onChangeOnservation(i, $event.target.value)"
+                    (click)="prefill(i, $event.target.value)"
+                    (focusout)="blured(i, $event.target.value)"
+                  >
+                  </ion-input>
+                </ion-col>
+              </ion-row>
+
+              <ion-row *ngIf="rmDetails.length === 0">
+                <ion-col size="12" class="no-records">No Records Found</ion-col>
+              </ion-row>
+            </div>
+          </ion-grid>
         </div>
-        <br />
-        <ion-row>
-          <ion-col size="5">
-            <ion-label class="bold">Test Cert. Available?: </ion-label>
-          </ion-col>
-          <ion-col size="7">
-            <ion-radio-group value="{{tcIsAvaiable}}" (ionChange)="tcRef($event.detail.value)">
-              <ion-radio value="1"></ion-radio>
-              <ion-label class="marginleft">Yes</ion-label>
-              <ion-radio value="0" class="marginleft"></ion-radio>
-              <ion-label class="marginleft">No</ion-label>
-            </ion-radio-group>
-          </ion-col>
-        </ion-row>
 
-        <ion-row *ngIf="tcIsAvaiable == '1'">
-          <br>
-          <ion-col size="4">
-            <ion-label class="bold">Test Cert. Ref: </ion-label>
-          </ion-col>
-          <ion-col size="8">
-            <ion-input type="text" min="0" class="inputStyle" formControlName="tcref"></ion-input>
-          </ion-col>
-        </ion-row>
-        <br />
-        <ion-row>
-          <ion-col size="4">
-            <ion-label class="bold">Test Cert. Upload:</ion-label>
-          </ion-col>
-
-          <ion-col size="7">
-            <input type="file" accept="image/jpeg,application/pdf" (change)="filesel($event, 'tc')" #inputFile1 />
-
-            <ion-button *ngIf="isMobile" size="small" (click)="startCamera('tc')">Capture Image</ion-button>
-
-            <div *ngIf="tcfile || tcPreview" style="margin-top: 10px;">
-              <img *ngIf="tcPreview" [src]="tcPreview" style="max-height: 150px;" />
-            </div>
-          </ion-col>
-
-          <ion-col size="1">
-            <ion-icon name="close-circle-outline" style="color: red; font-size: 1.5em; margin-top: 45%;"
-              (click)="clearTest()"></ion-icon>
-          </ion-col>
-        </ion-row>
-
-        <!-- Camera Modal -->
-        <ion-modal [isOpen]="isCameraOpen" (didDismiss)="stopCamera()" class="camera-modal">
-          <ng-template>
-            <ion-header>
-              <ion-toolbar>
-                <ion-title>Capture Image</ion-title>
-                <ion-buttons slot="end">
-                  <ion-button (click)="stopCamera()">Close</ion-button>
-                </ion-buttons>
-              </ion-toolbar>
-            </ion-header>
-
-            <ion-content class="camera-content">
-              <div class="video-container">
-                <video #video autoplay playsinline></video>
-              </div>
-
-              <div class="button-container">
-                <ion-button expand="block" (click)="captureImage()">Take Photo</ion-button>
-              </div>
-            </ion-content>
-          </ng-template>
-        </ion-modal>
-        <br />
-        <ion-row>
-          <ion-col size="4">
-            <ion-label class="bold">Invoice Upload:</ion-label>
-          </ion-col>
-
-          <ion-col size="7">
-            <input type="file" accept="image/jpeg,application/pdf" (change)="filesel($event, 'inv')" #inputFile2 />
-
-            <ion-button *ngIf="isMobile" size="small" (click)="startCamera('inv')">
-              Capture Image
-            </ion-button>
-
-            <div *ngIf="invfile || invPreview" style="margin-top: 10px;">
-              <img *ngIf="invPreview" [src]="invPreview" style="max-height: 150px;" />
-            </div>
-          </ion-col>
-
-          <ion-col size="1">
-            <ion-icon name="close-circle-outline" style="color:red; font-size: 1.5em; margin-top: 45%;"
-              (click)="clearInv()"></ion-icon>
-          </ion-col>
-        </ion-row>
-
-        <br>
-        <ion-row class="ion-align-items-center" style="margin-bottom: 10px;">
-          <ion-col size="4">
-            <ion-label style="font-size: 14px; color: #666;">Date of Exp.:</ion-label>
-          </ion-col>
-          <ion-col size="8">
-            <div class="custom-date-wrapper" [class.invalid]="submitted && f.doe.errors">
-              <input type="date" class="custom-date-input" formControlName="doe" max="2050-01-01"
-                (change)="prefill('doe', $event)" />
-            </div>
-            <ion-text *ngIf="submitted && f.doe.errors?.required">
-              <ion-text color="danger" style="font-size: 12px; float: right; font-weight: bold;">
-                *Required
-              </ion-text>
-            </ion-text>
-          </ion-col>
-        </ion-row>
-
-
-        <br>
-        <ion-row>
-          <ion-col size="4">
-            <ion-label class="bold">Raw material: </ion-label>
-          </ion-col>
-          <ion-col size="8">
-            <ion-radio-group value="{{isApproved}}" (ionChange)="approval($event.detail.value)">
-              <ion-radio value="1"></ion-radio>
-              <ion-label class="marginleft">Approved</ion-label>
-              <ion-radio value="0" class="marginleft"></ion-radio>
-              <ion-label class="marginleft">Rejected</ion-label>
-            </ion-radio-group>
-          </ion-col>
-        </ion-row>
-        <br>
-        <ion-row>
-          <ion-col size="4">
-            <ion-label class="bold">Received Qty: </ion-label>
-          </ion-col>
-          <ion-col size="8">
-            <ion-input type="number" min="0" class="inputStyle" formControlName="recvqty"
-              (click)="prefill('recvqty',$event)" (focusout)="blured('recvqty',$event)"></ion-input>
-            <ion-text *ngIf="submitted && f.recvqty.errors">
-              <ion-text color="danger" *ngIf="f.recvqty.errors.required"
-                style="font-size: 12px;float:right;font-weight: bold;">*Required</ion-text>
-            </ion-text>
-          </ion-col>
-        </ion-row>
-        <br>
-        <ion-row>
-          <ion-col size="4">
-            <ion-label class="bold">Approved Qty: </ion-label>
-          </ion-col>
-          <ion-col size="8">
-            <ion-input type="number" min="0" class="inputStyle" formControlName="appqty"
-              (click)="prefill('appqty',$event)" (focusout)="blured('appqty',$event)"></ion-input>
-          </ion-col>
-        </ion-row>
-        <br />
-        <ion-textarea label="Outline textarea" labelPlacement="floating" fill="outline" placeholder="Remarks"
-          formControlName="remarks" style="border:1px solid #80808038"></ion-textarea>
-        <br />
-        <!-- <ion-row>
-            <ion-col size="12">
-              <ion-item>
-                <ion-label position="floating" class="label">PIN</ion-label>
-                <ion-input type="number" inputmode="decimal" formControlName="pin" class="password"></ion-input>
-              </ion-item> 
-              <ion-text *ngIf="submitted && f.pin.errors">
-                <ion-text color="danger" *ngIf="f.pin.errors.required" style="font-size: 12px;float:right;font-weight: bold;">*Required</ion-text>
-              </ion-text>           
+        <!-- Test Certificate Section -->
+        <div class="form-section">
+          <ion-row class="form-row">
+            <ion-col size-sm="6" size-md="3" size="12">
+              <ion-label class="form-label">Test Cert. Available?: </ion-label>
+            </ion-col>
+            <ion-col size-sm="12" size-md="6" size="12">
+              <ion-radio-group
+                value="{{tcIsAvaiable}}"
+                (ionChange)="tcRef($event.detail.value)"
+                class="flex-radio-group radio-group"
+              >
+                <div class="radio-item">
+                  <ion-radio value="1"></ion-radio>
+                  <ion-label class="radio-label">Yes</ion-label>
+                </div>
+                <div class="radio-item">
+                  <ion-radio value="0"></ion-radio>
+                  <ion-label class="radio-label">No</ion-label>
+                </div>
+              </ion-radio-group>
             </ion-col>
           </ion-row>
-          <br> -->
-        <ion-row>
-          <ion-col size="6" push="2">
-            <ion-button color="success" type="submit" [disabled]="!registerForm.valid">Submit</ion-button>
-          </ion-col>
-          <ion-col size="6">
-            <ion-button color="danger" (click)='modaldismiss()'>Cancel</ion-button>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
-    </ion-card>
-  </form>
+
+          <ion-row *ngIf="tcIsAvaiable == '1'" class="form-row">
+            <ion-col size-sm="12" size-md="3" size="12">
+              <ion-label class="form-label">Test Cert. Ref: </ion-label>
+            </ion-col>
+            <ion-col size-sm="12" size-md="6" size="12">
+              <ion-input
+                type="text"
+                class="text-input input-item"
+                formControlName="tcref"
+              >
+              </ion-input>
+            </ion-col>
+          </ion-row>
+        </div>
+
+        <!-- File Upload Sections -->
+        <div class="upload-section">
+          <ion-row class="upload-row">
+            <ion-col size-sm="12" size-md="3" size="12">
+              <ion-label class="form-label">Test Cert. Upload:</ion-label>
+            </ion-col>
+            <ion-col size-sm="12" size-md="6" size="12">
+              <div class="file-upload-container">
+                <input
+                  type="file"
+                  accept="image/jpeg,application/pdf"
+                  (change)="filesel($event, 'tc')"
+                  #inputFile1
+                  class="file-input input-item"
+                />
+                <ion-button
+                  *ngIf="isMobile"
+                  size="small"
+                  (click)="startCamera('tc')"
+                  class="camera-button"
+                >
+                  Capture Image
+                </ion-button>
+                <div *ngIf="tcfile || tcPreview" class="file-preview">
+                  <img
+                    *ngIf="tcPreview"
+                    [src]="tcPreview"
+                    class="preview-image"
+                  />
+                </div>
+              </div>
+            </ion-col>
+            <ion-col size="1">
+              <ion-icon
+                name="close-circle-outline"
+                class="clear-icon"
+                (click)="clearTest()"
+              >
+              </ion-icon>
+            </ion-col>
+          </ion-row>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <ion-button
+        color="success"
+        type="submit"
+        [disabled]="!registerForm.valid"
+        class="submit-button"
+      >
+        Submit
+      </ion-button>
+      <ion-button color="danger" (click)="modaldismiss()" class="cancel-button">
+        Cancel
+      </ion-button>
+    </div>
+  </div>
 </ion-content>

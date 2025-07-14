@@ -1,41 +1,99 @@
+ion-header {
+  --background: #f5f5f5;
+  box-shadow: none;
+  --min-height: 36px;
+  ion-toolbar {
+    --background: #f5f5f5;
+    --min-height: 36px;
+    padding: 4px 14px;
+  }
+  .main-sub-heading {
+    margin: 0;
+    font-size: 17px;
+    color: #000;
+  }
+}
+ion-back-button {
+  --icon-font-size: 16px;
+  --icon-margin-start: 0;
+  --icon-margin-end: 16px;
+  --padding-start: 0;
+  --padding-end: 0;
+  min-height: 30px;
+  min-width: 30px;
+  line-height: 30px;
+}
 
 ion-card {
-    height: auto;
-    display: flex;
-    flex-direction: column; 
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 1rem;
+  border-top: 5px solid #ddd;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
+  border-radius: 6px;
+  padding: 20px;
+  transition: all 300ms ease-in-out;
+  height: 100%;
+  @media (max-width: 767px) {
+    padding: 8px;
+    margin-inline-end: 4px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-inline-start: 4px;
   }
-  
-  ion-card:hover {
-    transform: scale(1.02);
-    background-color: #e0f7ff;
-    cursor: pointer;
+  &:hover {
+    transform: translateY(-10px);
   }
-  
+  cursor: pointer;
   .image {
-    width: 100%;
-    height: auto;
-    object-fit: contain;
-    max-height: 120px; 
-    margin-bottom: 0.5rem;
+    width: 60px;
+    height: 60px;
+    background-color: var(--primary-blue);
+    border: 1px solid var(--primary-blue);
+    border-radius: 100%;
+    padding: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    img {
+      filter: invert(1);
+      width: 36px;
+    }
+    @media (max-width: 767px) {
+      width: 50px;
+      height: 50px;
+      padding: 4px;
+      img {
+        width: 30px;
+      }
+    }
   }
-  
   h2 {
-    font-size: 1rem;
-    font-weight: bold;
     margin: 0;
-  }
-  
-  
-  @media (min-width: 768px) {
-    .image {
-      max-height: 180px;
-    }
-  
-    h2 {
-      font-size: 1.5rem;
+    font-size: 20px;
+    color: #000000;
+    @media (max-width: 767px) {
+      font-size: 14px;
     }
   }
+  .card-content {
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 16px;
+    align-items: flex-end;
+    .go-btn {
+      color: #ffffff;
+      width: 30px;
+      height: 30px;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--primary-blue);
+      border: 1px solid var(--primary-blue);
+      border-radius: 100%;
+      @media (max-width: 767px) {
+        display: none;
+      }
+    }
+  }
+}

@@ -1,25 +1,22 @@
-<ion-header>
-  <ion-toolbar>       
-        <ion-img src="{{brandImage}}" style="height: 50px;width:50px" slot="start"></ion-img>       
-        <div style="display: flex;justify-content: center;">
-        <img src="./assets/image/layer.png" height="25" width="25">
-        <b style="font-size: 20px;">&nbsp;&nbsp;Deflashing Plan</b>
-        </div>
-        <ion-back-button defaultHref="Planhome" slot="end"></ion-back-button>   
-  </ion-toolbar>
-</ion-header>
-
-<ion-content class="inventory-content">
-
-  <ion-grid>
-    <ion-row nowrap class="ion-align-items-center">
-      <ion-col size="3">
-        <!-- <label>Select Date:</label><input type="date" [(ngModel)]="currentDate" (click)="selectDate($event)" (focusout)="selectDate($event)" id="datePicker"> -->
-        
-        <ion-input (keyup)="applyFilter($event.target.value)" placeholder="Search" [(ngModel)]="searchData"><ion-icon name="search"></ion-icon></ion-input>
-      </ion-col>
-      <ion-col size="4">
-      <ng-select *ngIf="operatorArray && operatorArray.length > 0"
+<ion-header class="main-sub-header">
+  <div class="inner-header-wrap">
+    <div class="left-menu">
+      <ion-toolbar>
+        <ion-buttons si slot="start">
+          <ion-back-button defaultHref="Widgets"></ion-back-button>
+        </ion-buttons>
+        <h3 class="main-sub-heading">Deflashing Plan</h3>
+      </ion-toolbar>
+      <ion-input
+        class="search-box"
+        (keyup)="applyFilter($event.target.value)"
+        placeholder="Search"
+        [(ngModel)]="searchData"
+        ><ion-icon name="search" slot="end"></ion-icon
+      ></ion-input>
+      <ng-select
+        class="pi-dropdown"
+        *ngIf="operatorArray && operatorArray.length > 0"
         [(ngModel)]="selected"
         [items]="operatorArray"
         bindLabel="name"
@@ -43,130 +40,221 @@
           </div>
         </ng-template>
       </ng-select>
-    </ion-col>
+    </div>
+    <div class="right-menu">
+      <ion-button color="secondary" size="small" (click)="modalDeleteData3=true"
+        >Issue</ion-button
+      >
+      <ion-button color="danger" size="small" (click)="deleteList()"
+        >Delete</ion-button
+      >
+    </div>
+  </div>
+</ion-header>
+<!-- <ion-header>
+  <ion-toolbar>
+    <ion-img
+      src="{{brandImage}}"
+      style="height: 50px; width: 50px"
+      slot="start"
+    ></ion-img>
+    <div style="display: flex; justify-content: center">
+      <img src="./assets/image/layer.png" height="25" width="25" />
+      <b style="font-size: 20px">&nbsp;&nbsp;Deflashing Plan</b>
+    </div>
+    <ion-back-button defaultHref="Planhome" slot="end"></ion-back-button>
+  </ion-toolbar>
+</ion-header> -->
 
-      <ion-col size="3"><ion-button color="secondary" size="small" (click)="modalDeleteData3=true">Issue</ion-button></ion-col>
-      <ion-col size="2"><ion-button color="danger" size="small" (click)="deleteList()">Delete</ion-button></ion-col>
-  </ion-row>
-  </ion-grid>
-
+<ion-content class="inventory-content">
   <div class="reports-table">
-   
     <ion-grid>
-      <ion-row nowrap class="headers">
-        <ion-col size="3" class="single-border" tappable (click)="sort('planid',true)">
-          Key Ref. ({{tableData.length}})
+      <!-- Table Header -->
+      <ion-row class="table-header" nowrap>
+        <ion-col
+          size="3"
+          class="header-cell"
+          tappable
+          (click)="sort('planid', true)"
+        >
+          Key Ref. ({{ tableData.length }})
         </ion-col>
-        <ion-col size="3" class="single-border" (click)="sort('cmpdname',true)">
+        <ion-col
+          size="3"
+          class="header-cell"
+          tappable
+          (click)="sort('cmpdname', true)"
+        >
           Part No
         </ion-col>
-        <ion-col size="3" class="single-border" (click)="sort('cmpdrefno',true)">
+        <ion-col
+          size="3"
+          class="header-cell"
+          tappable
+          (click)="sort('cmpdrefno', true)"
+        >
           Part Desc.
         </ion-col>
-        <ion-col size="2" class="single-border" (click)="sort('mouldqty',true)">
-          Mld. Qty ({{totalmouldqty.toFixed(1)}})
+        <ion-col
+          size="2"
+          class="header-cell"
+          tappable
+          (click)="sort('mouldqty', true)"
+        >
+          Mld. Qty ({{ totalmouldqty.toFixed(1) }})
         </ion-col>
-        <!-- <ion-col size="2" class="single-border">
-          Operator
-        </ion-col> -->
-        <ion-col size="1" class="single-border">
-          <!-- Action -->
-          ({{dataArray.length}})   
+        <ion-col size="1" class="header-cell">
+          ({{ dataArray.length }})
         </ion-col>
       </ion-row>
-      <div style="height: 75vh; overflow: scroll;">
-        <ion-row nowrap class="content" *ngFor="let x of tableData;let i=index">
-          <ion-col size="3"> {{ x.planid }}</ion-col>
-          <ion-col size="3"> {{ x.cmpdname }} </ion-col>
-          <ion-col size="3"> {{ x.cmpdrefno }} </ion-col>
-          <ion-col size="2" style="font-size: medium;"> {{ x.mouldqty }} </ion-col>
-          <!-- <ion-col size="2"> {{ x.onlyinhouse }} </ion-col> -->
-          <ion-col size="1"> <ion-checkbox color="primary" (ionChange)="selectRecord(x,$event,i)" [checked]="x.check"> </ion-checkbox> </ion-col>
+
+      <!-- Table Body -->
+      <div class="table-body">
+        <ion-row
+          class="table-row"
+          nowrap
+          *ngFor="let x of tableData; let i = index"
+        >
+          <ion-col size="3" class="cell"> {{ x.planid }} </ion-col>
+          <ion-col size="3" class="cell"> {{ x.cmpdname }} </ion-col>
+          <ion-col size="3" class="cell"> {{ x.cmpdrefno }} </ion-col>
+          <ion-col size="2" class="cell"> {{ x.mouldqty }} </ion-col>
+          <ion-col size="1" class="cell text-center">
+            <ion-checkbox
+              color="primary"
+              (ionChange)="selectRecord(x, $event, i)"
+              [checked]="x.check"
+            ></ion-checkbox>
+          </ion-col>
         </ion-row>
 
-        <ion-row *ngIf="tableData.length == 0">
-          <ion-col size="6" offset="4"> No Records Found</ion-col>
+        <!-- No Records Row -->
+        <ion-row *ngIf="tableData.length === 0">
+          <ion-col size="12" class="no-records">No Records Found</ion-col>
         </ion-row>
       </div>
-
     </ion-grid>
   </div>
 
   <!-- Modal content -->
-<div class="modal-content" *ngIf="modalDeleteData">
-  <div class="modal-header">
-    <span class="close" (click)="modalDeleteData=!modalDeleteData">&times;</span>
-    <p style="margin: 8px 5px;">Deflashing Plan List</p>
-  </div>
-  <div class="modal-body">
-    <ion-grid>
-      <ion-row nowrap class="headers">
-        <ion-col size="3" class="single-border" (click)="sort2('defiss',false)">
-          Plan ID ({{deleteData.length}})
-        </ion-col>
-        <ion-col size="3" class="single-border" (click)="sort2('issdatef',false)">
-          Issue Date
-        </ion-col>
-        <ion-col size="3" class="single-border" (click)="sort2('cmpdName',false)">
-          Name
-        </ion-col>       
-        <ion-col size="2" class="single-border" (click)="sort2('issqty',false)">
-          Issue Qty
-         </ion-col>
-        <ion-col size="1" class="single-border">
-          <!-- Action -->
-        </ion-col>
-      </ion-row>
-      <div style="height: 55vh; overflow: scroll;">
-        <ion-row nowrap class="content" *ngFor="let x of deleteData">
-          <ion-col size="3"> {{ x.defiss }}</ion-col>
-          <ion-col size="3"> {{ x.issdatef }} </ion-col>
-          <ion-col size="3"> {{ x.cmpdName }} </ion-col>
-          <ion-col size="2"> {{ x.issqty }} </ion-col>        
-          <ion-col size="1"> <ion-icon name="trash-outline" (click)="callDeflashing(x)" style="color:red"></ion-icon></ion-col>
-        </ion-row>
+  <div class="modal-content" *ngIf="modalDeleteData">
+    <div class="modal-header flex-header">
+      <div>Deflashing Plan List</div>
+      <span class="close" (click)="modalDeleteData=!modalDeleteData"
+        ><ion-icon name="close-outline"></ion-icon
+      ></span>
+    </div>
+    <div class="modal-body">
+      <div class="reports-table">
+        <ion-grid>
+          <!-- Table Header -->
+          <ion-row class="table-header" nowrap>
+            <ion-col
+              size="3"
+              class="header-cell"
+              tappable
+              (click)="sort2('defiss', false)"
+            >
+              Plan ID ({{ deleteData.length }})
+            </ion-col>
+            <ion-col
+              size="3"
+              class="header-cell"
+              tappable
+              (click)="sort2('issdatef', false)"
+            >
+              Issue Date
+            </ion-col>
+            <ion-col
+              size="3"
+              class="header-cell"
+              tappable
+              (click)="sort2('cmpdName', false)"
+            >
+              Name
+            </ion-col>
+            <ion-col
+              size="2"
+              class="header-cell"
+              tappable
+              (click)="sort2('issqty', false)"
+            >
+              Issue Qty
+            </ion-col>
+            <ion-col size="1" class="header-cell">
+              <!-- Action -->
+            </ion-col>
+          </ion-row>
 
-        <ion-row *ngIf="deleteData.length == 0">
-          <ion-col size="6" offset="4"> No Records Found</ion-col>
-        </ion-row>
+          <!-- Table Body -->
+          <div class="table-body" style="height: 55vh; overflow: auto">
+            <ion-row class="table-row" nowrap *ngFor="let x of deleteData">
+              <ion-col size="3" class="cell"> {{ x.defiss }} </ion-col>
+              <ion-col size="3" class="cell"> {{ x.issdatef }} </ion-col>
+              <ion-col size="3" class="cell"> {{ x.cmpdName }} </ion-col>
+              <ion-col size="2" class="cell"> {{ x.issqty }} </ion-col>
+              <ion-col size="1" class="cell text-center">
+                <ion-icon
+                  name="trash-outline"
+                  style="color: red"
+                  (click)="callDeflashing(x)"
+                ></ion-icon>
+              </ion-col>
+            </ion-row>
+
+            <!-- No Records Found -->
+            <ion-row *ngIf="deleteData.length === 0">
+              <ion-col size="12" class="no-records">No Records Found</ion-col>
+            </ion-row>
+          </div>
+        </ion-grid>
       </div>
-    </ion-grid>
+    </div>
   </div>
-</div>
 
+  <div class="modal-content" *ngIf="modalDeleteData2">
+    <div class="modal-header flex-header">
+      <div>Deflashing Plan</div>
+      <span class="close" (click)="modalDeleteData2=!modalDeleteData2"
+        ><ion-icon name="close-outline"></ion-icon
+      ></span>
+    </div>
+    <div class="modal-body" style="text-align: center">
+      <p class="confirm-msg">Are You Sure Want to Delete?</p>
+    </div>
+    <div class="modal-footer" style="float: right">
+      <ion-button color="success" size="small" (click)="deleteDeflashing()"
+        >Yes</ion-button
+      >
+      <ion-button
+        color="danger"
+        size="small"
+        (click)="modalDeleteData2=!modalDeleteData2"
+        >No</ion-button
+      >
+    </div>
+  </div>
 
-<div class="modal-content2" *ngIf="modalDeleteData2">
-  <div class="modal-header">
-    <span class="close" (click)="modalDeleteData2=!modalDeleteData2">&times;</span>
-    <p style="margin: 8px 5px;">Deflashing Plan</p>
+  <div class="modal-content xs" *ngIf="modalDeleteData3">
+    <div class="modal-header flex-header">
+      <div>Deflashing Plan</div>
+      <span class="close" (click)="modalDeleteData3=!modalDeleteData3"
+        ><ion-icon name="close-outline"></ion-icon
+      ></span>
+    </div>
+    <div class="modal-body">
+      <p class="confirm-msg">Are You Sure Want to Issue?</p>
+    </div>
+    <div class="modal-footer">
+      <ion-button color="success" size="small" (click)="submitData()"
+        >Yes</ion-button
+      >
+      <ion-button
+        color="danger"
+        size="small"
+        (click)="modalDeleteData3=!modalDeleteData3"
+        >No</ion-button
+      >
+    </div>
   </div>
-  <div class="modal-body" style="text-align: center;">
-    <br>
-    Are You Sure Want to Delete?
-    <br>
-    <br>
-  </div>
-  <div class="modal-footer" style="float: right;">
-    <ion-button color="success" size="small" (click)="deleteDeflashing()">Yes</ion-button>
-    <ion-button color="danger" size="small" (click)="modalDeleteData2=!modalDeleteData2">No</ion-button>   
-  </div>
-</div>
-
-<div class="modal-content2" *ngIf="modalDeleteData3">
-  <div class="modal-header">
-    <span class="close" (click)="modalDeleteData3=!modalDeleteData3">&times;</span>
-    <p style="margin: 8px 5px;">Deflashing Plan</p>
-  </div>
-  <div class="modal-body" style="text-align: center;">
-    <br>
-    Are You Sure Want to Issue?
-    <br>
-    <br>
-  </div>
-  <div class="modal-footer" style="float: right;">
-    <ion-button color="success" size="small" (click)="submitData()">Yes</ion-button>
-    <ion-button color="danger" size="small" (click)="modalDeleteData3=!modalDeleteData3">No</ion-button>   
-  </div>
-</div>
-
 </ion-content>

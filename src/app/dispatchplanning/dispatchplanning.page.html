@@ -1,82 +1,55 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-img src="{{brandImage}}" style="height: 50px;width:50px" slot="start"></ion-img>               
-    <div style="display: flex;justify-content: center;">
-      <img src="./assets/image/delivery.png" height="25" width="25">
-      <b style="font-size: 20px;">&nbsp;&nbsp;Despatch Plan</b>
-    </div>
-    <ion-back-button defaultHref="Planhome" slot="end"></ion-back-button>  
-  </ion-toolbar>
-</ion-header>
-
-<ion-content class="inventory-content">
-
-  
-<div  *ngIf="type">
-  <br>
-  <ion-row>    
-    <ion-col size="4" style="text-align: center;">                     
-      <ion-label style="font-size: larger;color: grey;">Schedule</ion-label>          
-    </ion-col>
-    <ion-col size="2">                            
-      <input type="radio"  (change)="onChangeValue($event,'','','Schedule')" name="check" style="transform: scale(1.4);">       
-    </ion-col>
-    <ion-col size="4" style="text-align: center;">                    
-      <ion-label style="font-size: larger;color: grey;">Sales Order</ion-label>            
-    </ion-col>
-    <ion-col size="2">                           
-      <input type="radio" (change)="onChangeValue($event,'','','Sales')" name="check" style="transform: scale(1.4);">     
-    </ion-col>
-  </ion-row>
-</div>
-
-  <ion-grid *ngIf="!type">   
-
-    <ion-row nowrap class="ion-align-items-center">
-      <ion-col size="6">  
-        <!-- <ion-label style="font-size: small;color: grey;">Customer</ion-label>             -->
+<ion-header class="main-sub-header">
+  <div class="inner-header-wrap">
+    <div class="left-menu">
+      <ion-toolbar>
+        <ion-buttons si slot="start">
+          <ion-back-button defaultHref="Planhome"></ion-back-button>
+        </ion-buttons>
+        <h3 class="main-sub-heading">Despatch Plan</h3>
+      </ion-toolbar>
+      <div *ngIf="!type" class="schedule-order-place">
         <ng-select
-              [(ngModel)]="selectedCustomer"
-              [items]="customerArray"
-              bindLabel="name"
-              bindValue="value"
-              (change)="CustomerChanged($event)"
-              placeholder="📊 Select Customer"
-              [searchable]="true"
-              [clearable]="false"
-              searchFailText= "Customer not found"
-              >
-              <ng-template ng-header>
-                <div class="dropdown-header">📑 Available Customer</div>
-              </ng-template>
-              <ng-template ng-label-tmp let-item="item">
-                <span class="selected-item">{{ item.name }}</span>
-              </ng-template>
-              <ng-template ng-option-tmp let-item="item" let-index="index">
-                <div class="option-item">
-                  <i class="fas fa-file-alt"></i>
-                  {{ item.name }}
-                </div>
-              </ng-template>
-            </ng-select>
-    </ion-col> 
-    <ion-col size="6">              
-      <ion-col>
-        <ion-label style="font-size: small;color: grey;">Cutoff Date</ion-label> 
-        <input type="date" class="selectdddate" [(ngModel)]="postData.didate" id="datefield"/>
-      </ion-col>      
-    </ion-col>              
-    </ion-row>
-
-    <ion-row>
-      <ion-col size="6">
-        <!-- <ion-label position="stacked" class="label">File Upload</ion-label> -->
-        <!-- <ion-input type="file" name="file" (change)="filesel($event)" style="font-size: 70%;" #myInput></ion-input>   -->
-        <!-- <ion-button color="danger" size="small" (click)="pickfile()">Choose CSV File</ion-button> -->
+          class="pi-dropdown"
+          [(ngModel)]="selectedCustomer"
+          [items]="customerArray"
+          bindLabel="name"
+          bindValue="value"
+          (change)="CustomerChanged($event)"
+          placeholder="📊 Select Customer"
+          [searchable]="true"
+          [clearable]="false"
+          searchFailText="Customer not found"
+        >
+          <ng-template ng-header>
+            <div class="dropdown-header">📑 Available Customer</div>
+          </ng-template>
+          <ng-template ng-label-tmp let-item="item">
+            <span class="selected-item">{{ item.name }}</span>
+          </ng-template>
+          <ng-template ng-option-tmp let-item="item" let-index="index">
+            <div class="option-item">
+              <i class="fas fa-file-alt"></i>
+              {{ item.name }}
+            </div>
+          </ng-template>
+        </ng-select>
+        <div>
+          <ion-label>Cutoff Date</ion-label>
+          <input
+            type="date"
+            class="selectdddate"
+            [(ngModel)]="postData.didate"
+            id="datefield"
+          />
+        </div>
+      </div>
+    </div>
+    <div class="right-menu">
+      <div>
         <ion-button color="danger" size="small">
-          <label for="csvInput" style="margin: 0; width: 100%; cursor: pointer;">Choose CSV File</label>
+          <label for="csvInput">Choose CSV File</label>
         </ion-button>
-        
+
         <input
           id="csvInput"
           type="file"
@@ -84,92 +57,172 @@
           (change)="pickFile($event)"
           hidden
         />
-    </ion-col>    
-      <ion-col size="3"><ion-button color="primary" size="small" >Upload</ion-button></ion-col>
-      <ion-col size="3"><ion-button color="success" size="small" (click)="submitData()">Create</ion-button></ion-col>
-    </ion-row>
+      </div>
+      <ion-button color="primary" size="small">Upload</ion-button>
+      <!-- <ion-button color="secondary" size="small" (click)="modalDeleteData3=true"
+        >Issue</ion-button
+      > -->
+      <ion-button color="success" size="small" (click)="submitData()"
+        >Create</ion-button
+      >
+    </div>
+  </div>
+</ion-header>
 
-    <div class="reports-table" style="position: relative;top:-4%;overflow: auto;height: 500px;">   
-      <ion-grid>
-        <ion-row nowrap class="headers">
-          <ion-col size="5" class="single-border" tappable>
-            Part Number ({{tableData.length}})
-          </ion-col>       
-          <ion-col size="3" class="single-border" (click)="sort('didesc',true)">
+<ion-content class="inventory-content">
+  <div *ngIf="type">
+    <ion-row class="option-row" justify-content-center align-items-center>
+      <ion-col size="4" class="option-col">
+        <label class="radio-label">
+          <input
+            type="radio"
+            name="check"
+            (change)="onChangeValue($event, '', '', 'Schedule')"
+          />
+          <span class="label-text">Schedule</span>
+        </label>
+      </ion-col>
+
+      <ion-col size="4" class="option-col">
+        <label class="radio-label">
+          <input
+            type="radio"
+            name="check"
+            (change)="onChangeValue($event, '', '', 'Sales')"
+          />
+          <span class="label-text">Sales Order</span>
+        </label>
+      </ion-col>
+    </ion-row>
+  </div>
+
+  <ion-grid *ngIf="!type">
+    <div class="reports-table">
+      <ion-grid class="overflow-visible">
+        <!-- Table Header -->
+        <ion-row class="table-header" nowrap>
+          <ion-col size="5" class="header-cell" tappable>
+            Part Number ({{ tableData.length }})
+          </ion-col>
+          <ion-col
+            size="3"
+            class="header-cell"
+            tappable
+            (click)="sort('didesc', true)"
+          >
             DI No.
           </ion-col>
-          <ion-col size="2" class="single-border" (click)="sort('diqty',true)">
+          <ion-col
+            size="2"
+            class="header-cell"
+            tappable
+            (click)="sort('diqty', true)"
+          >
             Qty
           </ion-col>
-          <ion-col size="2" class="single-border" style="text-align: center;">  
-            <!-- <ion-button color="danger" size="small" (click)="addRow()">Add Row</ion-button>   -->
-            <ion-icon name="add-circle" style="color:red;font-size: 180%;" (click)="addRow()"></ion-icon>       
-          </ion-col>                                
+          <ion-col size="2" class="header-cell text-center">
+            <ion-icon
+              name="add-circle"
+              style="color: red; font-size: 180%"
+              (click)="addRow()"
+            ></ion-icon>
+          </ion-col>
         </ion-row>
-  
-        <ion-row nowrap class="headers" *ngFor="let x of tableData;index as i">
-          <ion-col size="5" class="single-border" tappable>
-          <ng-select
-              [(ngModel)]="x.selected"
-              [items]="componentArray"
-              bindLabel="name"
-              bindValue="value"
-              (change)="onChangeValue($event,i,x,'component')"
-              placeholder="📊 Select Component"
-              [searchable]="true"
-              [clearable]="false"
-              searchFailText= "Component not found"
+
+        <!-- Table Body -->
+        <div class="table-body" style="height: 55vh; overflow: auto">
+          <ion-row
+            class="table-row"
+            nowrap
+            *ngFor="let x of tableData; index as i"
+          >
+            <ion-col size="5" class="cell overflow-visible">
+              <ng-select
+                [(ngModel)]="x.selected"
+                [items]="componentArray"
+                bindLabel="name"
+                bindValue="value"
+                (change)="onChangeValue($event, i, x, 'component')"
+                placeholder="📊 Select Component"
+                [searchable]="true"
+                [clearable]="false"
+                searchFailText="Component not found"
               >
-              <ng-template ng-header>
-                <div class="dropdown-header">📑 Available Component</div>
-              </ng-template>
-              <ng-template ng-label-tmp let-item="item">
-                <span class="selected-item">{{ item.name }}</span>
-              </ng-template>
-              <ng-template ng-option-tmp let-item="item" let-index="index">
-                <div class="option-item">
-                  <i class="fas fa-file-alt"></i>
-                  {{ item.name }}
-                </div>
-              </ng-template>
-            </ng-select>
-          
-          </ion-col>       
-          <ion-col size="3" class="single-border">
-            <ion-input class="textbox" type="text" (ionChange)="onChangeValue($event,i,x,'di')" [(ngModel)]="x.didesc" [disabled]="setDisabled" style="height:25px;font-size: medium;"></ion-input>
-          </ion-col>
-          <ion-col size="2" class="single-border">
-            <ion-input class="textbox" type="number" (ionChange)="onChangeValue($event,i,x,'qty')" [(ngModel)]="x.diqty" (keyup)="onKeyup($event,x.diqty,i)" style="height:25px;font-size: medium;"></ion-input>
-          </ion-col>
-          <ion-col size="2" class="single-border" style="text-align: center;">
-            <ion-icon name="trash-outline" style="color:red" (click)="deleteItem(i)"></ion-icon>          
-          </ion-col>                                
-        </ion-row>
-  
+                <ng-template ng-header>
+                  <div class="dropdown-header">📑 Available Component</div>
+                </ng-template>
+                <ng-template ng-label-tmp let-item="item">
+                  <span class="selected-item">{{ item.name }}</span>
+                </ng-template>
+                <ng-template ng-option-tmp let-item="item" let-index="index">
+                  <div class="option-item">
+                    <i class="fas fa-file-alt"></i>
+                    {{ item.name }}
+                  </div>
+                </ng-template>
+              </ng-select>
+            </ion-col>
+
+            <ion-col size="3" class="cell">
+              <ion-input
+                class="textbox"
+                type="text"
+                (ionChange)="onChangeValue($event, i, x, 'di')"
+                [(ngModel)]="x.didesc"
+                [disabled]="setDisabled"
+                style="height: 25px; font-size: medium"
+              ></ion-input>
+            </ion-col>
+
+            <ion-col size="2" class="cell">
+              <ion-input
+                class="textbox"
+                type="number"
+                (ionChange)="onChangeValue($event, i, x, 'qty')"
+                [(ngModel)]="x.diqty"
+                (keyup)="onKeyup($event, x.diqty, i)"
+                style="height: 25px; font-size: medium"
+              ></ion-input>
+            </ion-col>
+
+            <ion-col size="2" class="cell text-center">
+              <ion-icon
+                name="trash-outline"
+                class="icon-danger"
+                (click)="deleteItem(i)"
+              ></ion-icon>
+            </ion-col>
+          </ion-row>
+
+          <ion-row *ngIf="tableData.length === 0">
+            <ion-col size="12" class="no-records">No Records Found</ion-col>
+          </ion-row>
+        </div>
       </ion-grid>
     </div>
 
-
-    <div class="modal-content2" *ngIf="modalDeleteData2">
+    <div class="modal-content" *ngIf="modalDeleteData2">
       <div class="modal-header">
         <!-- <span class="close" (click)="modalDeleteData2=!modalDeleteData2;this.tableData=[];">&times;</span> -->
         Upload
       </div>
-      <div class="modal-body" style="text-align: center;">
-        <br>
+      <div class="modal-body" style="text-align: center">
+        <br />
         Are You Sure Want to Upload?
-        <br>
-        <br>
+        <br />
+        <br />
       </div>
-      <div class="modal-footer" style="float: right;">
-        <ion-button color="success" size="small" (click)="submitData()">Upload</ion-button>
-        <ion-button color="secondary" size="small" (click)="modalDeleteData2=!modalDeleteData2; this.tableData=[];">Cancel</ion-button>   
+      <div class="modal-footer" style="float: right">
+        <ion-button color="success" size="small" (click)="submitData()"
+          >Upload</ion-button
+        >
+        <ion-button
+          color="secondary"
+          size="small"
+          (click)="modalDeleteData2=!modalDeleteData2; this.tableData=[];"
+          >Cancel</ion-button
+        >
       </div>
     </div>
-
   </ion-grid>
-
- 
-
-
 </ion-content>

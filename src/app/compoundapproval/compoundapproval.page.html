@@ -1,49 +1,42 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-img [src]="brandImage" class="brand-logo"></ion-img>
-    </ion-buttons>
-
-    <ion-title class="centered-title">
-      <img src="./assets/image/chemicals-approval.png" height="25" width="25" />
-      <b>&nbsp;&nbsp;Compound Approval</b>
-    </ion-title>
-
-    <ion-buttons slot="end">
-      <ion-back-button defaultHref="approvals"></ion-back-button>
-    </ion-buttons>
-  </ion-toolbar>
+  <div class="inner-header-wrap">
+    <div class="left-menu">
+      <ion-toolbar>
+        <ion-buttons si slot="start">
+          <ion-back-button defaultHref="approvals"></ion-back-button>
+        </ion-buttons>
+        <h3 class="main-sub-heading">Compound Approval</h3>
+      </ion-toolbar>
+      <div class="scan-icon">
+        <img src="./assets/image/qr-scan.png" alt="Scanner" (click)="scan()" />
+      </div>
+      <div class="planid-wrapper">
+        <ion-input
+          [(ngModel)]="planid"
+          placeholder="Enter Planid"
+          class="search-box"
+        ></ion-input>
+        <ion-button
+          expand="block"
+          color="primary"
+          (click)="sendData()"
+          [disabled]="!planid?.length"
+          >Send</ion-button
+        >
+      </div>
+    </div>
+  </div>
 </ion-header>
 
 <ion-content>
-  <ion-card>
-    <ion-footer>
-      <ion-grid>
-        <ion-row class="ion-align-items-center input-scan-row">
-          <ion-col size="12" size-md="2" class="ion-text-center">
-            <img src="./assets/image/qr-scan.png" alt="Scanner" (click)="scan()" class="qr-icon" />
-          </ion-col>          
-          <ion-col size="12" size-md="7">
-            <ion-item>
-              <ion-input [(ngModel)]="planid" placeholder="Enter Planid"></ion-input>
-            </ion-item>
-          </ion-col>
-          <ion-col size="12" size-md="3" class="ion-text-right">
-            <ion-button expand="block" color="primary" (click)="sendData()" [disabled]="!planid?.length">Send</ion-button>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
-    </ion-footer>
-  </ion-card>  
-
   <ion-card *ngIf="showEntryCard">
     <form [formGroup]="registerForm" (ngSubmit)="submitData()">
-      <ion-card-header style="border-bottom: 1px solid grey;">    
-        <ion-card-title>Compound : {{datapass.cpdname}}</ion-card-title>              
+      <ion-card-header style="border-bottom: 1px solid grey">
+        <ion-card-title>Compound : {{datapass.cpdname}}</ion-card-title>
       </ion-card-header>
       <ion-grid id="grid" class="appfont">
-        <div style="overflow-x: auto;">
-          <div style="min-width: 800px;">
+        <div style="overflow-x: auto">
+          <div style="min-width: 800px">
             <ion-row class="table-header">
               <ion-col size="3">Parameter</ion-col>
               <ion-col size="2">Spec</ion-col>
@@ -57,16 +50,18 @@
               <ion-col size="2">{{ y.paramllimit }}</ion-col>
               <ion-col size="2">{{ y.paramulimit }}</ion-col>
               <ion-col size="3">
-                <ion-input type="number" [value]="y.paramval"
+                <ion-input
+                  type="number"
+                  [value]="y.paramval"
                   (ionChange)="onChangeOnservation(i,$event.target.value)"
                   (click)="prefill(i,$event.target.value)"
-                  (focusout)="blured(i,$event.target.value)">
+                  (focusout)="blured(i,$event.target.value)"
+                >
                 </ion-input>
               </ion-col>
             </ion-row>
           </div>
         </div>
-        
       </ion-grid>
       <ion-grid>
         <ion-row class="radio-row">
@@ -90,29 +85,36 @@
             </ion-radio-group>
           </ion-col>
         </ion-row>
-        
-        
-      
+
         <ion-row>
           <ion-col size="12">
-            <ion-textarea formControlName="remarks" placeholder="Remarks" fill="outline"></ion-textarea>
+            <ion-textarea
+              formControlName="remarks"
+              placeholder="Remarks"
+              fill="outline"
+            ></ion-textarea>
           </ion-col>
         </ion-row>
-      
+
         <ion-row>
           <ion-col size="6">
-            <ion-button expand="block" color="success" type="submit" [disabled]="!registerForm.valid">Submit</ion-button>
+            <ion-button
+              expand="block"
+              color="success"
+              type="submit"
+              [disabled]="!registerForm.valid"
+              >Submit</ion-button
+            >
           </ion-col>
           <ion-col size="6">
-            <ion-button expand="block" color="danger" (click)="modaldismiss()">Cancel</ion-button>
+            <ion-button expand="block" color="danger" (click)="modaldismiss()"
+              >Cancel</ion-button
+            >
           </ion-col>
         </ion-row>
       </ion-grid>
-      
     </form>
   </ion-card>
-  
-
 </ion-content>
 
 <!-- Modal (shown only if scanning is active) -->

@@ -1,14 +1,54 @@
 <ion-header>
-  <ion-toolbar>
-        <ion-buttons slot="start">
-          <ion-img src="{{brandImage}}" style="height: 50px;width:50px"></ion-img>
+  <div class="inner-header-wrap">
+    <div class="left-menu">
+      <ion-toolbar>
+        <ion-buttons si slot="start">
+          <ion-back-button defaultHref="approvals"></ion-back-button>
         </ion-buttons>
-        <div style="display: flex;justify-content: center;">
-        <img src="./assets/image/replacement.png" height="25" width="25">
-        <b style="font-size: 20px;">&nbsp;&nbsp;Stock Adjustment</b>
-        </div>
-        <ion-back-button defaultHref="approvals" slot="end"></ion-back-button>   
-  </ion-toolbar>
+        <h3 class="main-sub-heading">Stock Adjustment</h3>
+      </ion-toolbar>
+      <div class="qr-scan">
+        <img
+          src="./assets/image/qr-scan.png"
+          alt="Scanner"
+          (click)="scan()"
+          width="50"
+          height="50"
+        />
+      </div>
+      <div class="location-dropdown">
+        <ion-select [(ngModel)]="itemType">
+          <ion-select-option value="roll">Calendar Roll</ion-select-option>
+          <ion-select-option value="cpd">Compound</ion-select-option>
+          <ion-select-option value="ram">Raw Material</ion-select-option>
+          <ion-select-option value="cmpd">Component</ion-select-option>
+        </ion-select>
+      </div>
+      <div class="planid-wrapper">
+        <ion-input
+          [(ngModel)]="planid"
+          placeholder="Enter Planid"
+          class="search-box"
+        ></ion-input>
+        <ion-button
+          color="primary"
+          (click)="sendData()"
+          [disabled]="planid.length == 0 ? true : false"
+          >Send</ion-button
+        >
+      </div>
+    </div>
+    <!-- <div class="right-menu">
+      <div class="print-icon">
+        <img
+          src="./assets/image/printer.png"
+          alt="Printer"
+          (click)="print()"
+          *ngIf="framelink.length > 0"
+        />
+      </div>
+    </div> -->
+  </div>
 </ion-header>
 
 <ion-content>
@@ -16,25 +56,40 @@
     <ion-footer>
       <ion-grid>
         <ion-row>
-          <ion-col size="2">           
-            <img src="./assets/image/qr-scan.png" alt="Scanner" (click)="scan()" width="50" height="50" class="ion-float-left">           
-          </ion-col> 
-          <ion-col size="4">          
+          <ion-col size="2">
+            <img
+              src="./assets/image/qr-scan.png"
+              alt="Scanner"
+              (click)="scan()"
+              width="50"
+              height="50"
+              class="ion-float-left"
+            />
+          </ion-col>
+          <ion-col size="4">
             <ion-select [(ngModel)]="itemType">
               <ion-select-option value="roll">Calendar Roll</ion-select-option>
               <ion-select-option value="cpd">Compound</ion-select-option>
               <ion-select-option value="ram">Raw Material</ion-select-option>
               <ion-select-option value="cmpd">Component</ion-select-option>
-            </ion-select>           
-          </ion-col>         
+            </ion-select>
+          </ion-col>
           <ion-col size="4">
             <ion-item>
-              <ion-input [(ngModel)]="planid" placeholder="Enter Planid"></ion-input>
+              <ion-input
+                [(ngModel)]="planid"
+                placeholder="Enter Planid"
+              ></ion-input>
             </ion-item>
           </ion-col>
           <ion-col size="1">
-            <ion-button color="primary" (click)="sendData()" [disabled]="planid.length == 0 ? true : false">Send</ion-button>
-          </ion-col>         
+            <ion-button
+              color="primary"
+              (click)="sendData()"
+              [disabled]="planid.length == 0 ? true : false"
+              >Send</ion-button
+            >
+          </ion-col>
         </ion-row>
       </ion-grid>
     </ion-footer>
@@ -42,34 +97,66 @@
 
   <ion-card *ngIf="showEntryCard">
     <form [formGroup]="registerForm" (ngSubmit)="submitData()">
-      <ion-card-header style="border-bottom: 1px solid grey;">    
+      <ion-card-header style="border-bottom: 1px solid grey">
         <!-- <ion-card-title>Item Name : {{ itemType == "cpd" ? datapass[0].dispitemref : datapass[0].itemname}}</ion-card-title>    -->
-        <ion-card-title>Item Name : {{datapass[0].itemname}}</ion-card-title>              
+        <ion-card-title>Item Name : {{datapass[0].itemname}}</ion-card-title>
       </ion-card-header>
       <ion-grid id="grid" class="appfont">
-        <div style="overflow: auto;">
-              <div style="width: 100%;">
-                <ion-row style="text-align: center;border-bottom: 1px solid grey;">
-                  <ion-col size="3">GRN/Plan/Batch ref.</ion-col>
-                  <ion-col size="3" style="text-align: right;">Book Qty.</ion-col>
-                  <ion-col size="3">Physical Qty.</ion-col>
-                  <ion-col size="3">UoM</ion-col>
-                </ion-row>
-                <ion-row *ngFor="let y of datapass; index as i" style="font-weight: bold;text-align: center;border-bottom: 1px solid grey;">
-                  <ion-col size="3">{{y.dispitemref}}</ion-col>
-                  <ion-col size="3" style="text-align: right;">{{y.bookqty}}</ion-col> 
-                  <ion-col size="3"><ion-input type="number" min="0" class="inputStyle" value="{{y.phyqty}}" (ionChange)='onChangeOnservation(i,$event.target.value)' (click)="prefill(i,$event.target.value)" (focusout)="blured(i,$event.target.value)" #inputId></ion-input></ion-col>
-                  <ion-col size="3">{{y.uom}}</ion-col>
-                </ion-row>  
-              </div>
-            </div>
+        <div style="overflow: auto">
+          <div style="width: 100%">
+            <ion-row style="text-align: center; border-bottom: 1px solid grey">
+              <ion-col size="3">GRN/Plan/Batch ref.</ion-col>
+              <ion-col size="3" style="text-align: right">Book Qty.</ion-col>
+              <ion-col size="3">Physical Qty.</ion-col>
+              <ion-col size="3">UoM</ion-col>
+            </ion-row>
+            <ion-row
+              *ngFor="let y of datapass; index as i"
+              style="
+                font-weight: bold;
+                text-align: center;
+                border-bottom: 1px solid grey;
+              "
+            >
+              <ion-col size="3">{{y.dispitemref}}</ion-col>
+              <ion-col size="3" style="text-align: right"
+                >{{y.bookqty}}</ion-col
+              >
+              <ion-col size="3"
+                ><ion-input
+                  type="number"
+                  min="0"
+                  class="inputStyle"
+                  value="{{y.phyqty}}"
+                  (ionChange)="onChangeOnservation(i,$event.target.value)"
+                  (click)="prefill(i,$event.target.value)"
+                  (focusout)="blured(i,$event.target.value)"
+                  #inputId
+                ></ion-input
+              ></ion-col>
+              <ion-col size="3">{{y.uom}}</ion-col>
+            </ion-row>
+          </div>
+        </div>
       </ion-grid>
       <ion-grid id="grid" class="appfont">
-          <ion-textarea label="Outline textarea" labelPlacement="floating" fill="outline" formControlName="remarks" placeholder="Remarks" style="border:1px solid #80808038"></ion-textarea>
-          <ion-text *ngIf="submitted && f.remarks.errors">
-            <ion-text color="danger" *ngIf="f.remarks.errors.required" style="font-size: 12px;float:right;font-weight: bold;">*Required</ion-text>
-          </ion-text>   
-          <!-- <br>
+        <ion-textarea
+          label="Outline textarea"
+          labelPlacement="floating"
+          fill="outline"
+          formControlName="remarks"
+          placeholder="Remarks"
+          style="border: 1px solid #80808038"
+        ></ion-textarea>
+        <ion-text *ngIf="submitted && f.remarks.errors">
+          <ion-text
+            color="danger"
+            *ngIf="f.remarks.errors.required"
+            style="font-size: 12px; float: right; font-weight: bold"
+            >*Required</ion-text
+          >
+        </ion-text>
+        <!-- <br>
           <ion-row>
             <ion-col size="12">
               <ion-item>
@@ -81,20 +168,25 @@
               </ion-text>        
             </ion-col>
           </ion-row> -->
-          <br>
-          <ion-row>
-            <ion-col size="6" push="2">
-              <ion-button color="success"  type="submit" [disabled]="!registerForm.valid">Submit</ion-button>
-            </ion-col>
-            <ion-col size="6">
-              <ion-button color="danger" (click)='modaldismiss()'>Cancel</ion-button>
-            </ion-col>
-          </ion-row>
+        <br />
+        <ion-row>
+          <ion-col size="6" push="2">
+            <ion-button
+              color="success"
+              type="submit"
+              [disabled]="!registerForm.valid"
+              >Submit</ion-button
+            >
+          </ion-col>
+          <ion-col size="6">
+            <ion-button color="danger" (click)="modaldismiss()"
+              >Cancel</ion-button
+            >
+          </ion-col>
+        </ion-row>
       </ion-grid>
     </form>
   </ion-card>
-  
-
 </ion-content>
 
 <!-- Modal (shown only if scanning is active) -->

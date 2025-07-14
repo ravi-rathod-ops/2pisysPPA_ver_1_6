@@ -1,44 +1,48 @@
-<ion-header class="printele">
-  <ion-toolbar>       
-        <ion-img src="{{brandImage}}" style="height: 50px;width:50px" slot="start"></ion-img>       
-        <div style="display: flex;justify-content: center;">
-        <img src="./assets/image/trolley.png" height="25" width="25">
-        <b style="font-size: 20px;">&nbsp;&nbsp;Compound Stock</b>
-        <img src="./assets/image/printer.png" height="25" width="25" style="vertical-align: middle;float: right;margin-left: 10%;" (click)="print()" *ngIf="framelink.length > 0">
-        </div>
-        <ion-back-button defaultHref="Reports" slot="end"></ion-back-button>   
-  </ion-toolbar>
+<ion-header>
+  <div class="inner-header-wrap">
+    <div class="left-menu">
+      <ion-toolbar>
+        <ion-buttons si slot="start">
+          <ion-back-button defaultHref="Reports"></ion-back-button>
+        </ion-buttons>
+        <h3 class="main-sub-heading">Compound Stock</h3>
+      </ion-toolbar>
+      <div class="location-dropdown">
+        <ion-list radio-group>
+          <ion-select
+            placeholder="Select Location"
+            (ionChange)="selectDevice($event)"
+            [(ngModel)]="planid"
+            [ngModelOptions]="{standalone: true}"
+          >
+            <ion-select-option
+              *ngFor="let i of storeArray;let j=index"
+              value="{{i}}"
+              >{{i}}</ion-select-option
+            >
+          </ion-select>
+        </ion-list>
+      </div>
+    </div>
+    <div class="right-menu">
+      <div class="print-icon">
+        <img
+          src="./assets/image/printer.png"
+          alt="Printer"
+          (click)="print()"
+          *ngIf="framelink.length > 0"
+        />
+      </div>
+    </div>
+  </div>
 </ion-header>
 
 <ion-content>
-
-  <ion-card class="printele">
-    <ion-footer>
-      <ion-grid>
-        <ion-row>
-          <!-- <ion-col size="2">           
-            <img src="./assets/image/qr-scan.png" alt="Scanner" (click)="scan()" width="50" height="50" class="ion-float-left">           
-          </ion-col>           -->
-          <ion-col size="12">
-            <!-- <ion-item> -->
-              <!-- <ion-label position="floating">Paste Code</ion-label> -->
-              <!-- <ion-input [(ngModel)]="planid" placeholder="Enter Planid"></ion-input> -->
-
-              <ion-list radio-group >          
-                <ion-select placeholder="Select Location" (ionChange)="selectDevice($event)" [(ngModel)]="planid" [ngModelOptions]="{standalone: true}">
-                  <ion-select-option *ngFor="let i of storeArray;let j=index" value="{{i}}">{{i}}</ion-select-option>            
-                </ion-select>         
-              </ion-list>
-
-              
-            <!-- </ion-item> -->
-          </ion-col>
-          <!-- <ion-col size="2">
-            <ion-button color="primary" (click)="sendData()">Send</ion-button>
-          </ion-col>          -->
-        </ion-row>
-      </ion-grid>
-    </ion-footer>
-  </ion-card>
-  <iframe style="width:100%;height:100%;"  *ngIf="framelink.length > 0" [src]="framelink | renderUrl" frameborder="0" id="ReportPanel"></iframe>
+  <iframe
+    style="width: 100%; height: 100%"
+    *ngIf="framelink.length > 0"
+    [src]="framelink | renderUrl"
+    frameborder="0"
+    id="ReportPanel"
+  ></iframe>
 </ion-content>

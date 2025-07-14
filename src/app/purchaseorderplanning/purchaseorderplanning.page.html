@@ -1,26 +1,14 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-img src="{{brandImage}}" style="height: 50px;width:50px" slot="start"></ion-img>               
-    <div style="display: flex;justify-content: center;">
-      <img src="./assets/image/receipt.png" height="25" width="25">
-      <b style="font-size: 20px;">&nbsp;&nbsp;Purchase Order</b>
-    </div>
-    <ion-back-button defaultHref="Planhome" slot="end"></ion-back-button>   
-  </ion-toolbar>
-</ion-header>
-
-<ion-content>
-
-  
-
-
-
-
- <ion-grid>
-  <ion-row class="ion-align-items-center">
-
-    <ion-col size="4">
+  <div class="inner-header-wrap">
+    <div class="left-menu">
+      <ion-toolbar>
+        <ion-buttons si slot="start">
+          <ion-back-button defaultHref="Widgets"></ion-back-button>
+        </ion-buttons>
+        <h3 class="main-sub-heading">Purchase Order</h3>
+      </ion-toolbar>
       <ion-input
+        class="search-box"
         [(ngModel)]="searchData"
         (keyup)="applyFilter($event.target.value)"
         placeholder="Search"
@@ -28,310 +16,552 @@
       >
         <ion-icon name="search" slot="end"></ion-icon>
       </ion-input>
-    </ion-col>
-
-    <ion-col size="4">
-      <!-- <ion-select
-        [(ngModel)]="selectedRamClass"
-        (ionChange)="filterByRamClass()"
-        placeholder="Select Ram Class"
-      >
-        <ion-select-option *ngFor="let option of ramClassDropdown" [value]="option.key">
-          {{ option.value }}
-        </ion-select-option>
-      </ion-select> -->
-
       <ng-select
-  *ngIf="ramClassDropdown.length > 0"
-  [(ngModel)]="selectedRamClass"
-  [items]="ramClassDropdown"
-  bindLabel="value"
-  bindValue="key"
-  placeholder="📦 Select Ram Class"
-  searchable="true"
-  clearable="false"
-  (change)="onRamClassChanged($event)"
-  searchFailText="Ram class not found"
->
-  <!-- Header -->
-  <ng-template ng-header>
-    <div class="dropdown-header">📑 Available Ram Classes</div>
-  </ng-template>
+        class="pi-dropdown"
+        *ngIf="ramClassDropdown.length > 0"
+        [(ngModel)]="selectedRamClass"
+        [items]="ramClassDropdown"
+        bindLabel="value"
+        bindValue="key"
+        placeholder="📦 Select Ram Class"
+        searchable="true"
+        clearable="false"
+        (change)="onRamClassChanged($event)"
+        searchFailText="Ram class not found"
+      >
+        <!-- Header -->
+        <ng-template ng-header>
+          <div class="dropdown-header">📑 Available Ram Classes</div>
+        </ng-template>
 
-  <!-- Selected value label -->
-  <ng-template ng-label-tmp let-item="item">
-    <span class="selected-item">{{ item.value }}</span>
-  </ng-template>
+        <!-- Selected value label -->
+        <ng-template ng-label-tmp let-item="item">
+          <span class="selected-item">{{ item.value }}</span>
+        </ng-template>
 
-  <!-- Option list -->
-  <ng-template ng-option-tmp let-item="item" let-index="index">
-    <div class="option-item">
-      <i class="fas fa-cubes"></i>
-      {{ item.value }}
+        <!-- Option list -->
+        <ng-template ng-option-tmp let-item="item" let-index="index">
+          <div class="option-item">
+            <i class="fas fa-cubes"></i>
+            {{ item.value }}
+          </div>
+        </ng-template>
+      </ng-select>
     </div>
-  </ng-template>
-</ng-select>
+    <div class="right-menu">
+      <ion-button color="danger" size="small" (click)="deleteList()"
+        >Delete</ion-button
+      >
+    </div>
+  </div>
+</ion-header>
+<!-- <ion-toolbar>
+    <ion-back-button defaultHref="Planhome" slot="end"></ion-back-button>
 
-    </ion-col>
-    <ion-col size="4" class="ion-text-left">
-      <ion-button color="danger" size="small" (click)="deleteList()">Delete</ion-button>
-    </ion-col>
+    <ion-img
+      src="{{brandImage}}"
+      style="height: 50px; width: 50px"
+      slot="start"
+    ></ion-img>
+    <div style="display: flex; justify-content: center">
+      <img src="./assets/image/receipt.png" height="25" width="25" />
+      <b style="font-size: 20px">&nbsp;&nbsp;Purchase Order</b>
+    </div>
+  </ion-toolbar>
+</ion-header> -->
 
-  </ion-row>
-</ion-grid>
-
-
+<ion-content>
   <div class="reports-table">
     <ion-grid>
-      <ion-row nowrap class="headers">
-        <ion-col size="4" class="single-border" tappable (click)="sort('ramname',false)">
-          Name ({{tableData.length}})
+      <ion-row class="table-header" nowrap>
+        <ion-col
+          size="4"
+          class="header-cell"
+          tappable
+          (click)="sort('ramname', false)"
+        >
+          Name ({{ tableData.length }})
         </ion-col>
-        <ion-col size="4" class="single-border" (click)="sort('ramgrade',false)">
+        <ion-col size="4" class="header-cell" (click)="sort('ramgrade', false)">
           Grade
         </ion-col>
-        <!-- <ion-col size="1" class="single-border" (click)="sort('uom',false)">
-          
-        </ion-col> -->
-        <ion-col size="2" class="single-border" (click)="sort('minstock',false)" style="font-size: 85%;">
-          Rty 
+        <ion-col size="2" class="header-cell" (click)="sort('minstock', false)">
+          Rty
         </ion-col>
-        <ion-col size="1" class="single-border" style="font-size: small;" (click)="sort('stock',false)">
-          Stk 
+        <ion-col size="1" class="header-cell" (click)="sort('stock', false)">
+          Stk
         </ion-col>
-        <ion-col size="1" class="single-border">
-          <!-- Raise PO -->
-        </ion-col>
-      </ion-row>
-      <div style="height: 75vh; overflow: scroll;">
-        <ion-row nowrap class="content" *ngFor="let x of tableData">
-          <ion-col size="4"> {{ x.ramname }}</ion-col>
-          <ion-col size="4"> {{ x.ramgrade }} <b>({{ x.uom }})</b></ion-col>
-          <!-- <ion-col size="1"> {{ x.uom }} </ion-col> -->
-          <ion-col size="2" style="font-size: medium;"> <span *ngIf="x.indentno == 0">{{ x.minstock }} </span> <span *ngIf="x.indentno > 0">0</span></ion-col>
-          <ion-col size="1" style="text-align: right;font-size: medium;"> {{ x.stock }} </ion-col>
-          <ion-col size="1" (click)="editPO(x)" style="font-size: 18px;color:#00709c"> <ion-icon name="receipt-outline"></ion-icon></ion-col>
-        </ion-row>
-
-        <ion-row *ngIf="tableData.length == 0">
-          <ion-col size="6" offset="4"> No Records Found</ion-col>
-        </ion-row>
-      </div>
-    </ion-grid>
-  </div>
-
-
-  <div class="modal-content" *ngIf="purchaseDataModal">
-    <div class="modal-header">
-      <span class="close" (click)="purchaseDataModal=!purchaseDataModal">&times;</span>
-      <p style="margin: 8px 5px;">Purchase Order</p>
-    </div>
-    <div class="modal-body" style="font-size: smaller;">
-
-      <ion-grid>
-        <ion-row>
-          <ion-col class="label">Raw Material</ion-col>
-          <ion-col><b>{{currentPO.ramname}}</b></ion-col>
-        </ion-row>
-        <ion-row>
-          <ion-col class="label">Grade</ion-col>
-          <ion-col><b>{{currentPO.ramgrade}}</b></ion-col>
-        </ion-row>
-        <ion-row *ngIf="currentPO.iscpd == 1">
-          <ion-col class="label">IsMaster</ion-col>
-          <ion-col><ion-checkbox type="checkbox" [(ngModel)]="ismaster" [checked] = "ismaster"></ion-checkbox></ion-col>
-        </ion-row>
-        <ion-row>
-          <ion-col class="label">Supplier</ion-col>
-          <ion-col>
-            <select class="selectdd" [(ngModel)]="Supplier">
-              <option value="">Select Supplier</option>
-              <option *ngFor="let x of supplierArray" value="{{x}}">{{x}}</option>
-            </select>
-          </ion-col>
-        </ion-row>
-        <ion-row *ngIf="intentno == 0">
-          <ion-col class="label">Previous GRN Ref</ion-col>
-          <ion-col><b>{{currentPO.prevgrn}} <span *ngIf="currentPO.prevgrndate != ''">dated: {{currentPO.prevgrndate}}</span></b></ion-col>
-        </ion-row>
-        <ion-row *ngIf="intentno > 0">
-          <ion-col class="label">Fabric Details</ion-col>
-          <ion-col><b>{{currentPO.prevgrn}}</b></ion-col>
-        </ion-row>
-        <ion-row>          
-          <ion-col class="label">Quote Reference</ion-col>
-          <ion-col><ion-input type="text" class="inputStyle" placeholder="Verbal" [(ngModel)]="QuoteRef"></ion-input></ion-col>  
-        </ion-row>
-        <ion-row>
-          <ion-col class="label">Delivery At</ion-col>
-          <ion-col>
-            <select class="selectdd" [(ngModel)]="Locations">
-              <option value="">Select Location</option>
-              <option *ngFor="let x of locations" value="{{x}}">{{x}}</option>             
-            </select>
-          </ion-col>
-        </ion-row>
-        <ion-row *ngIf="intentno == 0">
-          <ion-col class="label" >Standard Packing Quantity</ion-col>         
-          <ion-col>{{currentPO.ramstdpacking}} {{currentPO.ramuom}}</ion-col>
-        </ion-row>
-        <ion-row *ngIf="intentno > 0">          
-          <ion-col class="label" >Quanity/Roll</ion-col>
-          <ion-col>{{currentPO.ramstdpacking}} Kg</ion-col>
-        </ion-row>
-        <ion-row>
-          <ion-col class="label">Quantity</ion-col>
-          <ion-col  *ngIf="intentno == 0"><ion-input type="number" class="inputStyle" [(ngModel)]="currentPO.ramorderqty"></ion-input></ion-col>
-          <ion-col size="5" *ngIf="intentno > 0"><ion-input type="number" class="inputStyle" [(ngModel)]="currentPO.ramorderqty" disabled></ion-input></ion-col>
-          <ion-col size="1" *ngIf="intentno > 0">Kg</ion-col>
-        </ion-row>
-        <ion-row>
-          <ion-col class="label">Delivery Date</ion-col>
-          <ion-col><input type="date" class="selectdddate" [(ngModel)]="deliverDate" id="datefield"/></ion-col>
-        </ion-row>
-       
-        <ion-row>
-          <ion-col class="label">For Jobwork</ion-col>
-          <ion-col><ion-checkbox type="checkbox" [(ngModel)]="forJobWork"></ion-checkbox></ion-col>
-        </ion-row>
-
-        <div *ngIf="!forJobWork">
-          <ion-row>
-            <ion-col class="label">Foreign Curr. Rate (If App.)</ion-col>
-            <ion-col>
-              <ion-row>
-                  <ion-col> <ion-input type="number" class="inputStyle" placeholder="0.00" [(ngModel)]="forCurrency"></ion-input></ion-col>
-                  <ion-col>
-                    <select class="selectdd" [(ngModel)]="forCurrencyType" style="position: relative;top: 8px;">
-                      <option value="">Type</option>
-                      <option *ngFor="let x of currencyList" value="{{x}}">{{x}}</option>   
-                    </select>
-                  </ion-col>
-                </ion-row>            
-              </ion-col>
-          </ion-row>
-          <ion-row>
-            <ion-col class="label">Rate</ion-col>
-            <ion-col><ion-input type="number" class="inputStyle" [(ngModel)]="currentPO.ramapprovedrate"></ion-input></ion-col>
-          </ion-row>
-          <ion-row>
-            <ion-col class="label">Value</ion-col>
-            <ion-col><ion-input type="text"  class="inputStyle" value="{{currentPO.ramapprovedrate * currentPO.ramorderqty}}" disabled=""></ion-input></ion-col>
-          </ion-row>
-          <ion-row>
-            <ion-col class="label">Insurance</ion-col>
-            <ion-col><ion-input type="number"  class="inputStyle" [(ngModel)]="InsuranceValue"></ion-input></ion-col>
-          </ion-row>
-          <ion-row>
-            <ion-col class="label">Freight Value</ion-col>
-            <ion-col><ion-input type="number"  class="inputStyle" [(ngModel)]="FreightValue"></ion-input></ion-col>
-          </ion-row>
-          <ion-row>
-            <ion-col class="label">Order Value</ion-col>
-            <ion-col><ion-input type="text"  class="inputStyle" value="{{(currentPO.ramapprovedrate * currentPO.ramorderqty)+(InsuranceValue+FreightValue)}}" disabled=""></ion-input></ion-col>
-          </ion-row>
-        </div>  
-          <ion-row>        
-            <ion-col class="label">Remarks</ion-col>
-            <ion-col><ion-textarea style="border: 1px solid grey;" [(ngModel)]="Remarks"></ion-textarea></ion-col>
-        </ion-row>
-      </ion-grid>
-
-    </div>
-    <div class="modal-footer" style="float: right;">
-      <ion-button color="success" size="small" (click)="callPurchase()">Generate</ion-button>
-      <ion-button color="medium" size="small" (click)="purchaseDataModal=!purchaseDataModal">Close</ion-button>   
-    </div>
-  </div>
-
-    <!-- Modal content -->
-<div class="modal-content" *ngIf="modalDeleteData">
-  <div class="modal-header">
-    <span class="close" (click)="modalDeleteData=!modalDeleteData">&times;</span>
-    <p style="margin: 8px 5px;">Purchase Order</p>
-  </div>
-  <div class="modal-body">
-    <ion-grid>
-      <ion-row nowrap class="headers" style="font-size: x-small;">
-        <ion-col size="2" class="single-border" (click)="sort2('purId',false)">
-          PO ID ({{deleteData.length}})
-        </ion-col>
-        <ion-col size="2" class="single-border" (click)="sort2('purDate',false)">
-          PO Date
-        </ion-col>
-        <ion-col size="2" class="single-border" (click)="sort2('description',false)">
-         RM Name
-        </ion-col>       
-        <ion-col size="1" class="single-border" (click)="sort2('grade',false)">
-          RM Grade Qty
-         </ion-col>
-         <ion-col size="2" class="single-border" (click)="sort2('supName',false)">
-          Supplier
-         </ion-col>
-         <ion-col size="1" class="single-border" (click)="sort2('quantity',false)">
-          PO Qty
-         </ion-col>
-         <ion-col size="1" class="single-border" (click)="sort2('quantity',false)">
-          Pen. Qty
-         </ion-col>
-        <ion-col size="1" class="single-border">
+        <ion-col size="1" class="header-cell">
           <!-- Action -->
         </ion-col>
       </ion-row>
-      <div style="height: 70vh; overflow: scroll;font-size: x-small;">
-        <ion-row nowrap class="content" *ngFor="let x of deleteData">
-          <ion-col size="2"> {{ x.purId }}</ion-col>
-          <ion-col size="2"> {{ x.purDate }} </ion-col>
-          <ion-col size="2"> {{ x.description }} </ion-col>
-          <ion-col size="1"> {{ x.grade }} </ion-col>
-          <ion-col size="2"> {{ x.supName }} </ion-col>      
-          <ion-col size="1"> {{ x.quantity }} </ion-col>      
-          <ion-col size="1"> {{ x.quantity-x.recQty }} </ion-col>        
-          <ion-col size="1" style="text-align: center;"> <ion-icon name="trash-outline" (click)="callDeflashing(x)" style="color:red"></ion-icon></ion-col>
-        </ion-row>
 
-        <ion-row *ngIf="deleteData.length == 0">
-          <ion-col size="6" offset="4"> No Records Found</ion-col>
+      <div class="table-body">
+        <ion-row class="table-row" nowrap *ngFor="let x of tableData">
+          <ion-col size="4" class="cell"> {{ x.ramname }} </ion-col>
+          <ion-col size="4" class="cell">
+            {{ x.ramgrade }} <b>({{ x.uom }})</b>
+          </ion-col>
+          <ion-col size="2" class="cell">
+            <span *ngIf="x.indentno == 0">{{ x.minstock }}</span>
+            <span *ngIf="x.indentno > 0">0</span>
+          </ion-col>
+          <ion-col size="1" class="cell text-right"> {{ x.stock }} </ion-col>
+          <ion-col size="1" class="cell action" (click)="editPO(x)">
+            <ion-icon name="receipt-outline"></ion-icon>
+          </ion-col>
         </ion-row>
+        <div style="height: 70vh; overflow: scroll; font-size: x-small">
+          <ion-row nowrap class="content" *ngFor="let x of deleteData">
+            <ion-col size="2"> {{ x.purId }}</ion-col>
+            <ion-col size="2"> {{ x.purDate }} </ion-col>
+            <ion-col size="2"> {{ x.description }} </ion-col>
+            <ion-col size="1"> {{ x.grade }} </ion-col>
+            <ion-col size="2"> {{ x.supName }} </ion-col>
+            <ion-col size="1"> {{ x.quantity }} </ion-col>
+            <ion-col size="1"> {{ x.quantity-x.recQty }} </ion-col>
+            <ion-col size="1" style="text-align: center">
+              <ion-icon
+                name="trash-outline"
+                (click)="callDeflashing(x)"
+                style="color: red"
+              ></ion-icon
+            ></ion-col>
+          </ion-row>
+
+          <ion-row *ngIf="tableData.length === 0">
+            <ion-col size="12" class="no-records">No Records Found</ion-col>
+          </ion-row>
+        </div>
       </div>
     </ion-grid>
   </div>
-</div>
 
+  <div class="modal-content" *ngIf="purchaseDataModal">
+    <div class="modal-header">
+      <span class="close" (click)="purchaseDataModal=!purchaseDataModal"
+        >&times;</span
+      >
+      <p style="margin: 8px 5px">Purchase Order</p>
+    </div>
+    <div class="modal-body" style="font-size: smaller">
+      <ion-grid>
+        <ion-row>
+          <ion-col size="12" size-md="6" size-lg="4">
+            <div class="form-item">
+              <label>Raw Material</label><br />
+              <b>{{ currentPO.ramname }}</b>
+            </div>
+          </ion-col>
 
-<div class="modal-content2" *ngIf="modalDeleteData2">
-  <div class="modal-header">
-    <span class="close" (click)="modalDeleteData2=!modalDeleteData2">&times;</span>
-    <p style="margin: 8px 5px;">Delete</p>
-  </div>
-  <div class="modal-body" style="text-align: center;">
-    <br>
-    Are You Sure Want to Delete?
-    <br>
-    <br>
-  </div>
-  <div class="modal-footer" style="float: right;">
-    <ion-button color="success" size="small" (click)="deletePOItem()">Yes</ion-button>
-    <ion-button color="danger" size="small" (click)="modalDeleteData2=!modalDeleteData2">No</ion-button>   
-  </div>
-</div>
+          <ion-col size="12" size-md="6" size-lg="4">
+            <div class="form-item">
+              <label>Grade</label><br />
+              <b>{{ currentPO.ramgrade }}</b>
+            </div>
+          </ion-col>
 
+          <ion-col
+            *ngIf="currentPO.iscpd == 1"
+            size="12"
+            size-md="6"
+            size-lg="4"
+          >
+            <div class="form-item">
+              <label>Is Master</label><br />
+              <ion-checkbox [(ngModel)]="ismaster"></ion-checkbox>
+            </div>
+          </ion-col>
 
-<div class="modal-content3" *ngIf="modalDeleteData3">
-  <div class="modal-header">
-    <span class="close" (click)="modalDeleteData3=!modalDeleteData3">&times;</span>
-    <p style="margin: 8px 5px;">Raise PO</p>
-  </div>
-  <div class="modal-body" style="text-align: center;">
-    <br>
-    Are You Sure to Create the Purchase Order?
-    <br>
-    <br>
-  </div>
-  <div class="modal-footer" style="float: right;">
-    <ion-button color="success" size="small" (click)="raisePurchaseOrder()">Ok</ion-button>
-    <ion-button color="medium" size="small" (click)="modalDeleteData3=!modalDeleteData3">Cancel</ion-button>   
-  </div>
-</div>
+          <ion-col size="12" size-md="6" size-lg="4">
+            <div class="form-item">
+              <label>Supplier</label>
+              <select class="selectdd" [(ngModel)]="Supplier">
+                <option value="">Select Supplier</option>
+                <option *ngFor="let x of supplierArray" [value]="x">
+                  {{ x }}
+                </option>
+              </select>
+            </div>
+          </ion-col>
 
+          <ion-col *ngIf="intentno == 0" size="12" size-md="6" size-lg="4">
+            <div class="form-item">
+              <label>Previous GRN Ref</label><br />
+              <b>
+                {{ currentPO.prevgrn }}
+                <span *ngIf="currentPO.prevgrndate != ''"
+                  >dated: {{ currentPO.prevgrndate }}</span
+                >
+              </b>
+            </div>
+          </ion-col>
+
+          <ion-col *ngIf="intentno > 0" size="12" size-md="6" size-lg="4">
+            <div class="form-item">
+              <label>Fabric Details</label><br />
+              <b>{{ currentPO.prevgrn }}</b>
+            </div>
+          </ion-col>
+
+          <ion-col size="12" size-md="6" size-lg="4">
+            <div class="form-item">
+              <label>Quote Reference</label>
+              <ion-input
+                type="text"
+                class="inputStyle"
+                placeholder="Verbal"
+                [(ngModel)]="QuoteRef"
+              ></ion-input>
+            </div>
+          </ion-col>
+
+          <ion-col size="12" size-md="6" size-lg="4">
+            <div class="form-item">
+              <label>Delivery At</label>
+              <select class="selectdd" [(ngModel)]="Locations">
+                <option value="">Select Location</option>
+                <option *ngFor="let x of locations" [value]="x">{{ x }}</option>
+              </select>
+            </div>
+          </ion-col>
+
+          <ion-col *ngIf="intentno == 0" size="12" size-md="6" size-lg="4">
+            <div class="form-item">
+              <label>Standard Packing Quantity</label><br />
+              {{ currentPO.ramstdpacking }} {{ currentPO.ramuom }}
+            </div>
+          </ion-col>
+
+          <ion-col *ngIf="intentno > 0" size="12" size-md="6" size-lg="4">
+            <div class="form-item">
+              <label>Quantity/Roll</label><br />
+              {{ currentPO.ramstdpacking }} Kg
+            </div>
+          </ion-col>
+
+          <ion-col size="12" size-md="6" size-lg="4">
+            <div class="form-item">
+              <label>Quantity</label>
+              <ion-input
+                type="number"
+                class="inputStyle"
+                [(ngModel)]="currentPO.ramorderqty"
+                [disabled]="intentno > 0"
+              ></ion-input>
+              <span *ngIf="intentno > 0">Kg</span>
+            </div>
+          </ion-col>
+
+          <ion-col size="12" size-md="6" size-lg="4">
+            <div class="form-item">
+              <label>Delivery Date</label>
+              <input
+                type="date"
+                class="selectdddate"
+                [(ngModel)]="deliverDate"
+              />
+            </div>
+          </ion-col>
+
+          <ion-col size="12" size-md="6" size-lg="4">
+            <div class="form-item">
+              <label>For Jobwork</label><br />
+              <ion-checkbox [(ngModel)]="forJobWork"></ion-checkbox>
+            </div>
+          </ion-col>
+
+          <ng-container *ngIf="!forJobWork">
+            <ion-col size="12" size-md="6" size-lg="4">
+              <div class="form-item">
+                <label>Foreign Curr. Rate (If App.)</label>
+                <ion-input
+                  type="number"
+                  class="inputStyle"
+                  placeholder="0.00"
+                  [(ngModel)]="forCurrency"
+                ></ion-input>
+                <select class="selectdd" [(ngModel)]="forCurrencyType">
+                  <option value="">Type</option>
+                  <option *ngFor="let x of currencyList" [value]="x">
+                    {{ x }}
+                  </option>
+                </select>
+              </div>
+            </ion-col>
+
+            <ion-col size="12" size-md="6" size-lg="4">
+              <div class="form-item">
+                <label>Rate</label>
+                <ion-input
+                  type="number"
+                  class="inputStyle"
+                  [(ngModel)]="currentPO.ramapprovedrate"
+                ></ion-input>
+              </div>
+            </ion-col>
+
+            <ion-col size="12" size-md="6" size-lg="4">
+              <div class="form-item">
+                <label>Value</label>
+                <ion-input
+                  type="text"
+                  class="inputStyle"
+                  [value]="currentPO.ramapprovedrate * currentPO.ramorderqty"
+                  disabled
+                ></ion-input>
+              </div>
+            </ion-col>
+
+            <ion-col size="12" size-md="6" size-lg="4">
+              <div class="form-item">
+                <label>Insurance</label>
+                <ion-input
+                  type="number"
+                  class="inputStyle"
+                  [(ngModel)]="InsuranceValue"
+                ></ion-input>
+              </div>
+            </ion-col>
+
+            <ion-col size="12" size-md="6" size-lg="4">
+              <div class="form-item">
+                <label>Freight Value</label>
+                <ion-input
+                  type="number"
+                  class="inputStyle"
+                  [(ngModel)]="FreightValue"
+                ></ion-input>
+              </div>
+            </ion-col>
+
+            <ion-col size="12" size-md="6" size-lg="4">
+              <div class="form-item">
+                <label>Order Value</label>
+                <ion-input
+                  type="text"
+                  class="inputStyle"
+                  [value]="(currentPO.ramapprovedrate * currentPO.ramorderqty)+(InsuranceValue+FreightValue)"
+                  disabled
+                ></ion-input>
+              </div>
+            </ion-col>
+          </ng-container>
+
+          <ion-col size="12" size-md="6" size-lg="4">
+            <div class="form-item">
+              <label>Remarks</label>
+              <ion-textarea
+                style="border: 1px solid grey"
+                [(ngModel)]="Remarks"
+              ></ion-textarea>
+            </div>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </div>
+    <div class="modal-footer">
+      <ion-button color="success" size="small" (click)="callPurchase()"
+        >Generate</ion-button
+      >
+      <ion-button
+        color="medium"
+        size="small"
+        (click)="purchaseDataModal=!purchaseDataModal"
+        >Close</ion-button
+      >
+    </div>
+  </div>
+
+  <!-- Modal content -->
+  <div class="modal-content" *ngIf="modalDeleteData">
+    <div class="modal-header">
+      <p>Purchase Order</p>
+      <span class="close" (click)="modalDeleteData=!modalDeleteData"
+        ><ion-icon name="close-outline"></ion-icon
+      ></span>
+    </div>
+    <div class="modal-body">
+      <!-- <ion-grid>
+        <ion-row nowrap class="headers" style="font-size: x-small">
+          <ion-col
+            size="2"
+            class="single-border"
+            (click)="sort2('purId',false)"
+          >
+            PO ID ({{deleteData.length}})
+          </ion-col>
+          <ion-col
+            size="2"
+            class="single-border"
+            (click)="sort2('purDate',false)"
+          >
+            PO Date
+          </ion-col>
+          <ion-col
+            size="2"
+            class="single-border"
+            (click)="sort2('description',false)"
+          >
+            RM Name
+          </ion-col>
+          <ion-col
+            size="1"
+            class="single-border"
+            (click)="sort2('grade',false)"
+          >
+            RM Grade Qty
+          </ion-col>
+          <ion-col
+            size="2"
+            class="single-border"
+            (click)="sort2('supName',false)"
+          >
+            Supplier
+          </ion-col>
+          <ion-col
+            size="1"
+            class="single-border"
+            (click)="sort2('quantity',false)"
+          >
+            PO Qty
+          </ion-col>
+          <ion-col
+            size="1"
+            class="single-border"
+            (click)="sort2('quantity',false)"
+          >
+            Pen. Qty
+          </ion-col>
+          <ion-col size="1" class="single-border">
+          </ion-col>
+        </ion-row>
+        <div style="height: 70vh; overflow: scroll; font-size: x-small">
+          <ion-row nowrap class="content" *ngFor="let x of deleteData">
+            <ion-col size="2"> {{ x.purId }}</ion-col>
+            <ion-col size="2"> {{ x.purDate }} </ion-col>
+            <ion-col size="2"> {{ x.description }} </ion-col>
+            <ion-col size="1"> {{ x.grade }} </ion-col>
+            <ion-col size="2"> {{ x.supName }} </ion-col>
+            <ion-col size="1"> {{ x.quantity }} </ion-col>
+            <ion-col size="1"> {{ x.quantity-x.recQty }} </ion-col>
+            <ion-col size="1" style="text-align: center">
+              <ion-icon
+                name="trash-outline"
+                (click)="callDeflashing(x)"
+                style="color: red"
+              ></ion-icon
+            ></ion-col>
+          </ion-row>
+
+          <ion-row *ngIf="deleteData.length == 0">
+            <ion-col size="6" offset="4"> No Records Found</ion-col>
+          </ion-row>
+        </div>
+      </ion-grid> -->
+      <div class="reports-table">
+        <ion-grid>
+          <ion-row class="table-header" nowrap>
+            <ion-col size="2" (click)="sort2('purId', false)"
+              >PO ID ({{ deleteData.length }})</ion-col
+            >
+            <ion-col size="2" (click)="sort2('purDate', false)"
+              >PO Date</ion-col
+            >
+            <ion-col size="2" (click)="sort2('description', false)"
+              >RM Name</ion-col
+            >
+            <ion-col size="1" (click)="sort2('grade', false)"
+              >RM Grade Qty</ion-col
+            >
+            <ion-col size="2" (click)="sort2('supName', false)"
+              >Supplier</ion-col
+            >
+            <ion-col size="1" (click)="sort2('quantity', false)"
+              >PO Qty</ion-col
+            >
+            <ion-col size="1" (click)="sort2('quantity', false)"
+              >Pen. Qty</ion-col
+            >
+            <ion-col size="1"><!-- Action --></ion-col>
+          </ion-row>
+
+          <div class="table-body">
+            <ion-row class="table-row" nowrap *ngFor="let x of deleteData">
+              <ion-col size="2">{{ x.purId }}</ion-col>
+              <ion-col size="2">{{ x.purDate }}</ion-col>
+              <ion-col size="2">{{ x.description }}</ion-col>
+              <ion-col size="1">{{ x.grade }}</ion-col>
+              <ion-col size="2">{{ x.supName }}</ion-col>
+              <ion-col size="1">{{ x.quantity }}</ion-col>
+              <ion-col size="1">{{ x.quantity - x.recQty }}</ion-col>
+              <ion-col size="1" class="action">
+                <ion-icon
+                  name="trash-outline"
+                  (click)="callDeflashing(x)"
+                  style="color: red"
+                ></ion-icon>
+              </ion-col>
+            </ion-row>
+
+            <ion-row *ngIf="deleteData.length === 0">
+              <ion-col size="12" class="no-records">No Records Found</ion-col>
+            </ion-row>
+          </div>
+        </ion-grid>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-content2" *ngIf="modalDeleteData2">
+    <div class="modal-header">
+      <span class="close" (click)="modalDeleteData2=!modalDeleteData2"
+        >&times;</span
+      >
+      <p style="margin: 8px 5px">Delete</p>
+    </div>
+    <div class="modal-body" style="text-align: center">
+      <br />
+      Are You Sure Want to Delete?
+      <br />
+      <br />
+    </div>
+    <div class="modal-footer">
+      <ion-button color="success" size="small" (click)="deletePOItem()"
+        >Yes</ion-button
+      >
+      <ion-button
+        color="danger"
+        size="small"
+        (click)="modalDeleteData2=!modalDeleteData2"
+        >No</ion-button
+      >
+    </div>
+  </div>
+
+  <div class="modal-content3" *ngIf="modalDeleteData3">
+    <div class="modal-header">
+      <span class="close" (click)="modalDeleteData3=!modalDeleteData3"
+        >&times;</span
+      >
+      <p style="margin: 8px 5px">Raise PO</p>
+    </div>
+    <div class="modal-body" style="text-align: center">
+      <br />
+      Are You Sure to Create the Purchase Order?
+      <br />
+      <br />
+    </div>
+    <div class="modal-footer">
+      <ion-button color="success" size="small" (click)="raisePurchaseOrder()"
+        >Ok</ion-button
+      >
+      <ion-button
+        color="medium"
+        size="small"
+        (click)="modalDeleteData3=!modalDeleteData3"
+        >Cancel</ion-button
+      >
+    </div>
+  </div>
 </ion-content>
