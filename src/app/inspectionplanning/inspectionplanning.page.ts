@@ -394,10 +394,13 @@ export class InspectionplanningPage implements OnInit {
             loading.dismiss();
             this.toastfunction(data.message, 'success');
             this.modalDeleteData2 = false;
+            this.modalDeleteData = false;
+            this.scan();
             this.deleteList();
           } else {
             loading.dismiss();
             this.modalDeleteData2 = false;
+            this.modalDeleteData = false;
             this.toastfunction(data.message, 'danger');
           }
         },
