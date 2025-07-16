@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { Platform } from '@ionic/angular';
 
 import { MenuController } from '@ionic/angular';
@@ -12,6 +12,7 @@ import { AuthService } from './auth.service';
 })
 export class AppComponent {
   private deferredPrompt: any;
+  showSidebar = true;
 
   constructor(
     private platform: Platform,
@@ -19,6 +20,17 @@ export class AppComponent {
     private authService: AuthService
   ) {
     console.log('asddsad');
+
+     this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        const currentUrl = event.urlAfterRedirects;
+
+        // List of routes where sidebar should be hidden
+        const noSidebarRoutes = ['/home'];
+
+        this.showSidebar = !noSidebarRoutes.includes(currentUrl);
+      }
+    });
 
     this.authService.initializeApp();
 

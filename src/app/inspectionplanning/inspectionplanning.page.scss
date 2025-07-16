@@ -64,3 +64,39 @@ ion-back-button {
   background: white;
   border: 1px solid #0000001f;
 }
+
+.modal-content {
+  z-index: 2;
+    position: absolute;
+    background-color: #fefefe;
+    margin: auto;
+    padding: 0;
+    width: 98%;
+    box-shadow: 0 4px 8px 0 rgb(0 0 0 / 20%), 0 6px 20px 0 rgb(0 0 0 / 19%);
+    animation-name: animatetop;
+    animation-duration: 0.4s;
+    top: 3%;
+    margin-left: 1%;
+}
+
+.modal-content2 {
+  z-index: 6;
+  position: absolute;
+  background-color: #fefefe;
+  margin: auto;
+  padding: 0;
+  width: 48%;
+  box-shadow: 0 4px 8px 0 rgb(0 0 0 / 20%), 0 6px 20px 0 rgb(0 0 0 / 19%);
+  animation-name: animatetop;
+  animation-duration: 0.4s;
+  top: 30%;
+  margin-left: 24%;
+}
+
+/* The Close Button */
+.close {
+  color: white;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
