@@ -71,7 +71,7 @@
 </ion-header> -->
 
 <ion-content>
-  <div class="reports-table">
+  <div class="reports-table" *ngIf="showTable">
     <ion-grid>
       <ion-row class="table-header" nowrap>
         <ion-col
@@ -136,6 +136,17 @@
       </div>
     </ion-grid>
   </div>
+   <ion-row *ngIf="!showTable" class="ion-text-center" style="margin-top: 2rem;">
+        <ion-col size="12">
+          <ion-icon name="funnel-outline" style="font-size: 32px; color: #999;"></ion-icon>
+          <div style="font-size: 18px; color: #666; margin-top: 0.5rem;">
+            Please select a RAM class to view the materials.
+          </div>
+          <div style="font-size: 14px; color: #999;">
+            Use the dropdown above to filter and display relevant inventory.
+          </div>
+        </ion-col>
+      </ion-row>
 
   <div class="modal-content" *ngIf="purchaseDataModal">
     <div class="modal-header">

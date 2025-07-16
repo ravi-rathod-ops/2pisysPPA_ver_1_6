@@ -46,7 +46,8 @@
             ],
             "serviceWorker": true,
             "ngswConfigPath": "ngsw-config.json",
-             "outputHashing": "all"
+             "outputHashing": "all",
+              "baseHref": "/"
           },
           "configurations": {
             "production": {

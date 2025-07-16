@@ -29,7 +29,6 @@ export class AuthService {
         if (userid && password && this.isWithinAutoLoginPeriod(2, lastLogin)) {
           console.log("if");
           
-          this.router.navigate(['Widgets']);
         } else {
           console.log("else");
           localStorage.removeItem("userid");
