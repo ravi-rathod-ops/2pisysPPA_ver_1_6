@@ -50,14 +50,14 @@
 ::ng-deep .ng-select {
   width: 100%;
   max-width: 400px; /* or any suitable width */
-  z-index: 1050 !important; 
+  z-index: 1050 !important;
   overflow: visible !important;
 }
 
 ::ng-deep .ng-select .ng-select-container {
   min-height: 40px;
   border-radius: 4px;
-  z-index: 1050 !important; 
+  z-index: 1050 !important;
   overflow: visible !important;
 }
 
@@ -66,7 +66,7 @@
   border: 1px solid #ccc;
   border-radius: 8px;
   overflow-x: auto;
-  font-family: 'Segoe UI', sans-serif;
+  font-family: "Segoe UI", sans-serif;
   font-size: 14px;
 }
 
@@ -75,6 +75,7 @@
   color: #fff;
   font-weight: bold;
   border-bottom: 1px solid #ccc;
+  flex-wrap: nowrap;
 }
 
 .header-cell {
@@ -82,10 +83,13 @@
   font-size: 15px;
   font-weight: bold;
   user-select: none;
+  width: 120px;
+  min-width: 120px;
 }
 
 .data-row {
   border-bottom: 1px solid #eee;
+  flex-wrap: nowrap;
 }
 
 .data-cell {
@@ -112,13 +116,15 @@
 }
 
 ion-col.data-cell {
-  display: flex;
-  align-items: center;
-  justify-content: center; // or flex-start for left-align
+  // display: flex;
+  // align-items: center;
+  // justify-content: center;
   padding: 8px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  width: 120px;
+  min-width: 120px;
 }
 
 /* Wrap long text for specific columns */
@@ -131,18 +137,16 @@ ion-col.wrap-text {
   max-width: 180px; // set a max-width to limit effect on layout
 }
 
-
 @media print {
   #header {
     display: none;
   }
 }
 
-.image{
+.image {
   // height: 200px;
   width: 80px;
 }
-
 
 .scanner-content {
   --background: #442d2d;
@@ -208,6 +212,21 @@ ion-icon {
 }
 
 .scroll-container {
-  max-height: 300px;
+  // max-height: calc(100vh - 260px);
+  // overflow-y: auto;
+  // overflow-x: unset;
+}
+.table-wrapper {
+  height: calc(100vh - 260px);
   overflow-y: auto;
+
+  .header-row {
+    position: sticky;
+    top: 0;
+    background-color: #3e8ef7;
+    z-index: 1;
+  }
+  .header-cell {
+    background-color: #3e8ef7;
+  }
 }

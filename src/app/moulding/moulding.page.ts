@@ -136,7 +136,7 @@ export class MouldingPage implements OnInit, OnDestroy, AfterViewInit {
 
   ngAfterViewInit() {
     if (this.isAutoScroll) {
-      this.startScroll(); 
+      this.startScroll();
     }
   }
 
@@ -337,6 +337,8 @@ export class MouldingPage implements OnInit, OnDestroy, AfterViewInit {
     this.getReportData(event.name);
   }
 
+  isOldData = false;
+
   async getReportData(reportName: string) {
     const loading = await this.loadingController.create({
       cssClass: 'my-custom-class',
@@ -360,6 +362,7 @@ export class MouldingPage implements OnInit, OnDestroy, AfterViewInit {
 
           loading.dismiss();
           if (res.status === 'success') {
+            this.isOldData = false;
             const message = res.message;
             console.log({ message });
             const originalHeaders = message.colheaders;
@@ -426,12 +429,12 @@ export class MouldingPage implements OnInit, OnDestroy, AfterViewInit {
         },
         error: (err) => {
           console.log('into error');
-
           loading.dismiss();
-          this.toastfunction(
-            err.error.message || 'Invalid Company URL',
-            'danger'
-          );
+          this.isOldData = true;
+          // this.toastfunction(
+          //   err.error.message || 'Invalid Company URL',
+          //   'danger'
+          // );
         },
       });
   }
@@ -674,15 +677,30 @@ export class MouldingPage implements OnInit, OnDestroy, AfterViewInit {
     }
 
     const direction = this.sortDirection === 'asc' ? 1 : -1;
-    const data = this.filteredData.length
-      ? this.filteredData
-      : this.reportData.data.slice(0, this.reportData.data.length - 1);
 
-    data.sort((a, b) => {
+    const dataToSort = this.isFiltering
+      ? [...this.filteredData] 
+      : [...this.reportData.data.slice(0, this.reportData.data.length - 1)];
+
+    dataToSort.sort((a, b) => {
       const aVal = a[col];
       const bVal = b[col];
-      return (aVal > bVal ? 1 : -1) * direction;
+
+      if (!isNaN(aVal) && !isNaN(bVal)) {
+        return (parseFloat(aVal) - parseFloat(bVal)) * direction;
+      }
+
+      return (aVal > bVal ? 1 : aVal < bVal ? -1 : 0) * direction;
     });
+
+    if (this.isFiltering) {
+      this.filteredData = dataToSort;
+    } else {
+      this.reportData.data = [
+        ...dataToSort,
+        this.reportData.data[this.reportData.data.length - 1],
+      ]; 
+    }
   }
 
   toggleFilterInput(col: string) {
