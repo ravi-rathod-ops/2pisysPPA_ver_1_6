@@ -229,4 +229,15 @@ ion-icon {
   .header-cell {
     background-color: #3e8ef7;
   }
+  .sticky-footer {
+    position: sticky;
+    bottom: 0;
+    background: #f1f1f1; 
+    z-index: 10;
+    border-top: 1px solid #ccc;
+    flex-wrap: nowrap;
+  }
+  .data-cell{
+    background: #f1f1f1; 
+  }
 }
