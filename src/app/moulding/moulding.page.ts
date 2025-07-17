@@ -180,15 +180,17 @@ export class MouldingPage implements OnInit, OnDestroy, AfterViewInit {
     return this.registerForm.controls;
   }
 
-  async scan() {
-    const codeReader = new BrowserMultiFormatReader();
-    const loading = await this.loadingController.create({
-      cssClass: 'my-custom-class',
-      message: 'Please wait...',
-      spinner: 'dots',
-    });
-    await loading.present();
+ async scan() {
+  const codeReader = new BrowserMultiFormatReader();
+  const loading = await this.loadingController.create({
+    cssClass: 'my-custom-class',
+    message: 'Please wait...',
+    spinner: 'dots',
+  });
+  await loading.present();
 
+  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  if (isMobile) {
     try {
       const videoInputDevices =
         await BrowserMultiFormatReader.listVideoInputDevices();
@@ -199,27 +201,11 @@ export class MouldingPage implements OnInit, OnDestroy, AfterViewInit {
         return;
       }
 
-      const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-
-      let selectedDevice;
-
-      if (isMobile) {
-        selectedDevice = videoInputDevices.find(
-          (device) =>
-            device.label.toLowerCase().includes('back') ||
-            device.label.toLowerCase().includes('environment')
-        );
-      } else {
-        selectedDevice = videoInputDevices.find(
-          (device) =>
-            device.label.toLowerCase().includes('front') ||
-            device.label.toLowerCase().includes('user')
-        );
-      }
-
-      if (!selectedDevice) {
-        selectedDevice = videoInputDevices[0];
-      }
+      let selectedDevice = videoInputDevices.find(
+        (device) =>
+          device.label.toLowerCase().includes('back') ||
+          device.label.toLowerCase().includes('environment')
+      ) || videoInputDevices[0];
 
       try {
         const stream = await navigator.mediaDevices.getUserMedia({
@@ -231,50 +217,50 @@ export class MouldingPage implements OnInit, OnDestroy, AfterViewInit {
         this.toastfunction('Camera permission is required to scan.', 'danger');
         return;
       }
-
-      const headers = {
-        'auth-id': localStorage.getItem('authid')!,
-        'client-id': localStorage.getItem('clientid')!,
-        user: localStorage.getItem('userid')!,
-        password: localStorage.getItem('password')!,
-      };
-
-      this.http
-        .get<any>(this.dataUrl + '/api/reportlinks', { headers })
-        .subscribe({
-          next: async (data) => {
-            this.datapass = data;
-            this.datapassTemp = data;
-            loading.dismiss();
-
-            this.datapass.message.forEach((x) => {
-              if (x.group === 'purchase') this.purchase = true;
-              else if (x.group === 'production') this.production = true;
-              else if (x.group === 'despatch') this.despatch = true;
-              else if (x.group === 'mixing') this.mixing = true;
-              else if (x.group === 'deflashing') this.deflashing = true;
-              else if (x.group === 'inspection') this.inspection = true;
-              else if (x.group === 'calendering') this.calendering = true;
-              else if (x.group === 'final') this.final = true;
-            });
-          },
-          error: (errordata) => {
-            loading.dismiss();
-            if (errordata.error?.message) {
-              this.toastfunction(errordata.error.message, 'danger');
-            } else {
-              this.toastfunction(
-                'Invalid Company Url, Please Check in Home page',
-                'danger'
-              );
-            }
-          },
-        });
     } catch (err) {
       await loading.dismiss();
       this.toastfunction('Error while checking camera devices.', 'danger');
+      return;
     }
   }
+
+  const headers = {
+    'auth-id': localStorage.getItem('authid')!,
+    'client-id': localStorage.getItem('clientid')!,
+    user: localStorage.getItem('userid')!,
+    password: localStorage.getItem('password')!,
+  };
+
+  this.http.get<any>(this.dataUrl + '/api/reportlinks', { headers }).subscribe({
+    next: async (data) => {
+      this.datapass = data;
+      this.datapassTemp = data;
+      loading.dismiss();
+
+      this.datapass.message.forEach((x) => {
+        if (x.group === 'purchase') this.purchase = true;
+        else if (x.group === 'production') this.production = true;
+        else if (x.group === 'despatch') this.despatch = true;
+        else if (x.group === 'mixing') this.mixing = true;
+        else if (x.group === 'deflashing') this.deflashing = true;
+        else if (x.group === 'inspection') this.inspection = true;
+        else if (x.group === 'calendering') this.calendering = true;
+        else if (x.group === 'final') this.final = true;
+      });
+    },
+    error: (errordata) => {
+      loading.dismiss();
+      if (errordata.error?.message) {
+        this.toastfunction(errordata.error.message, 'danger');
+      } else {
+        this.toastfunction(
+          'Invalid Company Url, Please Check in Home page',
+          'danger'
+        );
+      }
+    },
+  });
+}
 
   print() {
     this.printer.print();
