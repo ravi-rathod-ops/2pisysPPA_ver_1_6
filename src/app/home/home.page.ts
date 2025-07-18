@@ -1,10 +1,13 @@
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { LoadingController, Platform, ToastController } from '@ionic/angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Md5 } from 'ts-md5';
 import { environment } from 'src/environments/environment';
+import { ConfigLoaderService } from '../services/config-loader.service';
+
+
 
 @Component({
   selector: 'app-home',
@@ -14,7 +17,7 @@ import { environment } from 'src/environments/environment';
 export class HomePage {
   datapass: any = { "base64encodedimage": "./assets/image/no_logo.png" };
   dataUrl = '';
-  dataUrls = environment.COMPANY_URL;
+  dataUrls = [];//environment.COMPANY_URL;
   authid = environment.AUTHENTICATE_ID;
   clientid = environment.CLIENT_ID;
   registerForm: FormGroup;
@@ -29,12 +32,15 @@ export class HomePage {
     public loadingController: LoadingController,
     public toastController: ToastController,
     private router: Router,
-    
-  ) { }
+    private configService : ConfigLoaderService,
+    @Inject('APP_CONFIG') private config: any
+  ) {
+   }
 
   
 
   ngOnInit() {
+     this.dataUrls = this.config.COMPANY_URL;
     this.registerForm = this.formBuilder.group({
       userid: ['', Validators.required],
       password: ['', Validators.required],

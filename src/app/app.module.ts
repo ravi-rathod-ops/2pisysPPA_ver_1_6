@@ -9,7 +9,7 @@ import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { FormsModule,ReactiveFormsModule } from '@angular/forms';
-import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule, provideHttpClient } from '@angular/common/http';
 
 import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
 import { CommonModule } from '@angular/common';
@@ -62,7 +62,7 @@ const config: SocketIoConfig = { url: localStorage.getItem("IPAddr"), options: {
       provide: HTTP_INTERCEPTORS,
       useClass: HttpTimeoutInterceptor,
       multi: true
-    }
+    },provideHttpClient()
   ],
   bootstrap: [AppComponent],
   schemas:[CUSTOM_ELEMENTS_SCHEMA],
