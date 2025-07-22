@@ -20,15 +20,10 @@ export class AppComponent {
     private authService: AuthService
   ) {
     console.log('asddsad');
-
-     this.router.events.subscribe(event => {
+      this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         const currentUrl = event.urlAfterRedirects;
-
-        // List of routes where sidebar should be hidden
-        const noSidebarRoutes = ['/home'];
-
-        this.showSidebar = !noSidebarRoutes.includes(currentUrl);
+        this.showSidebar = currentUrl !== '/home';
       }
     });
 
