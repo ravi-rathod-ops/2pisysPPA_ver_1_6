@@ -81,9 +81,9 @@ export class AuthService {
       const lastLogin = localStorage.getItem('lastManualLogin');
 
       if (userid && password && this.isWithinAutoLoginPeriod(2, lastLogin)) {
-        const returnUrl = localStorage.getItem('returnUrl') || '/home';
+        const returnUrl = localStorage.getItem('returnUrl') ;
         console.log('Auto-login via localStorage to:', returnUrl);
-        this.router.navigateByUrl(returnUrl);
+        // this.router.navigateByUrl(returnUrl);
       } else {
         console.log('No valid login, redirecting to home');
         localStorage.clear();
