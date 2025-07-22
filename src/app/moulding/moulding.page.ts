@@ -10,7 +10,7 @@ import {
 import { HttpClient } from '@angular/common/http';
 import { LoadingController } from '@ionic/angular';
 import { ToastController } from '@ionic/angular';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { IonInput } from '@ionic/angular';
 
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -39,6 +39,8 @@ import {
   FileTransfer,
   FileTransferObject,
 } from '@ionic-native/file-transfer/ngx';
+import { CryptoService } from '../services/crypto.service';
+import { Clipboard } from '@capacitor/clipboard';
 
 // import { Browser } from '@capacitor/browser';
 
@@ -94,6 +96,7 @@ export class MouldingPage implements OnInit, OnDestroy, AfterViewInit {
   isFiltering: boolean = false;
 
   totalRow: any = {};
+  showHeader:boolean = true;
 
   @ViewChild('selectComponent') selectComponent: IonicSelectableComponent;
   @ViewChild('scrollArea') scrollArea!: ElementRef;
@@ -108,7 +111,8 @@ export class MouldingPage implements OnInit, OnDestroy, AfterViewInit {
     private formBuilder: FormBuilder,
     private socket: Socket,
     private file: File,
-    private transfer: FileTransfer
+    private route:ActivatedRoute,
+    private cryptoService: CryptoService
   ) {
     if (
       localStorage.getItem('userid') == null &&
@@ -123,9 +127,15 @@ export class MouldingPage implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('inputId', { static: false }) inputElement: IonInput;
   isMobile: boolean = false;
 
-  ngOnInit() {
+  async ngOnInit() {
     this.isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
     this.brandImage = localStorage.getItem('brandImage');
+
+    const currentParams = { ...this.route.snapshot.queryParams };
+    
+    if(currentParams.showHeader == 'false'){
+      this.showHeader = false;
+    }
     this.scan();
     this.socket.connect();
     this.registerForm = this.formBuilder.group({
@@ -247,6 +257,23 @@ export class MouldingPage implements OnInit, OnDestroy, AfterViewInit {
         else if (x.group === 'calendering') this.calendering = true;
         else if (x.group === 'final') this.final = true;
       });
+      const currentParams = { ...this.route.snapshot.queryParams };
+      const handleRouteFromQuery = currentParams['handleRoute'];
+      if (handleRouteFromQuery) {
+        this.getReport(handleRouteFromQuery);
+      }
+
+      const handleDropdownObject = currentParams['dropdownObject'];
+    
+      if (handleDropdownObject) {
+        const dropdownObjectSelected =  this.datapassTemp.find(x=>{
+          if(x.name === handleDropdownObject){
+            return x;
+          } ;
+        })
+        this.ReportChanged(dropdownObjectSelected);
+        this.getReportData(handleDropdownObject);
+      }
     },
     error: (errordata) => {
       loading.dismiss();
@@ -275,6 +302,13 @@ export class MouldingPage implements OnInit, OnDestroy, AfterViewInit {
     this.handleRoute = page;
     arr = this.datapass.message.filter((x) => {
       return x.group == page;
+    });
+
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { handleRoute: this.handleRoute },
+      queryParamsHandling: 'merge', 
+      replaceUrl: true 
     });
 
     this.datapassTemp = arr;
@@ -311,6 +345,13 @@ export class MouldingPage implements OnInit, OnDestroy, AfterViewInit {
 
   ReportChanged(event: any) {
     this.dropdownObject = event == 'Select' ? '' : event;
+
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { dropdownObject: event.name },
+      queryParamsHandling: 'merge', 
+      replaceUrl: true 
+    });
     this.isback = true;
     let url = event.link;
     url = url.replace('&amp;', '&');
@@ -529,6 +570,18 @@ export class MouldingPage implements OnInit, OnDestroy, AfterViewInit {
                 }
 
                 this.isModalOpen = false;
+
+                if (document.hasFocus()) {
+                  this.shareLink();
+                } else {
+                  window.addEventListener(
+                    'focus',
+                    () => {
+                      this.shareLink();
+                    },
+                    { once: true }
+                  );
+                }
               }
             }
           );
@@ -668,40 +721,56 @@ export class MouldingPage implements OnInit, OnDestroy, AfterViewInit {
     // );
   }
 
-  sortByColumn(col: string) {
-    if (this.sortColumn === col) {
-      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
-    } else {
-      this.sortColumn = col;
-      this.sortDirection = 'asc';
-    }
-
-    const direction = this.sortDirection === 'asc' ? 1 : -1;
-
-    const dataToSort = this.isFiltering
-      ? [...this.filteredData] 
-      : [...this.reportData.data.slice(0, this.reportData.data.length - 1)];
-
-    dataToSort.sort((a, b) => {
-      const aVal = a[col];
-      const bVal = b[col];
-
-      if (!isNaN(aVal) && !isNaN(bVal)) {
-        return (parseFloat(aVal) - parseFloat(bVal)) * direction;
-      }
-
-      return (aVal > bVal ? 1 : aVal < bVal ? -1 : 0) * direction;
-    });
-
-    if (this.isFiltering) {
-      this.filteredData = dataToSort;
-    } else {
-      this.reportData.data = [
-        ...dataToSort,
-        this.reportData.data[this.reportData.data.length - 1],
-      ]; 
-    }
+ sortByColumn(col: string) {
+  if (this.sortColumn === col) {
+    this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+  } else {
+    this.sortColumn = col;
+    this.sortDirection = 'asc';
   }
+
+  const direction = this.sortDirection === 'asc' ? 1 : -1;
+
+  const isValidCustomDate = (val: string): boolean => {
+    return /^\d{2}-\d{2}-\d{4}$/.test(val) && val !== '00-00-0000';
+  };
+
+  const parseCustomDate = (val: string): number => {
+    const [dd, mm, yyyy] = val.split('-').map(Number);
+    return new Date(yyyy, mm - 1, dd).getTime(); 
+  };
+
+  const dataToSort = this.isFiltering
+    ? [...this.filteredData]
+    : [...this.reportData.data.slice(0, this.reportData.data.length - 1)];
+
+  dataToSort.sort((a, b) => {
+    const aVal = a[col];
+    const bVal = b[col];
+
+    const aIsDate = isValidCustomDate(aVal);
+    const bIsDate = isValidCustomDate(bVal);
+
+    if (aIsDate && bIsDate) {
+      return (parseCustomDate(aVal) - parseCustomDate(bVal)) * direction;
+    }
+
+    if (!isNaN(aVal) && !isNaN(bVal)) {
+      return (parseFloat(aVal) - parseFloat(bVal)) * direction;
+    }
+
+    return (String(aVal).localeCompare(String(bVal))) * direction;
+  });
+
+  if (this.isFiltering) {
+    this.filteredData = dataToSort;
+  } else {
+    this.reportData.data = [
+      ...dataToSort,
+      this.reportData.data[this.reportData.data.length - 1],
+    ];
+  }
+}
 
   toggleFilterInput(col: string) {
     this.activeFilters[col] = !this.activeFilters[col];
@@ -792,4 +861,74 @@ export class MouldingPage implements OnInit, OnDestroy, AfterViewInit {
       return totalRow[col] || '';
     }
   }
+
+  async shareLink() {
+    try {
+      const currentParams = { ...this.route.snapshot.queryParams };
+
+      const user_id = localStorage.getItem('userid') || '';
+      const password = localStorage.getItem('password') || '';
+      const clientid = localStorage.getItem('clientid') || '';
+      const authid = localStorage.getItem('authid') || '';
+
+      const encryptedParams = {
+        user_id: await this.cryptoService.encrypt(user_id),
+        password: await this.cryptoService.encrypt(password),
+        clientid: await this.cryptoService.encrypt(clientid),
+        authid: await this.cryptoService.encrypt(authid),
+      };
+
+      const updatedParams = {
+        ...currentParams,
+        ...encryptedParams,
+        showHeader: 'false'
+      };
+
+      const urlTree = this.router.createUrlTree([], {
+        relativeTo: this.route,
+        queryParams: updatedParams,
+        queryParamsHandling: 'merge'
+      });
+
+      const newUrl = this.router.serializeUrl(urlTree);
+      const fullUrl = `${window.location.origin}${newUrl}`;
+      console.log('Generated Link:', fullUrl);
+
+      try {
+        await navigator.clipboard.writeText(fullUrl);
+        console.log('Copied using navigator.clipboard');
+      } catch (err) {
+        try {
+          await Clipboard.write({ string: fullUrl });
+          console.log('Copied using Capacitor Clipboard');
+        } catch (capErr) {
+          console.error('Clipboard fallback also failed:', capErr);
+          throw new Error('Clipboard copy failed');
+        }
+      }
+
+      const toast = await this.toastController.create({
+        message: 'Link copied to clipboard!',
+        duration: 2000,
+        position: 'bottom',
+        color: 'success'
+      });
+      await toast.present();
+
+    } catch (error) {
+      console.error('Error in shareLink:', error);
+      const toast = await this.toastController.create({
+        message: 'Unable to copy the link. Please try again.',
+        duration: 2000,
+        position: 'bottom',
+        color: 'danger'
+      });
+      await toast.present();
+    }
+  }
+
+
+
+
+
 }
