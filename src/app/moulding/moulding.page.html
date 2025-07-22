@@ -1,3 +1,4 @@
+<div *ngIf="showHeader">
 <ion-header id="header">
   <ion-toolbar>
     <ion-img
@@ -121,13 +122,15 @@
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
-
+</div>
 <ion-content>
   <div *ngIf="dropdownObject != '' && isback && !isOldData">
     <ion-button size="small" (click)="toggleScroll()" style="margin: 10px">
       {{ isAutoScroll ? 'Stop Scroll' : 'Start Scroll' }}
     </ion-button>
-
+    <ion-button size="small" (click)="shareLink()" style="margin: 10px" *ngIf="showHeader">
+    Share Link
+  </ion-button>
     <ion-grid *ngIf="reportData" class="custom-grid">
       <!-- Header with Filter -->
 

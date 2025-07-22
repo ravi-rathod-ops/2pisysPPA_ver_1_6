@@ -1,13 +1,12 @@
 import { Component, Inject } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { LoadingController, Platform, ToastController } from '@ionic/angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Md5 } from 'ts-md5';
 import { environment } from 'src/environments/environment';
+import { CryptoService } from '../services/crypto.service';
 import { ConfigLoaderService } from '../services/config-loader.service';
-
-
 
 @Component({
   selector: 'app-home',
@@ -33,20 +32,59 @@ export class HomePage {
     public toastController: ToastController,
     private router: Router,
     private configService : ConfigLoaderService,
+    private route:ActivatedRoute,
+    private cryptoService: CryptoService,
     @Inject('APP_CONFIG') private config: any
   ) {
+    
    }
 
   
 
   ngOnInit() {
-     this.dataUrls = this.config.COMPANY_URL;
     this.registerForm = this.formBuilder.group({
       userid: ['', Validators.required],
       password: ['', Validators.required],
       company_id: ['', Validators.required],
       rememberMe: [false]
     });
+
+    this.dataUrls = this.config.COMPANY_URL;
+
+    this.route.queryParams.subscribe(async (params) => {
+      console.log({params});
+      
+    const encUserId = params['user_id'];
+    const encPassword = params['password'];
+    const encClientId = params['clientid'];
+    const encauthid = params['authid'];
+
+    if (encUserId && encPassword && encClientId && encauthid) {
+      try {
+        const user_id = await this.cryptoService.decrypt(encUserId);
+        const password = await this.cryptoService.decrypt(encPassword);
+        const clientid = await this.cryptoService.decrypt(encClientId);
+        const authid = await this.cryptoService.decrypt(encauthid);
+
+        localStorage.setItem('userid', user_id);
+        localStorage.setItem('password', password);
+        localStorage.setItem('clientid', clientid);
+        localStorage.setItem('authid', authid);
+
+        this.registerForm.patchValue({
+          userid: user_id,
+          password: password,
+          company_id: clientid,
+          'auth-id':authid
+        });
+
+        await this.submitData();
+      } catch (error) {
+        console.error('Decryption failed', error);
+        this.toastfunction('Invalid or tampered URL parameters.', 'danger');
+      }
+    }
+  });
     
       
 
