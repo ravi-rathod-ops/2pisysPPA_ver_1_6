@@ -193,6 +193,7 @@
             *ngFor="let row of (isFiltering ? filteredData : reportData.data.slice(0, reportData.data.length - 1)); let i = index"
             [class.alt-row]="i % 2 === 1"
             class="data-row"
+            [ngStyle]="{ color: row['fontColor'] || 'red' }"
           >
             <ion-col
               *ngFor="let col of reportData.colheaders"

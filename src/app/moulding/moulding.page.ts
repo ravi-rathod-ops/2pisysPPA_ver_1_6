@@ -441,9 +441,11 @@ export class MouldingPage implements OnInit, OnDestroy, AfterViewInit {
                   sumMap[colName] = (sumMap[colName] || 0) + intPart;
                   val = intPart.toString();
                 }
-
+ 
                 limitedRow[colName] = val ?? '';
               }
+               const rawColor = row.color?.trim().toLowerCase();
+                limitedRow['fontColor'] = !rawColor || rawColor === "" ? 'black' : rawColor;
 
               return limitedRow;
             });
@@ -686,10 +688,11 @@ export class MouldingPage implements OnInit, OnDestroy, AfterViewInit {
 
   async exportToExcel() {
     const loading = await this.loadingController.create({
-      cssClass: 'my-custom-class',
-      message: 'Please wait...',
-      spinner: 'dots',
-    });
+    cssClass: 'my-custom-class',
+    message: 'Preparing CSV...',
+    spinner: 'dots',
+  });
+  if(this.isOldData){
     loading.present();
     let url = this.pageUrl.split('?');
     let tempurl =
@@ -698,28 +701,56 @@ export class MouldingPage implements OnInit, OnDestroy, AfterViewInit {
       localStorage.getItem('userid') +
       '&pass=' +
       localStorage.getItem('password');
-    // this.pageUrl=tempurl;
 
-    // await Browser.open({ url: tempurl });
     window.open(tempurl);
     loading.dismiss();
+  }else{
+    await loading.present();
 
-    // const fileTransfer: FileTransferObject = this.transfer.create();
-    // this.file.createDir(this.file.externalRootDirectory, 'Download', true)
-    // .then((resp) => {
-    //   let path = resp.toURL();
-    //   fileTransfer.download(tempurl, path + (this.currentReport+new Date().getMilliseconds()).split(/\s/).join('')+'.csv').then((entry) => {
-    //     console.log('download complete: ' + entry.toURL());
-    //     loading.dismiss();
-    //     this.toastfunction("File Saved Successfully!!!","success");
-    //   }, (error) => {
-    //     console.log(error)
-    //     loading.dismiss();
-    //   });
-    // }
+      try {
+        if (!this.reportData || !this.reportData.data || !this.reportData.colheaders) {
+          loading.dismiss();
+          this.toastfunction('No data to export.', 'warning');
+          return;
+        }
 
-    // );
-  }
+        const headers = this.reportData.colheaders;
+        const rows = this.reportData.data;
+
+        let csvContent = headers.join(',') + '\r\n';
+
+        for (const row of rows) {
+          const rowData = headers.map((col) => {
+            const cell = row[col];
+            if (typeof cell === 'string' && cell.includes(',')) {
+              return `"${cell}"`; 
+            }
+            return cell ?? '';
+          });
+          csvContent += rowData.join(',') + '\r\n';
+        }
+
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+
+        const fileName = `Report_${new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-')}.csv`;
+        a.download = fileName;
+        a.click();
+
+        window.URL.revokeObjectURL(url);
+      } catch (error) {
+        console.error('CSV Export Error:', error);
+        this.toastfunction('Failed to export CSV.', 'danger');
+      } finally {
+        loading.dismiss();
+      }
+    }
+ 
+  
+}
+
 
  sortByColumn(col: string) {
   if (this.sortColumn === col) {
