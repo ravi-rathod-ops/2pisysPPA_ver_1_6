@@ -17,13 +17,14 @@ export class AppComponent {
   constructor(
     private platform: Platform,
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    private menuCtrl: MenuController
   ) {
     console.log('asddsad');
       this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         const currentUrl = event.urlAfterRedirects;
-        this.showSidebar = currentUrl !== '/home';
+        this.showSidebar = currentUrl !== '/login';
       }
     });
 
@@ -50,6 +51,12 @@ export class AppComponent {
     localStorage.removeItem('userid');
     localStorage.removeItem('password');
     localStorage.removeItem('your-data-key');
-    this.router.navigate(['home']);
+    this.router.navigate(['login']);
   }
+
+  navigateTo(path: string) {
+  this.router.navigate([path]).then(() => {
+    this.menuCtrl.close();
+  });
+}
 }

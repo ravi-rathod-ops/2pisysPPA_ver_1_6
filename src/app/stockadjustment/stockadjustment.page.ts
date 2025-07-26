@@ -318,7 +318,7 @@ export class StockadjustmentPage implements OnInit, AfterViewInit {
 
   navBack()
   {
-    this.router.navigate(['home']);
+    this.router.navigate(['login']);
   }
 
   async toastfunction(msg,colour)

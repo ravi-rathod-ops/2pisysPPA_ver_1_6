@@ -96,7 +96,7 @@ export class MouldingPage implements OnInit, OnDestroy, AfterViewInit {
   isFiltering: boolean = false;
 
   totalRow: any = {};
-  showHeader:boolean = true;
+  showHeader:boolean = false;
 
   @ViewChild('selectComponent') selectComponent: IonicSelectableComponent;
   @ViewChild('scrollArea') scrollArea!: ElementRef;
@@ -118,7 +118,7 @@ export class MouldingPage implements OnInit, OnDestroy, AfterViewInit {
       localStorage.getItem('userid') == null &&
       localStorage.getItem('password') == null
     ) {
-      this.router.navigate(['home']);
+      this.router.navigate(['login']);
     }
     this.checkStorage();
     this.socketIp = localStorage.getItem('IPAddr');
@@ -298,6 +298,7 @@ export class MouldingPage implements OnInit, OnDestroy, AfterViewInit {
   }
 
   getReport(page) {
+    this.showHeader = true;
     let arr = this.datapass;
     this.handleRoute = page;
     arr = this.datapass.message.filter((x) => {
@@ -320,6 +321,7 @@ export class MouldingPage implements OnInit, OnDestroy, AfterViewInit {
   back() {
     if (this.handleRoute != '') {
       this.isback = false;
+      this.showHeader = false;
       this.dropdownObject = '';
       this.showMenu = true;
       this.datapassTemp = [];
@@ -327,7 +329,7 @@ export class MouldingPage implements OnInit, OnDestroy, AfterViewInit {
       this.reportData = {};
       this.router.navigate(['Moulding']);
     } else {
-      this.router.navigate(['Widgets']);
+      this.router.navigate(['Home']);
     }
   }
 
@@ -339,7 +341,7 @@ export class MouldingPage implements OnInit, OnDestroy, AfterViewInit {
       localStorage.removeItem('your-data-key');
       localStorage.removeItem('userid');
       localStorage.removeItem('password');
-      this.router.navigate(['home']);
+      this.router.navigate(['login']);
     }
   }
 
@@ -441,9 +443,11 @@ export class MouldingPage implements OnInit, OnDestroy, AfterViewInit {
                   sumMap[colName] = (sumMap[colName] || 0) + intPart;
                   val = intPart.toString();
                 }
-
+ 
                 limitedRow[colName] = val ?? '';
               }
+               const rawColor = row.color?.trim().toLowerCase();
+                limitedRow['fontColor'] = !rawColor || rawColor === "" ? 'black' : rawColor;
 
               return limitedRow;
             });
@@ -669,7 +673,7 @@ export class MouldingPage implements OnInit, OnDestroy, AfterViewInit {
   // }
 
   navBack() {
-    this.router.navigate(['home']);
+    this.router.navigate(['login']);
   }
 
   async toastfunction(msg, colour) {
@@ -686,10 +690,11 @@ export class MouldingPage implements OnInit, OnDestroy, AfterViewInit {
 
   async exportToExcel() {
     const loading = await this.loadingController.create({
-      cssClass: 'my-custom-class',
-      message: 'Please wait...',
-      spinner: 'dots',
-    });
+    cssClass: 'my-custom-class',
+    message: 'Preparing CSV...',
+    spinner: 'dots',
+  });
+  if(this.isOldData){
     loading.present();
     let url = this.pageUrl.split('?');
     let tempurl =
@@ -698,28 +703,56 @@ export class MouldingPage implements OnInit, OnDestroy, AfterViewInit {
       localStorage.getItem('userid') +
       '&pass=' +
       localStorage.getItem('password');
-    // this.pageUrl=tempurl;
 
-    // await Browser.open({ url: tempurl });
     window.open(tempurl);
     loading.dismiss();
+  }else{
+    await loading.present();
 
-    // const fileTransfer: FileTransferObject = this.transfer.create();
-    // this.file.createDir(this.file.externalRootDirectory, 'Download', true)
-    // .then((resp) => {
-    //   let path = resp.toURL();
-    //   fileTransfer.download(tempurl, path + (this.currentReport+new Date().getMilliseconds()).split(/\s/).join('')+'.csv').then((entry) => {
-    //     console.log('download complete: ' + entry.toURL());
-    //     loading.dismiss();
-    //     this.toastfunction("File Saved Successfully!!!","success");
-    //   }, (error) => {
-    //     console.log(error)
-    //     loading.dismiss();
-    //   });
-    // }
+      try {
+        if (!this.reportData || !this.reportData.data || !this.reportData.colheaders) {
+          loading.dismiss();
+          this.toastfunction('No data to export.', 'warning');
+          return;
+        }
 
-    // );
-  }
+        const headers = this.reportData.colheaders;
+        const rows = this.reportData.data;
+
+        let csvContent = headers.join(',') + '\r\n';
+
+        for (const row of rows) {
+          const rowData = headers.map((col) => {
+            const cell = row[col];
+            if (typeof cell === 'string' && cell.includes(',')) {
+              return `"${cell}"`; 
+            }
+            return cell ?? '';
+          });
+          csvContent += rowData.join(',') + '\r\n';
+        }
+
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+
+        const fileName = `Report_${new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-')}.csv`;
+        a.download = fileName;
+        a.click();
+
+        window.URL.revokeObjectURL(url);
+      } catch (error) {
+        console.error('CSV Export Error:', error);
+        this.toastfunction('Failed to export CSV.', 'danger');
+      } finally {
+        loading.dismiss();
+      }
+    }
+ 
+  
+}
+
 
  sortByColumn(col: string) {
   if (this.sortColumn === col) {

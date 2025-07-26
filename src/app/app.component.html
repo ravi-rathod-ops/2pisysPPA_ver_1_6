@@ -9,21 +9,30 @@
 
       <ion-content>
         <ion-list class="sidebar-list">
-          <ion-item routerLink="/Widgets" routerDirection="root">
+          <ion-item (click)="navigateTo('/Home')">
             <ion-icon name="grid"></ion-icon><span>Home</span>
           </ion-item>
-          <ion-item routerLink="/Planhome" routerDirection="root">
+
+          <ion-item (click)="navigateTo('/Planhome')">
             <ion-icon name="aperture"></ion-icon><span>Process</span>
           </ion-item>
-          <ion-item routerLink="/Moulding" routerDirection="root">
+
+          <ion-item (click)="navigateTo('/Moulding')">
             <ion-icon name="eye"></ion-icon><span>View</span>
           </ion-item>
-          <ion-item routerLink="/Reports" routerDirection="root">
+
+          <ion-item (click)="navigateTo('/Reports')">
             <ion-icon name="analytics"></ion-icon><span>Reports</span>
           </ion-item>
-          <ion-item routerLink="/approvals" routerDirection="root">
+
+          <ion-item (click)="navigateTo('/approvals')">
             <ion-icon name="checkmark-circle"></ion-icon>Approval
           </ion-item>
+
+          <ion-item (click)="logout()" class="logout-button">
+            <ion-icon name="exit"></ion-icon>Logout
+          </ion-item>
+
         </ion-list>
       </ion-content>
     </ion-menu>
@@ -38,7 +47,7 @@
             <ion-img src="./assets/icon/logo1.png" class="logo-img"></ion-img>
             <h2>Home</h2>
           </div>
-          <ion-buttons slot="end">
+          <!-- <ion-buttons slot="end">
             <ion-button
               class="btn outlined-btn-black"
               expand="full"
@@ -46,7 +55,7 @@
             >
               <ion-icon name="exit"></ion-icon> Logout
             </ion-button>
-          </ion-buttons>
+          </ion-buttons> -->
         </ion-toolbar>
       </ion-header>
 

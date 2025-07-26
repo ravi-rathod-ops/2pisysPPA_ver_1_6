@@ -350,7 +350,7 @@ async startScanning() {
   }
 
   navBack() {
-    this.router.navigate(['home']);
+    this.router.navigate(['login']);
   }
 
   async toastfunction(msg, colour) {

@@ -3,7 +3,7 @@
     <div class="left-menu">
       <ion-toolbar>
         <ion-buttons si slot="start">
-          <ion-back-button defaultHref="Widgets"></ion-back-button>
+          <ion-back-button defaultHref="Home"></ion-back-button>
         </ion-buttons>
         <h3 class="main-sub-heading">Purchase Order</h3>
       </ion-toolbar>
@@ -111,7 +111,7 @@
             <ion-icon name="receipt-outline"></ion-icon>
           </ion-col>
         </ion-row>
-        <div style="height: 70vh; overflow: scroll; font-size: x-small">
+        <!-- <div style="height: 70vh; overflow: scroll; font-size: x-small">
           <ion-row nowrap class="content" *ngFor="let x of deleteData">
             <ion-col size="2"> {{ x.purId }}</ion-col>
             <ion-col size="2"> {{ x.purDate }} </ion-col>
@@ -132,21 +132,21 @@
           <ion-row *ngIf="tableData.length === 0">
             <ion-col size="12" class="no-records">No Records Found</ion-col>
           </ion-row>
-        </div>
+        </div> -->
       </div>
+      <ion-row *ngIf="!showTable" class="ion-text-center" style="margin-top: 2rem;">
+           <ion-col size="12">
+             <ion-icon name="funnel-outline" style="font-size: 32px; color: #999;"></ion-icon>
+             <div style="font-size: 18px; color: #666; margin-top: 0.5rem;">
+               Please select a RAM class to view the materials.
+             </div>
+             <div style="font-size: 14px; color: #999;">
+               Use the dropdown above to filter and display relevant inventory.
+             </div>
+           </ion-col>
+         </ion-row>
     </ion-grid>
   </div>
-   <ion-row *ngIf="!showTable" class="ion-text-center" style="margin-top: 2rem;">
-        <ion-col size="12">
-          <ion-icon name="funnel-outline" style="font-size: 32px; color: #999;"></ion-icon>
-          <div style="font-size: 18px; color: #666; margin-top: 0.5rem;">
-            Please select a RAM class to view the materials.
-          </div>
-          <div style="font-size: 14px; color: #999;">
-            Use the dropdown above to filter and display relevant inventory.
-          </div>
-        </ion-col>
-      </ion-row>
 
   <div class="modal-content" *ngIf="purchaseDataModal">
     <div class="modal-header">
@@ -470,7 +470,7 @@
           </ion-row>
         </div>
       </ion-grid> -->
-      <div class="reports-table">
+      <div  class="modal-body">
         <ion-grid>
           <ion-row class="table-header" nowrap>
             <ion-col size="2" (click)="sort2('purId', false)"
@@ -524,7 +524,7 @@
     </div>
   </div>
 
-  <!-- <div class="modal-content2" *ngIf="modalDeleteData2">
+<div class="modal-content2" *ngIf="modalDeleteData2">
     <div class="modal-header">
       <span class="close" (click)="modalDeleteData2=!modalDeleteData2"
         >&times;</span
@@ -574,5 +574,5 @@
         >Cancel</ion-button
       >
     </div>
-  </div> -->
+  </div> 
 </ion-content>

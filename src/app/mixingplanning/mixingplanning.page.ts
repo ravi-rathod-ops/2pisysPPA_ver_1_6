@@ -55,7 +55,7 @@ export class MixingplanningPage implements OnInit {
 
     if(localStorage.getItem('userid') == null && localStorage.getItem('password') == null)
     {
-      this.router.navigate(["home"]);
+      this.router.navigate(["login"]);
     }
 
     this.checkStorage();
@@ -495,7 +495,7 @@ export class MixingplanningPage implements OnInit {
       localStorage.removeItem("your-data-key");
       localStorage.removeItem("userid");
       localStorage.removeItem("password");
-      this.router.navigate(["home"]);
+      this.router.navigate(["login"]);
     }
 
   }
@@ -503,7 +503,7 @@ export class MixingplanningPage implements OnInit {
 
   navBack()
   {
-    this.router.navigate(['home']);
+    this.router.navigate(['login']);
   }
 
   // selectDate(e){

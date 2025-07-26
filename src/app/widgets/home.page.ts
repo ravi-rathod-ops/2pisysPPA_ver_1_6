@@ -4,10 +4,10 @@ import { NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-widgets',
-  templateUrl: './widgets.page.html',
-  styleUrls: ['./widgets.page.scss'],
+  templateUrl: './home.page.html',
+  styleUrls: ['./home.page.scss'],
 })
-export class WidgetsPage implements OnInit {
+export class HomePage implements OnInit {
 
   brandImage="";
   widgets = [
@@ -16,12 +16,13 @@ export class WidgetsPage implements OnInit {
     { label: 'REPORTS', image: './assets/image/report.png', page: 'Reports' },
     { label: 'APPROVAL', image: './assets/image/approve.png', page: 'approvals' }
   ];
+  isDataPresent:boolean = false;
   
   
   constructor(private router: Router, private navCtrl:NavController) {
     if(localStorage.getItem('userid') == null && localStorage.getItem('password') == null)
     {
-      this.router.navigate(["home"]);   
+      this.router.navigate(["login"]);   
     }
 
     this.checkStorage();
@@ -46,7 +47,7 @@ export class WidgetsPage implements OnInit {
       localStorage.removeItem("your-data-key");
       localStorage.removeItem("userid");
       localStorage.removeItem("password"); 
-      this.router.navigate(["home"]);      
+      this.router.navigate(["login"]);      
     }
   
   }
@@ -56,7 +57,7 @@ export class WidgetsPage implements OnInit {
     localStorage.removeItem("userid");
     localStorage.removeItem("password");
     localStorage.removeItem("your-data-key");
-    this.router.navigate(["home"]);
+    this.router.navigate(["login"]);
   }
 
 }

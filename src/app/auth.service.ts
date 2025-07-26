@@ -71,7 +71,7 @@ export class AuthService {
           return;
         } catch (error) {
           console.error(' Decryption failed:', error);
-          this.router.navigate(['home']);
+          this.router.navigate(['login']);
           return;
         }
       }
@@ -87,7 +87,7 @@ export class AuthService {
       } else {
         console.log('No valid login, redirecting to home');
         localStorage.clear();
-        this.router.navigate(['home']);
+        this.router.navigate(['login']);
       }
     });
   }

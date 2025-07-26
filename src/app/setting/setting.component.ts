@@ -74,7 +74,7 @@ export class SettingComponent implements OnInit {
 
     if(localStorage.getItem('userid') == null && localStorage.getItem('password') == null)
     {
-      // this.router.navigate(["home"]);   
+      // this.router.navigate(["login"]);   
     }
 
   }
@@ -122,7 +122,7 @@ export class SettingComponent implements OnInit {
 
   navBack()
   {
-    this.router.navigate(['home']);
+    this.router.navigate(['login']);
   }
 
   modaldismiss()
@@ -174,7 +174,7 @@ export class SettingComponent implements OnInit {
     localStorage.removeItem("userid");
     localStorage.removeItem("password");
     localStorage.removeItem("your-data-key");
-    this.router.navigate(["home"]);
+    this.router.navigate(["login"]);
   }
 
 

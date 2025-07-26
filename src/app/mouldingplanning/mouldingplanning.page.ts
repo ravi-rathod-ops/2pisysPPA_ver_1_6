@@ -75,7 +75,7 @@ export class MouldingplanningPage implements OnInit {
 
     if(localStorage.getItem('userid') == null && localStorage.getItem('password') == null)
     {
-      this.router.navigate(["home"]);
+      this.router.navigate(["login"]);
     }
 
     this.checkStorage();
@@ -642,7 +642,7 @@ changeMachine(event,index){
       localStorage.removeItem("your-data-key");
       localStorage.removeItem("userid");
       localStorage.removeItem("password");
-      this.router.navigate(["home"]);
+      this.router.navigate(["login"]);
     }
 
   }
@@ -650,7 +650,7 @@ changeMachine(event,index){
 
   navBack()
   {
-    this.router.navigate(['home']);
+    this.router.navigate(['login']);
   }
 
 

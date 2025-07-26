@@ -10,10 +10,10 @@ import { ConfigLoaderService } from '../services/config-loader.service';
 
 @Component({
   selector: 'app-home',
-  templateUrl: 'home.page.html',
-  styleUrls: ['home.page.scss'],
+  templateUrl: 'login.page.html',
+  styleUrls: ['login.page.scss'],
 })
-export class HomePage {
+export class LoginPage {
   datapass: any = { "base64encodedimage": "./assets/image/no_logo.png" };
   dataUrl = '';
   dataUrls = [];//environment.COMPANY_URL;
@@ -114,9 +114,9 @@ export class HomePage {
           if (this.cversion >= data.message) {
             this.versionFlag = false;
             if (localStorage.getItem('userid') != null && localStorage.getItem('password') != null) {
-              this.router.navigate(["Widgets"]);
+              this.router.navigate(["Home"]);
             } else {
-              this.router.navigate(["home"]);
+              this.router.navigate(["login"]);
             }
           } else {
             this.versionToastFunction();
@@ -127,7 +127,7 @@ export class HomePage {
           if (errordata.error.message) {
             this.toastfunction(errordata.error.message, "danger");
           } else {
-            this.toastfunction("Invalid Company Url, Please Check in Home page 2", "danger");
+            this.toastfunction("Invalid Company Url, Please Check in login page 2", "danger");
           }
         }
       });
@@ -183,7 +183,7 @@ export class HomePage {
 
     this.http.get<any>(this.dataUrl + "/api/userlogin/" + this.registerForm.value.userid, { headers }).subscribe({
       next: async data => {
-        this.router.navigate(["Widgets"]);
+        this.router.navigate(["Home"]);
 
         localStorage.setItem('userid', this.registerForm.value.userid);
         localStorage.setItem('password', Md5.hashStr(this.registerForm.value.password));
@@ -197,7 +197,7 @@ export class HomePage {
         if (errordata.error.message) {
           this.toastfunction(errordata.error.message, "danger");
         } else {
-          this.toastfunction("Invalid Company Url, Please Check in Home page 3", "danger");
+          this.toastfunction("Invalid Company Url, Please Check in login page 3", "danger");
         }
       }
     });
@@ -249,7 +249,7 @@ export class HomePage {
         if (errordata.error.message) {
           this.toastfunction(errordata.error.message, "danger");
         } else {
-          this.toastfunction("Invalid Company Url, Please Check in Home page 1", "danger");
+          this.toastfunction("Invalid Company Url, Please Check in login page 1", "danger");
         }
       }
     });
